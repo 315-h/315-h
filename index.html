@@ -526,7 +526,7 @@
       </button>
       <label class="real-api-toggle" title="开启后生成报告 / 改写 / 对话将调用本地 LangChain 后端（DeepSeek / Qwen），密钥在 backend/.env 配置；后端未启动或无密钥时会自动回落至内置演示数据">
         <span class="rat-text">真实接口模式</span>
-        <input type="checkbox" id="real-api-switch" onchange="toggleRealApi(this.checked)">
+        <input type="checkbox" id="real-api-switch" checked onchange="toggleRealApi(this.checked)">
         <span class="switch"></span>
       </label>
     </nav>
@@ -777,9 +777,17 @@ const state = {
   report: null, meta: null
 };
 
-/* 真实接口模式开关：默认 false → 打开即演示、绝不自动请求，避免连接错误；
-   用户手动开启后，generateReport / rewriteBlock / sendChat 才调用本地 LangChain 后端（DeepSeek / Qwen） */
-let USE_REAL_API = false;
+/* 真实接口模式开关：默认 true → 打开网页即走本地 LangChain 后端（DeepSeek / Qwen）；
+   后端未启动或无密钥时，generateReport / rewriteBlock / sendChat 会自动回落至内置演示数据，不会白屏；
+   若想纯离线演示，手动关闭右上角「真实接口模式」开关即可 */
+let USE_REAL_API = true;
+/* 页面加载时同步开关 UI（仅视觉，不弹确认）：真实接口模式默认开启 */
+(function syncRealApiUI(){
+  const sw = document.getElementById('real-api-switch');
+  const lbl = document.querySelector('.real-api-toggle');
+  if(sw) sw.checked = USE_REAL_API;
+  if(lbl) lbl.classList.toggle('on', USE_REAL_API);
+})();
 function toggleRealApi(on){
   USE_REAL_API = !!on;
   const lbl = document.querySelector('.real-api-toggle');
