@@ -1,0 +1,7 @@
+fastapi>=0.110
+uvicorn[standard]>=0.27
+langchain-openai>=0.1
+langchain-core>=0.2
+pydantic>=2
+python-dotenv>=1.0
+python-multipart>=0.0.9   # /ocr 接口使用 UploadFile 处理图片上传（必装，否则启动报错）

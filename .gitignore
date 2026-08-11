@@ -1,0 +1,23 @@
+# === 密钥 / 环境（含真实 API Key，绝不可提交） ===
+backend/.env
+.env
+*.env
+
+# === Python 运行时 / 缓存 ===
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+
+# === 系统 / 编辑器 ===
+.DS_Store
+Thumbs.db
+*.log
+
+# === 产物 / 临时 ===
+tmp/
+*.tmp
