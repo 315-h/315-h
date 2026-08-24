@@ -14,7 +14,7 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | **经历翻译官** | 单文件 HTML · 求职诊断 | `jingli.html` | [`jingli-app.html`](jingli-app.html) | [PDF](PRD-Experience.pdf) | — | — |
 | **缓择星球** | 微信小程序 + 网页版 · 决策对比工具 | `huanze.html` | [网页版](huanzexingqiu-web/index.html) | [PDF](PRD-HuanZe.pdf) | [测试集 xlsx](HuanZe-TestSet.xlsx) | [复盘 PDF](HuanZe-Review.pdf) |
-| **小办 / 小半** | RAG Agent · 企业事务助手 | `xiaoban.html` | — | [PDF](PRD-XiaoBan.pdf) | [测试集 xlsx](XiaoBan-TestSet.xlsx) | [复盘 PDF](XiaoBan-Retro.pdf) · [工作流源文件 zip](XiaoBan-WorkflowSrc.zip) |
+| **小办** | RAG Agent · 企业事务助手 | `xiaoban.html` | — | [PDF](PRD-XiaoBan.pdf) | [测试集 xlsx](XiaoBan-TestSet.xlsx) | [复盘 PDF](XiaoBan-Retro.pdf) · [工作流源文件 zip](XiaoBan-WorkflowSrc.zip) |
 
 下载简历：[`Resume-HanJiaxue.pdf`](Resume-HanJiaxue.pdf)
 
@@ -30,7 +30,7 @@
 ├── jingli-app.html        # ① 经历翻译官 · 可交互产品前端
 ├── huanze.html            # ② 缓择星球 · 详情页
 ├── huanzexingqiu-web/     # ② 缓择星球 · 网页版（多页静态站点）
-├── xiaoban.html           # ③ 小办 / 小半 · 详情页
+├── xiaoban.html           # ③ 小办 · 详情页
 ├── Resume-HanJiaxue.pdf   # 简历
 ├── PRD-*.pdf              # 三个产品 PRD（一份一份）
 ├── *TestSet.xlsx          # 缓择 / 小办测试集
