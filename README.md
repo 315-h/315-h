@@ -1,73 +1,78 @@
-# 经历翻译官 · AI 求职诊断工具
+# 作品集 · 韩佳雪 AI 产品经理求职
 
-把一段普通履历，翻译成可投递、可面试、可诊断的求职资产。单文件 HTML 网页，零构建、零依赖，**打开即用**。
+> 把三段真实 AI 产品实战，做成可点开、可读懂、可下载的作品集。
 
-## 一句话看懂产品链路
+这是韩佳雪（Han Jiaxue）面向 **AI 产品经理岗位** 的求职作品集。仓库即站点，GitHub Pages 直接访问。
 
-> **前端（原生 HTML）** ＋ **AI 演示原型载体：Coze（扣子）** ＋ **底层自研框架：LangChain（RAG / 多智能体）** → **数据本地存储（浏览器 LocalStorage）**
+**线上入口**：<https://315-h.github.io/315-h/>
 
-- **前端**：单文件 `index.html`，响应式，原生 HTML/CSS/JS，无框架无打包。
-- **AI 原型载体**：Coze（扣子）承载交互原型与对话 Demo 的结构设计。
-- **底层底座**：本地 LangChain 服务（DeepSeek / Qwen）是报告生成与多轮咨询的引擎；**本演示网页默认离线运行，LangChain 未部署于此页**。
-- **隐私**：用户简历仅保存在浏览器 LocalStorage，**不上传任何服务器**。
+---
 
-## 六大能力模块
+## 三个产品 · 三份完整作品
 
-1. 经历核心信息提取
-2. 可迁移能力识别
-3. 岗位匹配度评估
-4. 简历优化文案
-5. 面试问答素材（含团队协作题）
-6. 能力跃迁规划（含金融 AI 专项分支）
+| 产品 | 类型 | 详情页 | 在线体验 | PRD | 测试集 | 复盘 / 源文件 |
+| --- | --- | --- | --- | --- | --- | --- |
+| **经历翻译官** | 单文件 HTML · 求职诊断 | `jingli.html` | [`jingli-app.html`](jingli-app.html) | [PDF](PRD-Experience.pdf) | — | — |
+| **缓择星球** | 微信小程序 + 网页版 · 决策对比工具 | `huanze.html` | [网页版](huanzexingqiu-web/index.html) | [PDF](PRD-HuanZe.pdf) | [测试集 xlsx](HuanZe-TestSet.xlsx) | [复盘 PDF](HuanZe-Review.pdf) |
+| **小办 / 小半** | RAG Agent · 企业事务助手 | `xiaoban.html` | — | [PDF](PRD-XiaoBan.pdf) | [测试集 xlsx](XiaoBan-TestSet.xlsx) | [复盘 PDF](XiaoBan-Retro.pdf) · [工作流源文件 zip](XiaoBan-WorkflowSrc.zip) |
 
-## 两种运行模式
+下载简历：[`Resume-HanJiaxue.pdf`](Resume-HanJiaxue.pdf)
 
-| 模式 | 触发 | 说明 |
-| --- | --- | --- |
-| **演示模式（默认）** | `USE_REAL_API = false` | 前端内置差异化模拟数据，无需任何后端，**GitHub Pages 直接可用** |
-| **真实模式** | 页面内切换「真实接口」 | 调用本地 LangChain 后端（8000 端口），产出真实 AI 报告与图片 OCR |
-
-## 部署到 GitHub Pages（作品集链接）
-
-本仓库根目录的 `index.html` 即为站点入口，可直接作为静态站点托管：
-
-1. 把本仓库推到 GitHub。
-2. 仓库 **Settings → Pages**，Source 选 `Deploy from a branch`，Branch 选 `main` / 根目录 `/`。
-3. 等待部署完成，访问 `https://<用户名>.github.io/<仓库名>/`。
-
-> 公网部署下默认走演示模式（mock），真实 AI 生成与图片 OCR 依赖本地后端，需在本人机器运行 `backend/` 后切换真实模式。
-
-## 本地运行（含真实 AI 后端）
-
-```bash
-# 1) 启动前端静态服务
-cd <项目根目录>
-python -m http.server 8080
-#   浏览器打开 http://127.0.0.1:8080/index.html
-
-# 2) 启动 LangChain 后端（需 Python 3.10+，并配置 backend/.env 的 API Key）
-cd backend
-python -m venv .venv && .venv\Scripts\activate      # Windows
-pip install -r requirements.txt
-cp .env.example .env                                # 填入 DEEPSEEK_API_KEY / QWEN_API_KEY
-uvicorn main:app --host 127.0.0.1 --port 8000
-```
-
-后端详情见 [`backend/README.md`](backend/README.md)。
+---
 
 ## 目录结构
 
 ```
 .
-├── index.html          # 单文件前端（站点入口）
-├── backend/            # 本地 LangChain 后端（FastAPI，可选）
-│   ├── main.py         # 接口：/workflow/run /chat/completions /ocr /ping /health
-│   ├── prompts.py      # 报告生成 Prompt（含 5 种沟通风格）
-│   ├── knowledge.py    # 岗位知识库检索（RAG）
-│   └── README.md
-└── .gitignore          # 已忽略 .env / .venv / __pycache__ 等
+├── portfolio.html         # 作品集首页（用户视角入口）
+├── index.html             # 根入口（= portfolio.html 副本，GitHub Pages 要求）
+├── jingli.html            # ① 经历翻译官 · 详情页
+├── jingli-app.html        # ① 经历翻译官 · 可交互产品前端
+├── huanze.html            # ② 缓择星球 · 详情页
+├── huanzexingqiu-web/     # ② 缓择星球 · 网页版（多页静态站点）
+├── xiaoban.html           # ③ 小办 / 小半 · 详情页
+├── Resume-HanJiaxue.pdf   # 简历
+├── PRD-*.pdf              # 三个产品 PRD（一份一份）
+├── *TestSet.xlsx          # 缓择 / 小办测试集
+├── *Review.pdf / *Retro.pdf   # 迭代复盘
+├── XiaoBan-WorkflowSrc.zip    # 小办 LangChain 工作流源文件
+├── backend/               # 经历翻译官 · 本地 LangChain 后端（FastAPI，可选）
+└── .nojekyll              # 关闭 GitHub Pages 的 Jekyll 处理
 ```
 
 ---
 
-© 经历翻译官 · 仅供求职辅助演示使用。
+## 部署说明
+
+仓库根目录即 GitHub Pages 站点根目录。
+
+1. **Settings → Pages** → Source 选 `Deploy from a branch`，Branch 选 `main` / 根目录 `/`。
+2. 等待 1~2 分钟，访问 `https://<用户名>.github.io/<仓库名>/`。
+3. 根 URL `/` 自动走 `index.html`（即 `portfolio.html` 副本 → 作品集首页）。
+
+---
+
+## 技术栈
+
+- **前端**：原生 HTML / CSS / JavaScript，零构建、零依赖。
+- **作品集可视化**：CSS 变量双主题、滚动 reveal、卡片预览。
+- **经历翻译官后端**（可选）：FastAPI + LangChain + langchain-openai（DeepSeek / 通义千问 Qwen）。详见 `backend/README.md`。
+- **数据存储**：纯前端 LocalStorage，简历不落服务端。
+
+---
+
+## 隐私
+
+- 所有作品页跑在浏览器静态资源，**简历与对话内容不离开本机**。
+- GitHub Pages 部署的演示版仅作作品展示，不收集任何用户数据。
+
+---
+
+## 简历外的资料
+
+- 体验完整产品：在详情页点「在线体验」「打开网页版」即可。
+- 看每个产品的真实决策记录：点详情页底部「查看 PRD ↗」「迭代方案与复盘」。
+
+---
+
+© 2026 Han Jiaxue · 仅供求职辅助演示使用。

@@ -175,23 +175,28 @@
 
   /* ===== (4) 真实工作流（样式见上方 .wf 区块） ===== */
 
-  /* ===== (5) 三段式问题解法 ===== */
-  .solve{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
-  .scard{background:var(--card);border:1px solid var(--divider);border-radius:var(--radius);overflow:hidden;
+  /* ===== (4) 三段式问题解法（守门人卡 · 20px 大圆角 + 等高 + 胶囊标签） ===== */
+  .solve{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:stretch;}
+  .scard{background:var(--card);border:1px solid var(--divider);border-radius:20px;overflow:hidden;
     display:flex;flex-direction:column;transition:transform .25s ease,box-shadow .25s ease;}
-  .scard:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg);border-color:var(--c);}
-  .scard .hd{background:linear-gradient(135deg,var(--c) 0%,#1E40AF 100%);color:#fff;padding:18px 20px;
-    display:flex;align-items:center;justify-content:space-between;}
-  .scard .hd .no{font-family:var(--mono);font-size:22px;font-weight:800;opacity:.85;letter-spacing:1px;}
-  .scard .hd .title{font-size:14px;font-weight:700;letter-spacing:.4px;}
-  .scard .bd{padding:20px;display:flex;flex-direction:column;gap:14px;}
-  .scard .row{display:flex;gap:10px;}
-  .scard .row .lab{width:52px;flex-shrink:0;font-size:11.5px;font-weight:700;letter-spacing:.5px;
-    color:var(--text-3);padding-top:3px;}
-  .scard .row .ct{font-size:13px;color:var(--text);line-height:1.7;}
-  .scard .row.solution{background:var(--ok-tint);margin:0 -20px -20px;padding:14px 20px;border-top:1px solid var(--ok);}
-  .scard .row.solution .lab{color:var(--ok);}
-  .scard .row.solution .ct{font-weight:600;color:var(--ok);}
+  .scard:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
+  .scard .hd{background:var(--c-tint);color:var(--text);padding:22px 22px 18px;
+    display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--divider);}
+  .scard .hd .hd-left{display:flex;align-items:center;gap:12px;}
+  .scard .hd .icon{width:34px;height:34px;border-radius:10px;background:var(--card);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .scard .hd .icon svg{width:18px;height:18px;stroke:var(--c);stroke-width:1.8;}
+  .scard .hd .title{font-size:14px;font-weight:700;color:var(--text);letter-spacing:.2px;}
+  .scard .hd .no{font-family:var(--mono);font-size:11px;color:var(--text-3);font-weight:700;letter-spacing:1px;background:var(--card);padding:3px 9px;border-radius:6px;}
+  .scard .bd{padding:20px 22px;display:flex;flex-direction:column;gap:16px;flex:1;}
+  .scard .row{display:flex;flex-direction:column;gap:10px;padding:16px 18px;border-radius:14px;flex:1;}
+  .scard .row.rc{background:var(--card-soft);}
+  .scard .row.sol{background:var(--ok-tint);}
+  .scard .row .pill{display:inline-block;width:fit-content;font-size:11px;font-weight:700;letter-spacing:.8px;
+    padding:3px 10px;border-radius:999px;text-transform:uppercase;}
+  .scard .row.rc .pill{color:var(--text-2);background:var(--card);}
+  .scard .row.sol .pill{color:var(--ok);background:var(--card);}
+  .scard .row .ct{font-size:13px;color:var(--text);line-height:1.85;font-weight:400;}
+  .scard .row.sol .ct{color:#065F46;font-weight:500;}
 
   /* ===== (6) 评测与埋点 ===== */
   .qa{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:center;}
@@ -247,22 +252,22 @@
   .reveal.in{opacity:1;transform:none;}
 
   /* ===== (4b) 真实工作流（对齐 graph.py 实现） ===== */
-  .wf{max-width:880px;margin:0 auto;display:flex;flex-direction:column;align-items:center;}
-  .wf-chain{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;}
-  .wf-node{font-size:12.5px;padding:9px 14px;border:1.5px solid var(--divider-strong);background:var(--card);border-radius:var(--radius-sm);color:var(--text);font-weight:700;}
+  .wf{max-width:920px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:14px;}
+  .wf-chain{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center;min-height:44px;}
+  .wf-node{font-size:13px;padding:11px 18px;border:1.5px solid var(--divider-strong);background:var(--card);border-radius:12px;color:var(--text);font-weight:700;line-height:1.3;letter-spacing:.2px;}
   .wf-node.start{background:var(--text);color:var(--bg);border-color:var(--text);}
   .wf-node.kb{background:var(--c-tint);color:var(--c);border-color:var(--c);}
-  .wf-node.arrow{color:var(--text-3);border:none;background:transparent;padding:0;width:18px;font-weight:400;}
-  .wf-node.term.normal{background:linear-gradient(135deg,var(--ok) 0%,#047857 100%);color:#fff;border-color:transparent;}
-  .wf-node.term.warn{background:var(--acc-tint);color:var(--acc);border-color:var(--acc);}
-  .wf-node.term.conflict{background:#FEE2E2;color:#B91C1C;border-color:#FCA5A5;}
-  .wf-node.term.fallback{background:var(--card-soft);color:var(--text-2);border-color:var(--divider-strong);}
-  .wf-div{width:2px;height:16px;background:var(--divider-strong);}
-  .wf-branch{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:4px 0;}
-  .wf-branch .b{font-size:11.5px;padding:7px 12px;border-radius:var(--radius-sm);border:1px dashed var(--divider-strong);background:var(--bg);line-height:1.6;}
-  .wf-branch .b.y{color:var(--ok);border-color:var(--ok);}
-  .wf-branch .b.n{color:var(--acc);border-color:var(--acc);}
-  .wf-kbcallout{font-family:var(--mono);font-size:10.5px;color:var(--c);background:var(--c-tint);border:1px solid var(--c-edge);border-radius:3px;padding:3px 9px;margin-top:8px;}
+  .wf-node.arrow{color:var(--text-3);border:none;background:transparent;padding:0;width:24px;font-weight:400;font-size:18px;}
+  .wf-node.term.normal{background:#10B981;color:#fff;border-color:transparent;box-shadow:0 2px 6px rgba(16,185,129,.18);font-weight:700;}
+  .wf-node.term.warn{background:#FEF3C7;color:#92400E;border-color:#F59E0B;font-weight:700;}
+  .wf-node.term.conflict{background:#FEE2E2;color:#B91C1C;border-color:#FCA5A5;font-weight:700;}
+  .wf-node.term.fallback{background:var(--card-soft);color:var(--text-2);border-color:var(--divider-strong);font-weight:700;}
+  .wf-div{width:2px;height:24px;background:linear-gradient(180deg,var(--divider-strong) 0%,var(--divider) 100%);border-radius:2px;}
+  .wf-branch{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin:2px 0;}
+  .wf-branch .b{font-size:12.5px;padding:9px 16px;border-radius:12px;border:1px solid var(--divider);background:var(--bg);line-height:1.55;color:var(--text-2);font-weight:600;}
+  .wf-branch .b.y{color:#065F46;border-color:#A7F3D0;background:#ECFDF5;}
+  .wf-branch .b.n{color:#9A3412;border-color:#FED7AA;background:#FFF7ED;}
+  .wf-kbcallout{font-family:var(--mono);font-size:11px;color:var(--text-3);background:transparent;border:none;padding:0;margin-top:-4px;line-height:1.6;letter-spacing:.2px;}
 
   /* ===== (5b) 部分命中 案例表 ===== */
   .casetable{width:100%;border-collapse:collapse;font-size:13px;background:var(--card);border:1px solid var(--divider);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
@@ -454,72 +459,10 @@
       </div>
     </section>
 
-    <!-- (4) 真实工作流架构 -->
+    <!-- (4) 部分命中 · 真实问题攻坚 -->
     <section class="sec">
       <div class="sec-head reveal">
-        <div class="num">04 / 工作流架构</div>
-        <h2>真实生产工作流 · 标准问答优先 + 三级检索 + 三级兜底</h2>
-        <p>不是单一检索链，而是「标准问答优先 → 双路混合检索 → 规则校验 → 分级兜底」的协同架构。每个分支都有明确的路由依据，而非凭相似度硬答。</p>
-        <div class="rule"></div>
-      </div>
-
-      <div class="wf">
-        <!-- 主干 1 -->
-        <div class="wf-chain reveal">
-          <span class="wf-node start">开始</span><span class="wf-node arrow">→</span>
-          <span class="wf-node">问题改写</span><span class="wf-node arrow">→</span>
-          <span class="wf-node">问题拆分 & 业务分类</span><span class="wf-node arrow">→</span>
-          <span class="wf-node kb">高频标准问答匹配</span>
-        </div>
-        <div class="wf-kbcallout reveal">↳ 检索 standard_qa_kb（标准问答向量索引）· 全部命中则直出预制答案，不调用 LLM 改写</div>
-
-        <div class="wf-div"></div>
-        <div class="wf-branch reveal">
-          <div class="b y">全命中 → 正常回答（直出预制答案，精确优先）</div>
-          <div class="b n">部分 / 全部未命中 → 进入混合检索</div>
-        </div>
-        <div class="wf-div"></div>
-
-        <!-- 主干 2 -->
-        <div class="wf-chain reveal">
-          <span class="wf-node kb">向量检索</span><span class="wf-node arrow">+</span>
-          <span class="wf-node kb">关键词检索</span><span class="wf-node arrow">→</span>
-          <span class="wf-node">结果合并</span>
-        </div>
-        <div class="wf-kbcallout reveal">↳ 均检索 coze_doc_knowledge（企业制度知识库）· 向量阈值 0.6 / top5，关键词补召回</div>
-
-        <div class="wf-div"></div>
-        <div class="wf-branch reveal">
-          <div class="b y">含有效正文 → 规则冲突检查</div>
-          <div class="b n">无效内容 → 二次检索（最多 2 次重试）→ 有效则正常回答 / 仍无效则全局兜底</div>
-        </div>
-        <div class="wf-div"></div>
-
-        <!-- 主干 3 -->
-        <div class="wf-chain reveal">
-          <span class="wf-node">规则冲突检查</span><span class="wf-node arrow">→</span>
-          <span class="wf-node">条件检查（三级路由）</span>
-        </div>
-        <div class="wf-branch reveal">
-          <div class="b y">真实冲突 → 冲突兜底</div>
-          <div class="b n">无冲突 → 按业务得分路由</div>
-        </div>
-        <div class="wf-div"></div>
-
-        <!-- 终点 -->
-        <div class="wf-chain reveal" style="gap:10px">
-          <span class="wf-node term normal">正常回答</span>
-          <span class="wf-node term warn">过渡兜底</span>
-          <span class="wf-node term conflict">冲突兜底</span>
-          <span class="wf-node term fallback">全局兜底</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- (5) 部分命中 · 真实问题攻坚 -->
-    <section class="sec">
-      <div class="sec-head reveal">
-        <div class="num">05 / 问题攻坚</div>
+        <div class="num">04 / 问题攻坚</div>
         <h2>「部分命中」是怎么被我揪出来修好的</h2>
         <p>上线后实测回归用例，发现一类反复出现的问题：明明是知识库里的内容，换种说法就不命中；或明明检索到了答案，却输出了兜底话术。下面是完整诊断与修复。</p>
         <div class="rule"></div>
@@ -543,83 +486,235 @@
         </table>
       </div>
 
-      <!-- 三道守门人根因 + 解法 -->
+      <!-- 三道守门人根因 + 解法（等高 + 胶囊标签 + 20px 大圆角） -->
       <div class="solve">
         <div class="scard reveal">
-          <div class="hd"><div class="title">守门人① 标准问答匹配</div><div class="no">A</div></div>
+          <div class="hd">
+            <div class="hd-left">
+              <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg></div>
+              <div class="title">守门人① 标准问答匹配</div>
+            </div>
+            <div class="no">A</div>
+          </div>
           <div class="bd">
-            <div class="row"><div class="lab">根因</div><div class="ct">用「字符集合重叠」而非语义匹配，换说法重叠比跌破阈值；同义词字段被完全忽略；改写反而稀释重叠。</div></div>
-            <div class="row solution"><div class="lab">解法</div><div class="ct">标准问答接入知识库向量检索（standard_qa_kb），天然支持同义改写；命中空答案则跳过返回 None。</div></div>
+            <div class="row rc">
+              <div class="pill">根因</div>
+              <div class="ct">用「字符集合重叠」而非语义匹配，换说法重叠比跌破阈值；同义词字段被完全忽略；改写反而稀释重叠。</div>
+            </div>
+            <div class="row sol">
+              <div class="pill">解法</div>
+              <div class="ct">标准问答接入知识库向量检索（standard_qa_kb），天然支持同义改写；命中空答案则跳过返回 None。</div>
+            </div>
           </div>
         </div>
         <div class="scard reveal">
-          <div class="hd"><div class="title">守门人② 检索 → 兜底路由</div><div class="no">B</div></div>
+          <div class="hd">
+            <div class="hd-left">
+              <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg></div>
+              <div class="title">守门人② 检索 → 兜底路由</div>
+            </div>
+            <div class="no">B</div>
+          </div>
           <div class="bd">
-            <div class="row"><div class="lab">根因</div><div class="ct">「长度 &lt; 50 或无数字」就被判无效 → 二次检索仍误杀 → 兜底；短但能答的条款（如「病假超 6 个月按 60%」）直接中招。</div></div>
-            <div class="row solution"><div class="lab">解法</div><div class="ct">含业务关键词的短片段视为有效；路由改为基于「是否含业务正文」而非向量分。</div></div>
+            <div class="row rc">
+              <div class="pill">根因</div>
+              <div class="ct">「长度 &lt; 50 或无数字」就被判无效 → 二次检索仍误杀 → 兜底；短但能答的条款（如「病假超 6 个月按 60%」）直接中招。</div>
+            </div>
+            <div class="row sol">
+              <div class="pill">解法</div>
+              <div class="ct">含业务关键词的短片段视为有效；路由改为基于「是否含业务正文」而非向量分。</div>
+            </div>
           </div>
         </div>
         <div class="scard reveal">
-          <div class="hd"><div class="title">守门人③ 兜底节点</div><div class="no">C</div></div>
+          <div class="hd">
+            <div class="hd-left">
+              <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4v5c0 4.5-3.4 8.6-8 10-4.6-1.4-8-5.5-8-10V7l8-4z"/></svg></div>
+              <div class="title">守门人③ 兜底节点</div>
+            </div>
+            <div class="no">C</div>
+          </div>
           <div class="bd">
-            <div class="row"><div class="lab">根因</div><div class="ct">兜底节点根本不读知识库答案文本，有答案也答不出；条件检查用向量相似度分划档，与「能否回答」无关。</div></div>
-            <div class="row solution"><div class="lab">解法</div><div class="ct">兜底节点改为消费 knowledge_retrieval；命中业务正文则强制走 normal，堵死「有答案却兜底」。</div></div>
+            <div class="row rc">
+              <div class="pill">根因</div>
+              <div class="ct">兜底节点根本不读知识库答案文本，有答案也答不出；条件检查用向量相似度分划档，与「能否回答」无关。</div>
+            </div>
+            <div class="row sol">
+              <div class="pill">解法</div>
+              <div class="ct">兜底节点改为消费 knowledge_retrieval；命中业务正文则强制走 normal，堵死「有答案却兜底」。</div>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- 产品流程图 -->
       <div class="reveal" style="margin-top:46px">
-        <div class="sec-head" style="margin-bottom:22px"><div class="num">05.1 / 产品流程</div><h2 style="font-size:22px">修复后的完整链路</h2></div>
-        <svg viewBox="0 0 700 470" width="100%" style="max-width:700px;display:block;margin:0 auto" font-family="var(--font)">
+        <div class="sec-head" style="margin-bottom:18px">
+          <div class="num">05 / 产品流程</div>
+          <h2 style="font-size:22px">修复后的完整链路</h2>
+          <p style="margin-top:10px;font-size:13px;color:var(--text-2);line-height:1.75;max-width:760px;margin-left:auto;margin-right:auto"><b style="color:var(--c)">架构设计：</b>标准问答优先 + 双路混合检索 + 规则冲突校验 + 三级分级兜底，每个分支都有明确路由依据，而非凭相似度硬答。</p>
+        </div>
+        <svg viewBox="0 0 1100 1120" width="100%" style="max-width:1100px;display:block;margin:0 auto" font-family="var(--font)">
           <defs>
-            <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="var(--divider-strong)"/></marker>
+            <marker id="ar-main" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 Z" fill="var(--ok)"/></marker>
+            <marker id="ar-acc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 Z" fill="var(--acc)"/></marker>
+            <marker id="ar-grey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 Z" fill="var(--text-3)"/></marker>
           </defs>
-          <g font-size="12" font-weight="700" text-anchor="middle">
-            <g>
-              <rect x="20" y="20" width="60" height="34" rx="6" fill="var(--text)" stroke="var(--text)"/><text x="50" y="42" fill="var(--bg)">开始</text>
-              <rect x="104" y="20" width="84" height="34" rx="6" fill="var(--card)" stroke="var(--divider-strong)"/><text x="146" y="42" fill="var(--text)">问题改写</text>
-              <rect x="212" y="20" width="120" height="34" rx="6" fill="var(--card)" stroke="var(--divider-strong)"/><text x="272" y="42" fill="var(--text)">拆分 &amp; 分类</text>
-              <rect x="356" y="20" width="130" height="34" rx="6" fill="var(--c-tint)" stroke="var(--c)"/><text x="421" y="42" fill="var(--c)">标准问答匹配</text>
+          <g font-size="12.5" font-weight="700" text-anchor="middle" stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="2">
+
+            <!-- 主链：纵向 开始 → 改写 → 拆分 → 标准问答匹配 -->
+            <rect x="420" y="20" width="160" height="36" rx="12" fill="var(--text)" stroke="var(--text)"/><text x="500" y="43" fill="var(--bg)">开始</text>
+            <rect x="410" y="96" width="180" height="36" rx="12" fill="var(--card)" stroke="var(--divider-strong)"/><text x="500" y="119" fill="var(--text)">问题改写</text>
+            <rect x="410" y="172" width="180" height="36" rx="12" fill="var(--card)" stroke="var(--divider-strong)"/><text x="500" y="195" fill="var(--text)">拆分 &amp; 分类</text>
+            <rect x="400" y="248" width="200" height="36" rx="12" fill="var(--c-tint)" stroke="var(--c)" stroke-width="1.8"/><text x="500" y="271" fill="var(--c)">标准问答匹配</text>
+            <g stroke="var(--text-3)" stroke-width="2" fill="none" marker-end="url(#ar-grey)">
+              <path d="M500,56 V94"/><path d="M500,132 V170"/><path d="M500,208 V246"/><path d="M500,284 V318"/>
             </g>
-            <g stroke="var(--divider-strong)" stroke-width="1.5" fill="none" marker-end="url(#ar)">
-              <path d="M80,37 H102"/><path d="M188,37 H210"/><path d="M332,37 H354"/><path d="M421,54 V90"/>
+
+            <!-- 全命中菱形 -->
+            <polygon points="500,320 580,350 500,380 420,350" rx="6" fill="var(--c-tint)" stroke="var(--c)" stroke-width="1.8"/>
+            <text x="500" y="355" fill="var(--c)">全命中?</text>
+
+            <!-- ① 正常回答₁（标准问答全命中） → END -->
+            <g stroke="var(--ok)" stroke-width="2.6" fill="none" marker-end="url(#ar-main)">
+              <path d="M580,350 H820"/><path d="M960,350 H978"/>
             </g>
-            <polygon points="421,90 467,124 421,158 375,124" fill="var(--c-tint)" stroke="var(--c)" stroke-width="1.5"/>
-            <text x="421" y="128" fill="var(--c)" font-size="11">全命中?</text>
-            <g stroke="var(--divider-strong)" stroke-width="1.5" fill="none" marker-end="url(#ar)"><path d="M467,124 H558"/></g>
-            <rect x="558" y="106" width="120" height="36" rx="6" fill="#059669" stroke="#047857"/><text x="618" y="129" fill="#fff">正常回答(直答)</text>
-            <text x="492" y="116" font-size="10.5" fill="var(--ok)">全命中</text>
-            <g stroke="var(--divider-strong)" stroke-width="1.5" fill="none" marker-end="url(#ar)"><path d="M421,158 V194"/></g>
-            <text x="438" y="182" font-size="10.5" fill="var(--acc)">否</text>
-            <g>
-              <rect x="40" y="194" width="100" height="34" rx="6" fill="var(--c-tint)" stroke="var(--c)"/><text x="90" y="216" fill="var(--c)">向量检索</text>
-              <rect x="156" y="194" width="100" height="34" rx="6" fill="var(--c-tint)" stroke="var(--c)"/><text x="206" y="216" fill="var(--c)">关键词检索</text>
-              <rect x="280" y="194" width="84" height="34" rx="6" fill="var(--card)" stroke="var(--divider-strong)"/><text x="322" y="216" fill="var(--text)">结果合并</text>
+            <text x="700" y="340" font-size="11.5" fill="var(--ok)" font-weight="800">是</text>
+            <rect x="820" y="332" width="140" height="36" rx="12" fill="var(--ok-tint)" stroke="var(--ok)" stroke-width="2"/>
+            <text x="890" y="355" fill="var(--ok)">正常回答</text>
+            <rect x="978" y="332" width="80" height="36" rx="12" fill="var(--card-soft)" stroke="var(--divider-strong)" stroke-width="1.3"/>
+            <text x="1018" y="355" fill="var(--text-2)" font-size="11.5">END</text>
+
+            <!-- 全命中"否" → 混合检索分叉 -->
+            <g stroke="var(--text-3)" stroke-width="1.5" fill="none">
+              <path d="M500,380 V420"/>
+              <path d="M500,420 H370 V438" marker-end="url(#ar-grey)"/>
+              <path d="M500,420 H630 V438" marker-end="url(#ar-grey)"/>
             </g>
-            <g stroke="var(--divider-strong)" stroke-width="1.5" fill="none" marker-end="url(#ar)">
-              <path d="M140,211 H154"/><path d="M256,211 H278"/><path d="M322,228 V260"/>
+            <text x="514" y="410" font-size="11.5" fill="var(--acc)" font-weight="800">否</text>
+            <rect x="300" y="440" width="140" height="36" rx="12" fill="var(--c-tint)" stroke="var(--c)"/>
+            <text x="370" y="463" fill="var(--c)">向量检索</text>
+            <rect x="560" y="440" width="140" height="36" rx="12" fill="var(--c-tint)" stroke="var(--c)"/>
+            <text x="630" y="463" fill="var(--c)">关键词检索</text>
+
+            <!-- 双路并行汇入 结果合并 -->
+            <g stroke="var(--text-3)" stroke-width="1.5" fill="none">
+              <path d="M370,476 V500 H500 V518" marker-end="url(#ar-grey)"/>
+              <path d="M630,476 V500 H500"/>
             </g>
-            <polygon points="322,260 368,294 322,328 276,294" fill="var(--c-tint)" stroke="var(--c)" stroke-width="1.5"/>
-            <text x="322" y="298" fill="var(--c)" font-size="11">有效正文?</text>
-            <g stroke="var(--divider-strong)" stroke-width="1.5" fill="none" marker-end="url(#ar)"><path d="M368,294 H468"/></g>
-            <text x="402" y="286" font-size="10.5" fill="var(--ok)">是</text>
-            <rect x="468" y="276" width="124" height="36" rx="6" fill="var(--card)" stroke="var(--divider-strong)"/><text x="530" y="299" fill="var(--text)">规则冲突检查</text>
-            <g stroke="var(--divider-strong)" stroke-width="1.5" fill="none" marker-end="url(#ar)"><path d="M322,328 V364"/><path d="M322,364 H300"/></g>
-            <text x="340" y="352" font-size="10.5" fill="var(--acc)">否</text>
-            <rect x="190" y="364" width="110" height="34" rx="6" fill="var(--card)" stroke="var(--divider-strong)"/><text x="245" y="386" fill="var(--text)">二次检索</text>
-            <text x="245" y="424" font-size="10" fill="var(--text-2)">有效→正常回答 / 仍无效→全局兜底</text>
-            <g stroke="var(--divider-strong)" stroke-width="1.5" fill="none" marker-end="url(#ar)"><path d="M530,312 V348"/></g>
-            <rect x="466" y="348" width="130" height="36" rx="6" fill="var(--card)" stroke="var(--divider-strong)"/><text x="531" y="371" fill="var(--text)">条件检查(三级路由)</text>
-            <g>
-              <rect x="20" y="410" width="150" height="36" rx="6" fill="#059669" stroke="#047857"/><text x="95" y="433" fill="#fff">正常回答</text>
-              <rect x="190" y="410" width="150" height="36" rx="6" fill="var(--acc-tint)" stroke="var(--acc)"/><text x="265" y="433" fill="var(--acc)">过渡兜底</text>
-              <rect x="360" y="410" width="150" height="36" rx="6" fill="#FEE2E2" stroke="#FCA5A5"/><text x="435" y="433" fill="#B91C1C">冲突兜底</text>
-              <rect x="530" y="410" width="150" height="36" rx="6" fill="var(--card-soft)" stroke="var(--divider-strong)"/><text x="605" y="433" fill="var(--text-2)">全局兜底</text>
+            <rect x="410" y="520" width="180" height="36" rx="12" fill="var(--card)" stroke="var(--divider-strong)"/>
+            <text x="500" y="543" fill="var(--text)">结果合并</text>
+
+            <!-- 结果合并 → 有效正文菱形 -->
+            <g stroke="var(--text-3)" stroke-width="2" fill="none" marker-end="url(#ar-grey)"><path d="M500,556 V598"/></g>
+            <polygon points="500,600 580,630 500,660 420,630" rx="6" fill="var(--c-tint)" stroke="var(--c)" stroke-width="1.8"/>
+            <text x="500" y="635" fill="var(--c)">有效正文?</text>
+
+            <!-- 有效正文"否" → 二次检索（橙色） -->
+            <g stroke="var(--acc)" stroke-width="1.5" fill="none" marker-end="url(#ar-acc)"><path d="M580,630 H680"/></g>
+            <text x="620" y="620" font-size="11.5" fill="var(--acc)" font-weight="800">否</text>
+            <rect x="680" y="622" width="120" height="36" rx="10" fill="var(--card)" stroke="var(--divider-strong)"/>
+            <text x="740" y="645" fill="var(--text)" font-size="12">二次检索</text>
+
+            <!-- 有效正文"是" → 规则冲突检查 -->
+            <g stroke="var(--text-3)" stroke-width="2" fill="none" marker-end="url(#ar-grey)"><path d="M500,660 V694"/></g>
+            <text x="514" y="685" font-size="11.5" fill="var(--text-2)" font-weight="800">是</text>
+            <rect x="410" y="696" width="180" height="36" rx="12" fill="var(--card)" stroke="var(--divider-strong)"/>
+            <text x="500" y="719" fill="var(--text)">规则冲突检查</text>
+
+            <!-- 二次检索 → 二次有效菱形 -->
+            <g stroke="var(--text-3)" stroke-width="1.5" fill="none" marker-end="url(#ar-grey)"><path d="M740,658 V694"/></g>
+            <polygon points="740,696 800,726 740,756 680,726" rx="5" fill="var(--c-tint)" stroke="var(--c)" stroke-width="1.5"/>
+            <text x="740" y="731" fill="var(--c)" font-size="11">二次有效?</text>
+
+            <!-- ② 正常回答₂（二次检索重试有效）→ END （水平接入，无逆向） -->
+            <g stroke="var(--ok)" stroke-width="2.6" fill="none" marker-end="url(#ar-main)">
+              <path d="M800,726 H820"/><path d="M960,726 H978"/>
             </g>
-            <g stroke="var(--divider-strong)" stroke-width="1.5" fill="none" marker-end="url(#ar)"><path d="M531,384 V408"/></g>
+            <text x="810" y="716" font-size="11.5" fill="var(--ok)" font-weight="800">是</text>
+            <rect x="820" y="708" width="140" height="36" rx="12" fill="var(--ok-tint)" stroke="var(--ok)" stroke-width="2"/>
+            <text x="890" y="731" fill="var(--ok)">正常回答</text>
+            <rect x="978" y="708" width="80" height="36" rx="12" fill="var(--card-soft)" stroke="var(--divider-strong)" stroke-width="1.3"/>
+            <text x="1018" y="731" fill="var(--text-2)" font-size="11.5">END</text>
+
+            <!-- 二次有效"否" → 全局兜底（沿右边缘 x=920 下行，不横穿主链） -->
+            <g stroke="var(--text-3)" stroke-width="1.3" fill="none" marker-end="url(#ar-grey)">
+              <path d="M800,726 H920 V1070 H978"/>
+            </g>
+            <text x="876" y="716" font-size="11.5" fill="var(--acc)" font-weight="800">否</text>
+
+            <!-- 规则冲突 → 真实冲突菱形 -->
+            <g stroke="var(--text-3)" stroke-width="2" fill="none" marker-end="url(#ar-grey)"><path d="M500,732 V778"/></g>
+            <polygon points="500,780 580,810 500,840 420,810" rx="6" fill="var(--c-tint)" stroke="var(--c)" stroke-width="1.8"/>
+            <text x="500" y="815" fill="var(--c)">真实冲突?</text>
+
+            <!-- ④ 冲突兜底 → END（真实冲突"是"，橙色异常处理） -->
+            <g stroke="var(--acc)" stroke-width="1.5" fill="none" marker-end="url(#ar-acc)">
+              <path d="M580,810 H700 V950 H820"/><path d="M960,950 H978"/>
+            </g>
+            <text x="640" y="800" font-size="11.5" fill="var(--acc)" font-weight="800">是</text>
+            <rect x="820" y="932" width="140" height="36" rx="12" fill="#FEE2E2" stroke="#FCA5A5" stroke-width="1.5"/>
+            <text x="890" y="955" fill="#B91C1C">冲突兜底</text>
+            <rect x="978" y="932" width="80" height="36" rx="12" fill="var(--card-soft)" stroke="var(--divider-strong)" stroke-width="1.3"/>
+            <text x="1018" y="955" fill="var(--text-2)" font-size="11.5">END</text>
+
+            <!-- 真实冲突"否" → 条件检查 -->
+            <g stroke="var(--text-3)" stroke-width="2" fill="none" marker-end="url(#ar-grey)"><path d="M500,840 V858"/></g>
+            <text x="514" y="850" font-size="11.5" fill="var(--text-2)" font-weight="800">否</text>
+            <rect x="410" y="860" width="180" height="36" rx="12" fill="var(--card)" stroke="var(--divider-strong)"/>
+            <text x="500" y="883" fill="var(--text)">条件检查（三级路由）</text>
+
+            <!-- ③ 正常回答₃（条件检查正常） → END -->
+            <g stroke="var(--ok)" stroke-width="2.6" fill="none" marker-end="url(#ar-main)">
+              <path d="M590,878 H720 V890 H820"/><path d="M960,890 H978"/>
+            </g>
+            <text x="650" y="868" font-size="11.5" fill="var(--ok)" font-weight="800">正常</text>
+            <rect x="820" y="872" width="140" height="36" rx="12" fill="var(--ok-tint)" stroke="var(--ok)" stroke-width="2"/>
+            <text x="890" y="895" fill="var(--ok)">正常回答</text>
+            <rect x="978" y="872" width="80" height="36" rx="12" fill="var(--card-soft)" stroke="var(--divider-strong)" stroke-width="1.3"/>
+            <text x="1018" y="895" fill="var(--text-2)" font-size="11.5">END</text>
+
+            <!-- ⑤ 过渡兜底 → END（橙色） -->
+            <g stroke="var(--acc)" stroke-width="1.5" fill="none" marker-end="url(#ar-acc)">
+              <path d="M590,888 H760 V1010 H820"/><path d="M960,1010 H978"/>
+            </g>
+            <text x="700" y="908" font-size="11.5" fill="var(--acc)" font-weight="800">过渡</text>
+            <rect x="820" y="992" width="140" height="36" rx="12" fill="var(--acc-tint)" stroke="var(--acc)" stroke-width="1.5"/>
+            <text x="890" y="1015" fill="var(--acc)">过渡兜底</text>
+            <rect x="978" y="992" width="80" height="36" rx="12" fill="var(--card-soft)" stroke="var(--divider-strong)" stroke-width="1.3"/>
+            <text x="1018" y="1015" fill="var(--text-2)" font-size="11.5">END</text>
+
+            <!-- ⑥ 全局兜底 → END（灰色弱化，二次有效否 + 条件检查兜底 合并） -->
+            <g stroke="var(--text-3)" stroke-width="1.3" fill="none" marker-end="url(#ar-grey)">
+              <path d="M590,898 H800 V1070 H820"/><path d="M960,1070 H978"/>
+            </g>
+            <text x="720" y="918" font-size="11.5" fill="var(--text-2)" font-weight="800">兜底</text>
+            <rect x="820" y="1052" width="140" height="36" rx="12" fill="var(--card-soft)" stroke="var(--divider-strong)"/>
+            <text x="890" y="1075" fill="var(--text-2)">全局兜底</text>
+            <rect x="978" y="1052" width="80" height="36" rx="12" fill="var(--card-soft)" stroke="var(--divider-strong)" stroke-width="1.3"/>
+            <text x="1018" y="1075" fill="var(--text-2)" font-size="11.5">END</text>
+
+            <!-- 节点下方浅灰小字注释（统一规范） -->
+            <g font-size="10.5" font-weight="400" text-anchor="middle" fill="var(--text-3)" stroke="none">
+              <text x="500" y="302">命中 63 条标准 QA 库</text>
+              <text x="500" y="574">向量 + 关键词 双路并行召回</text>
+              <text x="500" y="686">含业务关键词短片段视为有效</text>
+              <text x="500" y="752">年假 vs 病假等真实制度冲突</text>
+              <text x="740" y="617">扩大范围再判定一次</text>
+            </g>
           </g>
         </svg>
+        <div style="margin-top:24px;padding:18px 20px;background:var(--card-soft);border:1px solid var(--divider);border-radius:var(--radius);font-size:13.5px;line-height:1.8;color:var(--text-2);">
+          <p style="margin-bottom:10px"><b>流程说明（与代码主图 1:1 对应）：</b></p>
+          <ul style="margin:0;padding-left:18px">
+            <li><b>问题改写 → 拆分 &amp; 分类</b>：先对口语化/带情绪的问句做同义改写，再拆成单个子问题并标注业务场景。</li>
+            <li><b>标准问答匹配</b>：优先命中 63 条高频标准 QA 库；<span style="color:var(--ok)">全部命中即直答</span>，否则进入混合检索。</li>
+            <li><b>向量检索 + 关键词检索 + 结果合并</b>：双路召回制度文档片段，合并后做有效性校验。</li>
+            <li><b>规则冲突检查</b>：识别「年假 vs 病假」「工伤 vs 病假」等真实制度冲突；<span style="color:var(--acc)">真实冲突走冲突兜底</span>，避免强行给出一个互斥答案。</li>
+            <li><b>条件检查（三级路由）</b>：根据检索得分与内容完整度，分发到「正常回答 / 过渡兜底 / 全局兜底」三个终止节点。</li>
+            <li><b>二次检索</b>：当首次混合检索无有效正文时，扩大检索范围再判定一次，最大限度降低误兜底率。</li>
+          </ul>
+        </div>
       </div>
     </section>
 
@@ -716,7 +811,7 @@
       </div>
     </section>
 
-    <!-- (7) 资产沉淀 -->
+    <!-- (8) 资产沉淀 -->
     <section class="sec">
       <div class="sec-head reveal">
         <div class="num">08 / 资产沉淀</div>
@@ -772,7 +867,7 @@
       </div>
     </section>
 
-    <!-- (8) 业务价值与收尾 -->
+    <!-- (9) 业务价值与收尾 -->
     <section class="closesec">
       <div class="sec-head reveal" style="text-align:center">
         <div class="num" style="text-align:center">09 / 业务价值</div>
