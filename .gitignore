@@ -21,3 +21,6 @@ Thumbs.db
 # === 产物 / 临时 ===
 tmp/
 *.tmp
+
+# === WorkBuddy 项目数据（本地记忆/运行态，不进公开仓库） ===
+.workbuddy/

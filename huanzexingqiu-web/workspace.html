@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>决策工作台 · 缓择星球</title>
+  <meta name="description" content="场景选择 → 双模式采集 → 中立对比 → 代价预演，一次完整的决策旅程。" />
+  <link rel="stylesheet" href="assets/css/theme.css" />
+</head>
+<body>
+
+  <!-- 顶部导航 -->
+  <div id="nav-mount"></div>
+
+  <!-- 工作台主区 -->
+  <main class="container page-hero">
+    <section class="section">
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">决策工作台</h1>
+          <p class="page-lead">场景选择 → 双模式采集 → 中立对比 → 代价预演</p>
+        </div>
+        <div class="page-actions">
+          <a class="btn btn-ghost" href="templates.html">快速模板</a>
+          <button class="btn btn-ghost" id="reset-session">重新开始</button>
+        </div>
+      </div>
+
+      <!-- 四 Agent 链路进度条（stage 事件驱动） -->
+      <div id="agent-progress" style="margin-bottom:24px;"></div>
+
+      <!-- 双栏布局：左采集/对话 · 右对比与预演（P13 双模式：卡片 50/50，口述 40/60） -->
+      <div class="work-grid mode-card" id="work-grid">
+        <div class="panel" id="left-panel">
+          <div id="left-body"></div>
+        </div>
+        <div class="panel" id="right-panel">
+          <div class="panel-head"><span class="panel-title">对比与预演</span></div>
+          <div id="right-body">
+            <div id="right-empty" class="result-empty ws-empty">
+              <!-- 主角星球：放大 + 轨道环 + 副星点缀 -->
+              <div class="ws-hero">
+                <div class="ws-planet-stage">
+                  <span class="planet planet-hero"></span>
+                  <span class="ws-orbit-ring" aria-hidden="true"></span>
+                  <span class="ws-orbit-dot ws-orbit-dot--a" aria-hidden="true"></span>
+                  <span class="ws-orbit-dot ws-orbit-dot--b" aria-hidden="true"></span>
+                </div>
+                <span class="ws-eyebrow">右侧预览 · 决策完成后这里展开</span>
+              </div>
+
+              <!-- 文案：标题 + 一句解释 -->
+              <div class="ws-headline">
+                <p class="ws-empty-title">选个场景，开始一次抉择</p>
+                <p class="ws-empty-sub">把纠结说清楚，看清利弊底线，<br/>选定前先经历一次代价。</p>
+              </div>
+
+              <!-- 四步：纵向条目 + 数字 + 标题 + 描述 -->
+              <ol class="ws-steps">
+                <li class="ws-step">
+                  <span class="ws-step-num">1</span>
+                  <div class="ws-step-body">
+                    <p class="ws-step-title">选场景</p>
+                    <p class="ws-step-desc">7 大生活场景各有对应专属决策采集维度</p>
+                  </div>
+                </li>
+                <li class="ws-step">
+                  <span class="ws-step-num">2</span>
+                  <div class="ws-step-body">
+                    <p class="ws-step-title">填需求</p>
+                    <p class="ws-step-desc">梳理内心纠结，记录自身诉求与心中顾虑</p>
+                  </div>
+                </li>
+                <li class="ws-step">
+                  <span class="ws-step-num">3</span>
+                  <div class="ws-step-body">
+                    <p class="ws-step-title">看对比</p>
+                    <p class="ws-step-desc">中立权衡分析，拆解选项利弊与个人底线</p>
+                  </div>
+                </li>
+                <li class="ws-step">
+                  <span class="ws-step-num">4</span>
+                  <div class="ws-step-body">
+                    <p class="ws-step-title">预演代价</p>
+                    <p class="ws-step-desc">推演选择得失，预判收获与潜在沉没代价</p>
+                  </div>
+                </li>
+              </ol>
+
+              <!-- CTA：主按钮 + 副链接 + slogan 收尾 -->
+              <div class="ws-foot">
+                <a class="btn btn-primary ws-empty-cta" href="templates.html">用快速模板起步 →</a>
+                <p class="ws-slogan">理性拆解选择 · 减少后悔抉择</p>
+              </div>
+            </div>
+            <div class="chat-log" id="side-log" style="display:none;"></div>
+            <!-- F2：阶段二/三追问条（card 模式中途追问入口，支持澄清后继续流程） -->
+            <div class="clarify-bar" id="clarify-bar" style="display:none;">
+              <input class="input" id="clarify-input" placeholder="追问一个问题，或输入「选第一个」…" autocomplete="off" />
+              <button class="btn btn-primary" id="clarify-send">发送</button>
+            </div>
+            <section class="sec-panel" id="sec-options" style="display:none;">
+              <button type="button" class="collapse-bar" data-sec="options"><span>方案列表</span><span class="cb-arrow">▾</span></button>
+              <div class="sec-body" id="body-options"></div>
+            </section>
+            <section class="sec-panel" id="sec-tradeoff" style="display:none;">
+              <button type="button" class="collapse-bar" data-sec="tradeoff"><span>中立权衡</span><span class="cb-arrow">▾</span></button>
+              <div class="sec-body" id="body-tradeoff"></div>
+            </section>
+            <section class="sec-panel" id="sec-mitigation" style="display:none;">
+              <div class="sec-body" id="body-mitigation"></div>
+            </section>
+            <section class="sec-panel sec-pinned" id="sec-rehearsal" style="display:none;">
+              <div class="sec-body" id="body-rehearsal"></div>
+            </section>
+            <div id="right-esc" style="display:none;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 页脚 -->
+  <footer class="footer">
+    <p class="slogan">理性拆解选择，减少后悔抉择</p>
+    <p>© 2026 缓择星球 · 慢慢选</p>
+  </footer>
+
+  <!-- 移动端底部导航 -->
+  <div id="tabbar-mount"></div>
+
+  <!-- 模块五：抉择完成弹窗（严格时机：代价预演之后 + 保存成功后） -->
+  <div class="modal-mask" id="done-mask" style="display:none;">
+    <div class="modal-card done-modal" role="dialog" aria-modal="true" aria-label="抉择完成">
+      <div class="done-circle">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      </div>
+      <h3>这次抉择完成</h3>
+      <p class="hint done-sub">已存入历史星轨，可在「历史星轨」页回看与复盘。</p>
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="done-export">↓ 导出我的抉择</button>
+        <button class="btn btn-ghost" id="done-export-page">📱 导出手机页</button>
+        <a class="btn btn-ghost" href="history.html">去看历史星轨</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- P11-4 悬浮保存条（会话开始后显示） -->
+  <div class="save-bar" id="save-bar">
+    <div class="save-bar-inner">
+      <span class="save-bar-tip">想保留这次抉择或对话？</span>
+      <div class="save-bar-actions">
+        <button class="btn btn-ghost" id="save-bar-cancel">稍后</button>
+        <button class="btn btn-primary" id="save-bar-open">🛟 存档并导出</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- P11-4 保存三选项弹窗 -->
+  <div class="modal-mask" id="save-mask" style="display:none;">
+    <div class="modal-card save-options-card" role="dialog" aria-modal="true" aria-label="保存这次抉择">
+      <h3>保存这次抉择</h3>
+      <p class="hint">选择要存入历史星轨的内容：</p>
+      <div class="save-opt-list">
+        <button class="save-opt-btn primary" id="save-both">
+          <span class="so-title">决策 + 对话</span>
+          <span class="so-desc">完整过程（中立权衡 / 代价预演）+ 对话记录</span>
+        </button>
+        <button class="save-opt-btn" id="save-decision">
+          <span class="so-title">仅保存决策</span>
+          <span class="so-desc">候选方案、中立权衡、代价预演等结构化结论</span>
+        </button>
+        <button class="save-opt-btn" id="save-conversation">
+          <span class="so-title">仅保存对话</span>
+          <span class="so-desc">只留这次你和 AI 的对话内容</span>
+        </button>
+      </div>
+      <div class="modal-actions" style="margin-top:16px;">
+        <button class="btn btn-ghost" id="save-cancel">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- API 地址：本地开发直连 8001；部署后改为同源 /api 或后端域名 -->
+  <script>window.MMX_API_BASE = 'http://127.0.0.1:8001';</script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/theme.js"></script>
+  <script src="assets/js/sse.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/workspace.js"></script>
+</body>
+</html>

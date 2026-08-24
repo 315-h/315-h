@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>我的底线 · 缓择星球</title>
+  <meta name="description" content="预设你的取舍标准，每次抉择自动校验。" />
+  <link rel="stylesheet" href="assets/css/theme.css" />
+</head>
+<body>
+
+  <!-- 顶部导航 -->
+  <div id="nav-mount"></div>
+
+  <!-- 我的底线主区 -->
+  <main class="container page-hero">
+    <section class="section">
+      <h1>我的底线</h1>
+      <p class="lead" style="margin:12px 0 24px;">预设你的取舍标准，每次抉择自动校验</p>
+
+      <!-- 新增底线 -->
+      <div class="panel" style="margin-bottom:24px;">
+        <h3 style="font-size:15px;">新增一条底线</h3>
+        <div class="bl-add-bar">
+          <input class="input" id="bl-new-text" placeholder="例如：通勤最长 1 小时，不接受异地长差" />
+          <input class="input" id="bl-new-kw" placeholder="关键词（逗号分隔）：通勤,出差,异地" style="flex:1;" />
+          <button class="btn btn-primary" id="bl-add">添加</button>
+        </div>
+        <div class="preset-list" id="bl-presets"></div>
+      </div>
+
+      <!-- 底线清单 -->
+      <div id="bl-list"></div>
+    </section>
+  </main>
+
+  <!-- 页脚 -->
+  <footer class="footer">
+    <p class="slogan">理性拆解选择，减少后悔抉择</p>
+    <p>© 2026 缓择星球 · 慢慢选</p>
+  </footer>
+
+  <!-- 移动端底部导航 -->
+  <div id="tabbar-mount"></div>
+
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/theme.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/bottomline.js"></script>
+</body>
+</html>

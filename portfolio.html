@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI产品叙事集 · 韩佳雪</title>
+<style>
+  :root{
+    --bg:#FAF7F2;            /* 暖米白基底 */
+    --text:#33302E;         /* 深棕灰正文 */
+    --text-2:#6B635C;       /* 次要文字（加深至 AA 4.5:1） */
+    --divider:#E5E2DE;      /* 分割线 */
+    --card:#FFFFFF;
+    --card-soft:#FDFBF7;
+    --shadow:0 2px 6px rgba(51,48,46,.04), 0 16px 40px rgba(51,48,46,.08);
+    --shadow-sm:0 2px 5px rgba(51,48,46,.04), 0 8px 20px rgba(51,48,46,.05);
+    --radius:20px;
+    --radius-sm:13px;
+    /* 三项目主色 */
+    --c-jingli:#F5A98A;     /* 经历翻译官 · 珊瑚橙 */
+    --c-huanze:#E98A68;     /* 缓择星球 · 暖橙 */
+    --c-xiaoban:#1E3A8A;    /* 小办 · 深靛蓝 */
+    --primary-strong:#C9664A; /* 深陶土：承载白字的 CTA，达 AA 对比度 */
+    --maxw:1120px;
+    --font:"PingFang SC","Microsoft YaHei","Hiragino Sans GB","Helvetica Neue",Arial,sans-serif;
+    --serif:"Songti SC","STSong","SimSun",Georgia,"Times New Roman",serif;
+  }
+  body.dark{
+    --bg:#2B2724;
+    --text:#EDE6DC;
+    --text-2:#B7A99B;
+    --divider:#3D3731;
+    --card:#34302B;
+    --card-soft:#2F2B27;
+    --primary-strong:#D98A6E; /* 深色模式下的深陶土 */
+    --shadow:0 2px 6px rgba(0,0,0,.30), 0 16px 40px rgba(0,0,0,.40);
+    --shadow-sm:0 2px 5px rgba(0,0,0,.26), 0 8px 20px rgba(0,0,0,.32);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  html{scroll-behavior:smooth;}
+  /* 可访问性：焦点环 + 动效降级 */
+  :focus-visible{outline:2px solid var(--primary-strong);outline-offset:2px;border-radius:4px;}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important;}}
+  body{
+    font-family:var(--font);background:var(--bg);color:var(--text);
+    line-height:1.75;font-size:15px;letter-spacing:.2px;
+    -webkit-font-smoothing:antialiased;transition:background .4s ease,color .4s ease;overflow-x:hidden;
+  }
+  /* 极淡纸张纹理（暖调克制） */
+  body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.04;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+  body.dark::before{opacity:.025;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;}
+
+  /* ===== 顶栏 ===== */
+  .topbar{position:sticky;top:0;z-index:50;backdrop-filter:saturate(140%) blur(10px);
+    background:color-mix(in srgb,var(--bg) 80%,transparent);
+    border-bottom:1px solid var(--divider);transition:background .4s ease,border-color .4s ease;}
+  .topbar .row{max-width:var(--maxw);margin:0 auto;padding:14px 24px;display:flex;
+    align-items:center;justify-content:space-between;}
+  .brand{font-weight:800;letter-spacing:.5px;font-size:16px;}
+  .brand span{color:var(--text-2);font-weight:600;font-size:13px;margin-left:6px;}
+  .theme-btn{border:1px solid var(--divider);background:var(--card);color:var(--text);
+    width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:17px;display:flex;
+    align-items:center;justify-content:center;box-shadow:var(--shadow-sm);
+    transition:transform .15s ease,border-color .15s ease,background .4s ease;}
+  .theme-btn:hover{transform:translateY(-2px);border-color:var(--c-jingli);}
+
+  /* ===== Hero ===== */
+  .hero{position:relative;padding:78px 0 46px;display:grid;grid-template-columns:1.1fr .9fr;gap:46px;align-items:center;}
+  .hero::before{content:"";position:absolute;top:-60px;right:-40px;width:420px;height:420px;z-index:-1;
+    background:radial-gradient(circle at 70% 30%, color-mix(in srgb,var(--c-huanze) 16%,transparent), transparent 62%);
+    filter:blur(8px);pointer-events:none;}
+  .hero .eyebrow{display:inline-block;font-size:12px;font-weight:700;letter-spacing:2px;
+    color:var(--c-huanze);background:color-mix(in srgb,var(--c-huanze) 12%,transparent);
+    padding:6px 13px;border-radius:999px;margin-bottom:20px;}
+  .hero h1{font-family:var(--serif);font-size:50px;line-height:1.18;font-weight:800;letter-spacing:1px;}
+  .hero .sub{margin-top:18px;font-size:16.5px;color:var(--text-2);max-width:440px;line-height:1.95;}
+  .hero .sign{margin-top:24px;font-weight:700;font-size:15px;}
+  .hero .sign b{color:var(--c-jingli);}
+  .hero .sign span{color:var(--text-2);font-weight:500;margin-left:8px;}
+  .anchors{margin-top:32px;display:flex;gap:10px;flex-wrap:wrap;}
+  .anchors a{text-decoration:none;font-size:13.5px;font-weight:600;color:var(--text);
+    border:1px solid var(--divider);background:var(--card);padding:9px 17px;border-radius:999px;
+    box-shadow:var(--shadow-sm);transition:transform .15s ease,border-color .15s ease,background .4s ease;}
+  .anchors a:hover{transform:translateY(-2px);border-color:var(--c-jingli);}
+
+  /* Hero 右侧：三个浮动符号 + 轨道连线 + 标签 */
+  .hero-art{position:relative;height:320px;}
+  .orbit{position:absolute;inset:0;pointer-events:none;}
+  .badge{position:absolute;width:110px;height:110px;border-radius:28px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;background:var(--card);box-shadow:var(--shadow);
+    border:1px solid var(--divider);animation:float 6.5s ease-in-out infinite;transition:background .4s ease;}
+  .badge svg{width:50px;height:50px;}
+  .badge .lab{margin-top:8px;font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--text-2);}
+  .badge.b1{top:6px;left:14%;border-top:4px solid var(--c-jingli);animation-delay:0s;}
+  .badge.b2{top:104px;right:6%;border-top:4px solid var(--c-huanze);animation-delay:1.3s;}
+  .badge.b3{bottom:4px;left:30%;border-top:4px solid var(--c-xiaoban);animation-delay:2.6s;}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
+
+  /* ===== Section 通用 ===== */
+  .sec{padding:58px 0;}
+  .sec-head{text-align:center;margin-bottom:38px;}
+  .sec-head .kcap{display:inline-block;font-size:11.5px;letter-spacing:2px;font-weight:700;color:var(--c-jingli);margin-bottom:10px;}
+  .sec-head h2{font-size:25px;font-weight:800;letter-spacing:.5px;}
+  .sec-head p{margin-top:9px;color:var(--text-2);font-size:14px;}
+
+  /* ===== 项目卡片 ===== */
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+  .pcard{position:relative;overflow:hidden;background:var(--card);border:1px solid var(--divider);
+    border-radius:var(--radius);padding:32px 26px 28px;box-shadow:var(--shadow-sm);
+    display:flex;flex-direction:column;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease,background .4s ease;
+    text-decoration:none;color:inherit;}
+  .pcard:hover{transform:translateY(-9px);box-shadow:var(--shadow);}
+  /* 顶部项目色强调条 */
+  .pcard .accent{position:absolute;top:0;left:0;right:0;height:4px;transform:scaleX(0);transform-origin:left;
+    transition:transform .3s ease;}
+  .pcard:hover .accent{transform:scaleX(1);}
+  .pcard.c1 .accent{background:var(--c-jingli);}
+  .pcard.c2 .accent{background:var(--c-huanze);}
+  .pcard.c3 .accent{background:var(--c-xiaoban);}
+  /* 项目专属纹理 */
+  .pcard .tex{position:absolute;inset:0;opacity:.5;pointer-events:none;z-index:0;}
+  .pcard.c1 .tex{background:
+    repeating-linear-gradient(180deg, transparent 0 25px, color-mix(in srgb,var(--c-jingli) 14%,transparent) 25px 26px);}
+  .pcard.c2 .tex{background:
+    radial-gradient(circle at 80% 18%, color-mix(in srgb,var(--c-huanze) 16%,transparent), transparent 40%),
+    radial-gradient(circle at 22% 78%, color-mix(in srgb,var(--c-huanze) 10%,transparent), transparent 38%);}
+  .pcard.c3 .tex{background:
+    repeating-linear-gradient(0deg, transparent 0 26px, color-mix(in srgb,var(--c-xiaoban) 8%,transparent) 26px 27px),
+    repeating-linear-gradient(90deg, transparent 0 26px, color-mix(in srgb,var(--c-xiaoban) 8%,transparent) 26px 27px);}
+  .pcard>*{position:relative;z-index:1;}
+  .pcard .icon{width:56px;height:56px;margin-bottom:18px;transition:transform .25s ease,filter .25s ease;}
+  .pcard:hover .icon{transform:scale(1.06);}
+  .pcard.c1:hover .icon{filter:drop-shadow(0 6px 14px color-mix(in srgb,var(--c-jingli) 45%,transparent));}
+  .pcard.c2:hover .icon{filter:drop-shadow(0 6px 14px color-mix(in srgb,var(--c-huanze) 45%,transparent));}
+  .pcard.c3:hover .icon{filter:drop-shadow(0 6px 14px color-mix(in srgb,var(--c-xiaoban) 40%,transparent));}
+  .pcard h3{font-size:19px;font-weight:800;line-height:1.4;}
+  .pcard h3 .role{color:var(--text-2);font-weight:600;font-size:14px;}
+  .pcard .desc{color:var(--text-2);font-size:13.5px;line-height:1.85;margin:14px 0 20px;min-height:82px;}
+  .pcard .tag{margin-top:auto;align-self:flex-start;font-size:11.5px;font-weight:700;letter-spacing:.5px;
+    color:#fff;padding:6px 13px;border-radius:999px;}
+  .pcard.c1 .tag{background:var(--c-jingli);}
+  .pcard.c2 .tag{background:var(--c-huanze);}
+  .pcard.c3 .tag{background:var(--c-xiaoban);}
+  .pcard .actions{margin-top:18px;display:flex;gap:16px;flex-wrap:wrap;align-items:center;}
+  .pcard .go{font-size:13.5px;font-weight:700;display:inline-flex;align-items:center;gap:6px;text-decoration:none;}
+  .pcard.c1 .go{color:var(--c-jingli);} .pcard.c2 .go{color:var(--c-huanze);} .pcard.c3 .go{color:var(--c-xiaoban);}
+  .pcard .go.detail{color:var(--text);border-bottom:1.5px solid color-mix(in srgb,var(--text) 30%,transparent);padding-bottom:1px;}
+  .pcard.c1 .go.detail:hover{border-color:var(--c-jingli);} .pcard.c2 .go.detail:hover{border-color:var(--c-huanze);} .pcard.c3 .go.detail:hover{border-color:var(--c-xiaoban);}
+  .pcard .go.detail.disabled{color:var(--text-2);border-bottom:none;padding-bottom:0;cursor:default;}
+  .pcard .go:hover .arr{transform:translateX(4px);}
+  .pcard .go.disabled{color:var(--text-2);}
+  .pcard .go .arr{transition:transform .15s ease;}
+  .pcard:hover .go .arr{transform:translateX(5px);}
+
+  /* ===== 能力矩阵 ===== */
+  .matrix{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+  .mcol{background:var(--card);border:1px solid var(--divider);border-radius:var(--radius);
+    padding:30px 28px;box-shadow:var(--shadow-sm);transition:background .4s ease,transform .25s ease,box-shadow .25s ease;}
+  .mcol:hover{transform:translateY(-4px);box-shadow:var(--shadow);}
+  .mcol h3{font-size:17px;font-weight:800;margin-bottom:18px;display:flex;align-items:center;gap:9px;}
+  .mcol h3 .dot{width:11px;height:11px;border-radius:50%;}
+  .chips{display:flex;flex-wrap:wrap;gap:9px;}
+  .chips span{font-size:13px;color:var(--text);background:var(--card-soft);
+    border:1px solid var(--divider);padding:7px 13px;border-radius:10px;transition:background .4s ease,border-color .2s ease;}
+  .chips span:hover{border-color:var(--c-jingli);}
+  .mcol .item{margin-bottom:15px;}
+  .mcol .item .t{font-weight:700;font-size:14px;}
+  .mcol .item .d{color:var(--text-2);font-size:13px;margin-top:3px;}
+
+  /* ===== 关于我 ===== */
+  .about-card{background:var(--card);border:1px solid var(--divider);border-radius:var(--radius);
+    padding:36px 34px;box-shadow:var(--shadow-sm);max-width:800px;margin:0 auto;text-align:center;transition:background .4s ease;}
+  .about-card p{color:var(--text);font-size:15.5px;line-height:2.05;}
+
+  /* ===== Footer ===== */
+  .foot{padding:60px 0 44px;text-align:center;border-top:1px solid var(--divider);margin-top:34px;transition:border-color .4s ease;}
+  .foot .cmail{font-size:14.5px;color:var(--text);font-weight:600;letter-spacing:.2px;margin-bottom:22px;}
+  .foot .cmail span{margin:0 10px;color:var(--divider);font-weight:400;}
+  .foot .contact{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:24px;}
+  .foot .contact a,.foot .cv{text-decoration:none;font-size:14px;font-weight:600;color:var(--text);
+    border:1px solid var(--divider);background:var(--card);padding:11px 22px;border-radius:999px;
+    box-shadow:var(--shadow-sm);cursor:pointer;transition:transform .15s ease,border-color .15s ease,background .4s ease;}
+  .foot .contact a:hover,.foot .cv:hover{transform:translateY(-2px);border-color:var(--c-jingli);}
+  .foot .cv{background:var(--primary-strong);color:#fff;border-color:var(--primary-strong);}
+  .foot .copy{color:var(--text-2);font-size:12.5px;margin-top:18px;}
+
+  /* ===== 滚动淡入 ===== */
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s ease;}
+  .reveal.in{opacity:1;transform:none;}
+
+  @media (max-width:880px){
+    .hero{grid-template-columns:1fr;gap:26px;padding:54px 0 36px;}
+    .hero-art{height:240px;order:-1;}
+    .hero h1{font-size:38px;}
+    .cards{grid-template-columns:1fr;}
+    .matrix{grid-template-columns:1fr;}
+    .hero::before{width:280px;height:280px;}
+  }
+</style>
+</head>
+<body>
+
+  <!-- 顶栏 -->
+  <div class="topbar">
+    <div class="row">
+      <div class="brand">AI产品叙事集 <span>韩佳雪</span></div>
+      <button class="theme-btn" id="themeBtn" title="切换深浅主题" aria-label="切换深色模式">◐</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <!-- Hero -->
+    <section class="hero" id="top">
+      <div class="reveal">
+        <span class="eyebrow">AI PRODUCT PORTFOLIO</span>
+        <h1>做有温度的<br>AI 产品</h1>
+        <p class="sub">C 端用户体验 × B 端效率落地 · 3 款从 0 到 1 全链路作品</p>
+        <div class="sign"><b>韩佳雪</b><span>/ AI 产品设计师</span></div>
+        <div class="anchors">
+          <a href="#projects">项目作品</a>
+          <a href="#skills">核心能力</a>
+          <a href="#about">关于我</a>
+          <a href="#contact">联系方式</a>
+        </div>
+      </div>
+      <div class="hero-art reveal">
+        <svg class="orbit" viewBox="0 0 360 320" fill="none">
+          <path d="M60 40 C 150 30, 230 90, 300 130" stroke="#E5E2DE" stroke-width="1.2" stroke-dasharray="3 6"/>
+          <path d="M300 150 C 230 200, 150 240, 110 300" stroke="#E5E2DE" stroke-width="1.2" stroke-dasharray="3 6"/>
+        </svg>
+        <!-- 经历翻译官：文档钢笔 -->
+        <div class="badge b1">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#F5A98A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9 13l3 3 6-6"/>
+          </svg>
+          <div class="lab">经历翻译官</div>
+        </div>
+        <!-- 缓择星球：星球轨道 -->
+        <div class="badge b2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#E98A68" stroke-width="1.8">
+            <circle cx="12" cy="12" r="5" fill="#E98A68" fill-opacity=".25"/>
+            <ellipse cx="12" cy="12" rx="11" ry="4.5" transform="rotate(28 12 12)"/>
+          </svg>
+          <div class="lab">缓择星球</div>
+        </div>
+        <!-- 小办：流程节点 -->
+        <div class="badge b3">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="1.8" stroke-linecap="round">
+            <rect x="3" y="9" width="6" height="6" rx="1.5"/><rect x="15" y="9" width="6" height="6" rx="1.5"/>
+            <path d="M9 12h6"/>
+          </svg>
+          <div class="lab">小办</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 项目作品 -->
+    <section class="sec" id="projects">
+      <div class="sec-head reveal">
+        <div class="kcap">SELECTED WORK</div>
+        <h2>核心项目作品</h2>
+        <p>三款产品，三种温度——从人文求职到治愈决策，再到商务效率</p>
+      </div>
+      <div class="cards">
+
+        <!-- 经历翻译官 -->
+        <div class="pcard c1 reveal">
+          <span class="accent"></span>
+          <span class="tex"></span>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#F5A98A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9 13l3 3 6-6"/>
+          </svg>
+          <h3>经历翻译官 <span class="role">· AI求职工具</span></h3>
+          <p class="desc">把经历翻译成专业语言。经历拆解、简历优化、面试陪练，温和陪伴、不贩卖焦虑。</p>
+          <span class="tag">C端工具 / RAG / 人文向</span>
+          <div class="actions">
+            <a class="go detail" href="jingli.html">查看详情 <span class="arr">→</span></a>
+            <a class="go" href="index.html" target="_blank" rel="noopener">打开网站 <span class="arr">↗</span></a>
+          </div>
+        </div>
+
+        <!-- 缓择星球 -->
+        <div class="pcard c2 reveal">
+          <span class="accent"></span>
+          <span class="tex"></span>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#E98A68" stroke-width="1.8">
+            <circle cx="12" cy="12" r="5" fill="#E98A68" fill-opacity=".25"/>
+            <ellipse cx="12" cy="12" rx="11" ry="4.5" transform="rotate(28 12 12)"/>
+          </svg>
+          <h3>缓择星球 <span class="role">· AI决策助手</span></h3>
+          <p class="desc">理性拆解，减少后悔。多智能体结构化权衡，把纠结慢慢讲清楚，温柔陪你做选择。</p>
+          <span class="tag">C端工具 / 多Agent / 情绪向</span>
+          <div class="actions">
+            <a class="go detail" href="huanze.html">查看详情 <span class="arr">→</span></a>
+            <a class="go" href="huanzexingqiu-web/index.html" target="_blank" rel="noopener">网页版 <span class="arr">↗</span></a>
+            <span class="go disabled" aria-disabled="true">小程序敬请期待</span>
+          </div>
+        </div>
+
+        <!-- 小办 -->
+        <div class="pcard c3 reveal">
+          <span class="accent"></span>
+          <span class="tex"></span>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="1.8" stroke-linecap="round">
+            <rect x="3" y="9" width="6" height="6" rx="1.5"/><rect x="15" y="9" width="6" height="6" rx="1.5"/><path d="M9 12h6"/>
+          </svg>
+          <h3>小办 <span class="role">· 企业办事助手</span></h3>
+          <p class="desc">7×24 小时自助答疑。企业 RAG 知识库 + Agent 工作流，把重复办事咨询流程化、自动化。</p>
+          <span class="tag">B端工具 / RAG问答 / 效率向</span>
+          <div class="actions">
+            <a class="go detail" href="xiaoban.html">查看详情 <span class="arr">→</span></a>
+            <a class="go" href="xiaoban.html#demo">立即体验 <span class="arr">→</span></a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 能力矩阵 -->
+    <section class="sec" id="skills">
+      <div class="sec-head reveal">
+        <div class="kcap">CAPABILITIES</div>
+        <h2>核心能力与落地场景</h2>
+        <p>从需求洞察到工程落地，覆盖 C 端与 B 端的全链路产品方法</p>
+      </div>
+      <div class="matrix">
+        <div class="mcol reveal">
+          <h3><span class="dot" style="background:var(--c-jingli)"></span>产品能力</h3>
+          <div class="item"><div class="t">AI 产品 0→1 设计</div><div class="d">从用户痛点到闭环方案，独立定义产品形态与交互</div></div>
+          <div class="item"><div class="t">RAG / 多 Agent 架构理解</div><div class="d">能和技术对齐检索增强、智能体协作的工程边界</div></div>
+          <div class="item"><div class="t">体验与情绪设计</div><div class="d">人文纸质风 / 治愈氛围 / 商务专业风三种风格切换</div></div>
+          <div class="item"><div class="t">数据驱动迭代</div><div class="d">埋点指标体系、自动化评测闭环、灰度优化</div></div>
+        </div>
+        <div class="mcol reveal">
+          <h3><span class="dot" style="background:var(--c-xiaoban)"></span>落地场景</h3>
+          <div class="chips">
+            <span>求职诊断</span><span>简历优化</span><span>面试陪练</span>
+            <span>生活决策</span><span>多Agent权衡</span><span>企业知识问答</span>
+            <span>办事流程自动化</span><span>HR 减负</span><span>风控合规</span>
+            <span>小程序</span><span>Coze 工作流</span><span>Web 工具</span>
+          </div>
+          <div class="item" style="margin-top:18px"><div class="t">载体覆盖</div><div class="d">网站 · 微信小程序 · Coze 工作流 / 智能体，三种形态均可交付</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 关于我 -->
+    <section class="sec" id="about">
+      <div class="sec-head reveal">
+        <div class="kcap">ABOUT</div>
+        <h2>关于我</h2>
+        <p>让 AI 真正帮到人，而不是制造焦虑</p>
+      </div>
+      <div class="about-card reveal">
+        <p>我是韩佳雪，一名专注 AI 产品的设计师。我相信好的 AI 产品应当既有温度也有边界——
+        它帮人把经历讲清楚、把选择想明白、把琐事办利落，而不是替人做决定或贩卖焦虑。
+        上面三款作品，是我对「C 端体验」与「B 端效率」两种产品思维的持续练习。</p>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="foot" id="contact">
+    <div class="contact">
+      <a href="https://github.com/315-h" target="_blank" rel="noopener">GitHub</a>
+      <a class="cv" id="cvBtn" href="Resume-HanJiaxue.pdf" target="_blank" rel="noopener">下载简历</a>
+    </div>
+    <div class="cmail">电话：15693149386<span>·</span>邮箱：3415703993@qq.com</div>
+    <div class="copy">韩佳雪 · AI 产品作品集 ｜ 本站为纯静态页面，作品数据仅展示于浏览器本地，不上传服务器。</div>
+  </footer>
+
+<script>
+  // 深浅主题切换（记忆到 localStorage）
+  (function(){
+    var btn=document.getElementById('themeBtn');
+    var saved=localStorage.getItem('hx-theme');
+    if(saved==='dark'){document.body.classList.add('dark');btn.textContent='◐';}
+    btn.addEventListener('click',function(){
+      document.body.classList.toggle('dark');
+      var dark=document.body.classList.contains('dark');
+      btn.textContent='◐';
+      localStorage.setItem('hx-theme',dark?'dark':'light');
+    });
+  })();
+
+  // 滚动淡入
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+  },{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+</script>
+</body>
+</html>

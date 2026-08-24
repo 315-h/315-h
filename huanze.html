@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>缓择星球 · 详情 ｜ 韩佳雪</title>
+<style>
+  :root{
+    --bg:#FAF6F0;            /* 暖米白基底 */
+    --card:#FFFFFF;
+    --card-soft:#FCF7F2;
+    --text:#333333;         /* 深炭灰 */
+    --text-2:#6B635C;
+    --text-3:#9A8F86;
+    --divider:#EADFD6;
+    --divider-strong:#DcCBBE;
+    --c:#C9664A;            /* 主色 暖橙（深陶土，承担白字） */
+    --primary-strong:#C9664A;
+    --purple:#E0D4F0;       /* 淡紫弥散光晕（个性） */
+    --blue:#D8E4ED;         /* 浅灰蓝 正向 */
+    --pink:#F2D7D5;         /* 柔粉 代价提示 */
+    --on-c:#ffffff;         /* 主按钮文字 */
+    --shadow:0 6px 20px rgba(120,80,60,.10), 0 18px 44px rgba(120,80,60,.10);
+    --shadow-sm:0 4px 14px rgba(120,80,60,.08);
+    --radius:22px;          /* 全程大圆角（个性） */
+    --radius-sm:16px;
+    --radius-btn:999px;
+    --maxw:1080px;
+    --font:"PingFang SC","Microsoft YaHei","Hiragino Sans GB","Helvetica Neue",Arial,sans-serif;
+    --serif:"Songti SC","STSong","SimSun",Georgia,"Times New Roman",serif;
+    --font-head:var(--serif);
+    --font-mono:"SF Mono","JetBrains Mono","Roboto Mono","Menlo",Consolas,monospace;
+  }
+  body.dark{
+    --bg:#2B2724; --card:#342F2B; --card-soft:#2F2A27; --text:#F0E9E2;
+    --text-2:#BCAFA3; --text-3:#8C8074; --divider:#3D3731; --divider-strong:#4A433C; --primary-strong:#C9664A;
+    --on-c:#fff;
+    --shadow:0 6px 20px rgba(0,0,0,.30), 0 18px 44px rgba(0,0,0,.40);
+    --shadow-sm:0 4px 14px rgba(0,0,0,.30);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  html{scroll-behavior:smooth;}
+  /* 可访问性：焦点环 + 动效降级 */
+  :focus-visible{outline:2px solid var(--c);outline-offset:2px;border-radius:6px;}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important;}}
+  body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.85;
+    font-size:15px;letter-spacing:.2px;-webkit-font-smoothing:antialiased;font-weight:400;
+    transition:background .4s ease,color .4s ease;overflow-x:hidden;}
+  /* 全局星云背景（加强柔光） */
+  body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background:
+      radial-gradient(56% 46% at 14% 14%, color-mix(in srgb,var(--purple) 44%,transparent), transparent 68%),
+      radial-gradient(52% 44% at 88% 18%, color-mix(in srgb,var(--c) 34%,transparent), transparent 70%),
+      radial-gradient(80% 66% at 62% 104%, color-mix(in srgb,var(--purple) 36%,transparent), transparent 74%),
+      radial-gradient(40% 36% at 48% 50%, color-mix(in srgb,var(--c) 18%,transparent), transparent 72%);}
+  body.dark::before{opacity:.72;}
+  /* 星点散布层 */
+  body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.6;
+    background-image:
+      radial-gradient(1.6px 1.6px at 10% 18%, color-mix(in srgb,var(--c) 55%,#fff), transparent),
+      radial-gradient(1.2px 1.2px at 22% 72%, color-mix(in srgb,var(--c) 55%,#fff), transparent),
+      radial-gradient(1.9px 1.9px at 35% 28%, color-mix(in srgb,var(--c) 55%,#fff), transparent),
+      radial-gradient(1px 1px at 48% 84%, rgba(90,60,45,.5), transparent),
+      radial-gradient(1.4px 1.4px at 60% 20%, color-mix(in srgb,var(--c) 55%,#fff), transparent),
+      radial-gradient(1.7px 1.7px at 72% 64%, color-mix(in srgb,var(--c) 55%,#fff), transparent),
+      radial-gradient(1.2px 1.2px at 84% 36%, color-mix(in srgb,var(--c) 55%,#fff), transparent),
+      radial-gradient(1.6px 1.6px at 92% 78%, rgba(90,60,45,.45), transparent),
+      radial-gradient(1px 1px at 16% 48%, rgba(90,60,45,.5), transparent),
+      radial-gradient(1.3px 1.3px at 42% 10%, color-mix(in srgb,var(--c) 55%,#fff), transparent),
+      radial-gradient(1.1px 1.1px at 66% 92%, color-mix(in srgb,var(--c) 55%,#fff), transparent),
+      radial-gradient(1.8px 1.8px at 78% 12%, color-mix(in srgb,var(--c) 55%,#fff), transparent);
+    -webkit-mask-image:radial-gradient(ellipse at 50% 36%, #000 20%, transparent 82%);
+    mask-image:radial-gradient(ellipse at 50% 36%, #000 20%, transparent 82%);}
+  body.dark::after{opacity:1;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;}
+
+  /* ===== 顶栏（三页统一） ===== */
+  .topbar{position:sticky;top:0;z-index:60;backdrop-filter:saturate(140%) blur(10px);
+    background:color-mix(in srgb,var(--bg) 82%,transparent);border-bottom:1px solid var(--divider);
+    transition:background .4s ease,border-color .4s ease;}
+  .topbar .row{max-width:var(--maxw);margin:0 auto;padding:13px 24px;display:flex;align-items:center;justify-content:space-between;}
+  .back{text-decoration:none;color:var(--text);font-size:14px;font-weight:600;display:inline-flex;align-items:center;gap:7px;
+    border:1px solid var(--divider);background:var(--card);padding:8px 15px;border-radius:999px;box-shadow:var(--shadow-sm);
+    transition:transform .15s ease,border-color .15s ease;}
+  .back:hover{transform:translateY(-2px);border-color:var(--c);}
+  .brand{font-weight:800;letter-spacing:.5px;font-size:15px;}
+  .brand span{color:var(--text-2);font-weight:600;font-size:12.5px;margin-left:6px;}
+  .theme-btn{border:1px solid var(--divider);background:var(--card);color:var(--text);width:40px;height:40px;border-radius:50%;
+    cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm);
+    transition:transform .15s ease,border-color .15s ease,background .4s ease;}
+  .theme-btn:hover{transform:translateY(-2px);border-color:var(--c);}
+
+  /* ===== 通用 section（三页统一） ===== */
+  .sec{padding:64px 0;}
+  .sec-head{text-align:center;margin-bottom:40px;}
+  .sec-head .eyebrow,.sec-head .kcap,.sec-head .num{display:inline-block;font-family:var(--font-mono);font-size:11.5px;letter-spacing:2.5px;font-weight:700;
+    color:var(--c);margin-bottom:10px;text-transform:uppercase;}
+  .sec-head h2{font-family:var(--font-head);font-size:28px;font-weight:800;letter-spacing:.5px;line-height:1.3;}
+  .sec-head p{margin-top:9px;color:var(--text-2);font-size:14.5px;max-width:560px;margin-left:auto;margin-right:auto;line-height:1.8;}
+
+  /* 按钮（家族统一，颜色随主题） */
+  .btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:700;font-size:14.5px;
+    padding:13px 27px;border-radius:var(--radius-btn);cursor:pointer;
+    transition:transform .15s ease,box-shadow .2s ease,border-color .2s ease,background .2s ease,color .2s ease;}
+  .btn-primary{background:var(--c);color:var(--on-c);border:1px solid var(--c);box-shadow:var(--shadow-sm);}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:var(--shadow);}
+  .btn-ghost{background:transparent;color:var(--text);border:1.5px solid var(--divider-strong);}
+  .btn-ghost:hover{transform:translateY(-2px);border-color:var(--c);color:var(--c);}
+  .btn-doc{background:transparent;color:var(--doc-c,var(--c));border:1.5px solid var(--doc-c,var(--c));}
+  .btn-doc:hover{transform:translateY(-2px);background:var(--doc-c,var(--c));color:#fff;}
+  .btn.disabled,.btn[aria-disabled="true"]{background:var(--card-soft);color:var(--text-2);border:1px solid var(--divider);box-shadow:none;cursor:default;}
+  .btn.disabled:hover,.btn[aria-disabled="true"]:hover{transform:none;}
+
+  /* ===== (1) 首屏 KV ===== */
+  .kv{position:relative;padding:80px 0 64px;text-align:center;overflow:hidden;}
+  .kv .rings{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);width:680px;height:680px;z-index:0;opacity:.5;pointer-events:none;}
+  .kv .rings ellipse{fill:none;stroke:color-mix(in srgb,var(--c) 45%,transparent);stroke-width:1.2;}
+  .kv .rings2{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);width:520px;height:520px;z-index:0;opacity:.55;pointer-events:none;}
+  .kv .rings2 ellipse{fill:none;stroke:color-mix(in srgb,var(--purple) 60%,transparent);stroke-width:1.2;}
+  .kv .rings3{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);width:840px;height:840px;z-index:0;opacity:.4;pointer-events:none;}
+  .kv .rings3 ellipse{fill:none;stroke:color-mix(in srgb,var(--c) 30%,transparent);stroke-width:1;}
+  .kv .meteor{position:absolute;left:6%;top:22%;width:130px;height:2px;z-index:1;pointer-events:none;opacity:0;
+    background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--c) 75%,transparent),#fff);border-radius:2px;
+    transform:rotate(18deg);animation:meteor 8s ease-in infinite 2.5s;}
+  @keyframes meteor{0%{opacity:0;transform:translate(0,0) rotate(18deg) scaleX(.3)}
+    12%{opacity:.9}32%{opacity:0;transform:translate(240px,86px) rotate(18deg) scaleX(1)}
+    100%{opacity:0;transform:translate(240px,86px) rotate(18deg)}}
+  .kv-inner{position:relative;z-index:2;max-width:760px;margin:0 auto;}
+  .kv h1{font-family:var(--serif);font-size:50px;line-height:1.15;font-weight:800;letter-spacing:3px;
+    text-shadow:0 0 26px color-mix(in srgb,var(--c) 35%,transparent);}
+  .kv .sub{font-size:17px;color:var(--text);max-width:520px;margin:18px auto 0;line-height:1.95;}
+  .kv .label{margin-top:18px;font-size:13px;font-weight:700;letter-spacing:.5px;color:var(--text-2);}
+  .kv .cta{margin-top:30px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
+  /* 手机 mockup */
+  .phone{position:relative;width:200px;height:400px;margin:4px auto 0;border-radius:34px;
+    background:linear-gradient(160deg,color-mix(in srgb,var(--c) 18%,var(--card)),var(--card));
+    border:1.5px solid var(--divider);box-shadow:var(--shadow);animation:bob 6s ease-in-out infinite;overflow:hidden;}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+  .phone .notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:64px;height:14px;border-radius:999px;background:var(--divider);}
+  .phone .scr{position:absolute;top:40px;left:14px;right:14px;bottom:14px;border-radius:20px;overflow:hidden;
+    background:radial-gradient(130% 95% at 50% 0%, color-mix(in srgb,var(--purple) 42%,var(--card)), var(--card));
+    display:flex;flex-direction:column;gap:9px;padding:18px 12px;}
+  .phone .scr::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.85;
+    background-image:radial-gradient(1px 1px at 22% 28%,#fff,transparent),radial-gradient(1.3px 1.3px at 70% 46%,#fff,transparent),radial-gradient(1px 1px at 46% 74%,#fff,transparent);}
+  .phone .scr>*{position:relative;z-index:2;}
+  .phone .scr .b{height:11px;border-radius:6px;background:color-mix(in srgb,var(--c) 40%,transparent);}
+  .phone .scr .b.s{width:60%;}
+  .phone .scr .b.l{width:85%;}
+  .phone .scr .b.m{width:72%;}
+  .phone .scr .dot{width:34px;height:34px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,var(--c));box-shadow:0 0 14px color-mix(in srgb,var(--c) 55%,transparent);margin:6px auto 2px;}
+
+  /* ===== (2) 项目概览 四栏 ===== */
+  .ov{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
+  .ovc{background:color-mix(in srgb,var(--c) 8%,var(--card));border:1px solid var(--divider);border-radius:var(--radius);
+    padding:24px 20px;box-shadow:var(--shadow-sm);text-align:center;backdrop-filter:blur(4px);
+    position:relative;overflow:hidden;transition:transform .2s ease,box-shadow .2s ease;}
+  .ovc:hover{transform:translateY(-5px);box-shadow:var(--shadow);}
+  .ovc .pl{position:absolute;top:-26px;right:-26px;width:64px;height:64px;border-radius:50%;pointer-events:none;
+    background:radial-gradient(circle at 40% 35%,color-mix(in srgb,var(--c) 55%,transparent),transparent 70%);
+    mix-blend-mode:multiply;opacity:.85;transition:opacity .25s ease,transform .25s ease;}
+  body.dark .ovc .pl{background:radial-gradient(circle at 40% 35%,color-mix(in srgb,var(--c) 65%,transparent),transparent 70%);mix-blend-mode:screen;opacity:.65;}
+  .ovc:hover .pl{transform:scale(1.18);opacity:1;}
+  .ovc .ic{width:40px;height:40px;margin:0 auto 12px;color:var(--c);}
+  .ovc h3{font-size:15px;font-weight:800;margin-bottom:4px;}
+  .ovc p{font-size:12.5px;color:var(--text-2);line-height:1.7;}
+
+  /* ===== (3) 设计理念 ===== */
+  .idea{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+  .ideac{background:var(--card);border:1px solid var(--divider);border-radius:var(--radius);
+    padding:30px 28px;box-shadow:var(--shadow-sm);transition:transform .2s ease,box-shadow .2s ease;}
+  .ideac:hover{transform:translateY(-4px);box-shadow:var(--shadow);}
+  .ideac .ic{width:54px;height:54px;border-radius:50%;background:color-mix(in srgb,var(--c) 14%,transparent);
+    display:flex;align-items:center;justify-content:center;margin-bottom:16px;color:var(--c);}
+  .ideac h3{font-size:18px;font-weight:800;margin-bottom:10px;}
+  .ideac p{font-size:14px;color:var(--text-2);line-height:1.95;}
+
+  /* ===== (4) 四Agent 星轨流转 ===== */
+  .orbit-wrap{position:relative;max-width:920px;margin:0 auto;aspect-ratio:1000/360;}
+  .orbit-wrap svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;}
+  .orbit-wrap .base{fill:none;stroke:var(--divider);stroke-width:2.5;stroke-dasharray:5 8;}
+  .orbit-wrap .prog{fill:none;stroke:url(#g);stroke-width:3;stroke-linecap:round;
+    stroke-dasharray:1100;stroke-dashoffset:1100;transition:stroke-dashoffset 1.8s ease;}
+  .orbit-wrap.lit .prog{stroke-dashoffset:0;}
+  .planet{position:absolute;width:92px;height:92px;transform:translate(-50%,-50%);border-radius:50%;
+    background:radial-gradient(circle at 34% 30%, #fff, color-mix(in srgb,var(--c) 70%,transparent));
+    box-shadow:0 0 0 6px color-mix(in srgb,var(--c) 12%,transparent), 0 8px 22px rgba(120,80,60,.18);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;
+    opacity:.45;transition:opacity .5s ease,transform .3s ease,box-shadow .3s ease;}
+  .orbit-wrap.lit .planet{opacity:1;}
+  .orbit-wrap.lit .planet:nth-child(3){transition-delay:.25s}
+  .orbit-wrap.lit .planet:nth-child(5){transition-delay:.5s}
+  .orbit-wrap.lit .planet:nth-child(7){transition-delay:.75s}
+  .planet:hover{transform:translate(-50%,-50%) scale(1.08);box-shadow:0 0 0 10px color-mix(in srgb,var(--c) 16%,transparent),0 12px 30px rgba(120,80,60,.26);}
+  .planet .pn{font-weight:800;font-size:13px;color:#7a3f24;}
+  .planet .ps{font-size:9.5px;color:#9a5a3a;margin-top:1px;}
+  .planet .bubble{position:absolute;bottom:108%;left:50%;transform:translateX(-50%) translateY(8px);
+    width:210px;background:var(--card);border:1px solid var(--divider);border-radius:14px;padding:13px 14px;
+    box-shadow:var(--shadow);font-size:12px;color:var(--text);line-height:1.7;opacity:0;pointer-events:none;
+    transition:opacity .2s ease,transform .2s ease;z-index:5;}
+  .planet:hover .bubble{opacity:1;transform:translateX(-50%) translateY(0);}
+  .planet .bubble b{color:var(--c);}
+  .orbit-note{text-align:center;color:var(--text-2);font-size:13px;margin-top:18px;}
+
+  /* ===== (5) 核心功能 星球卡 ===== */
+  .fgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .fcard{background:var(--card);border:1px solid var(--divider);border-radius:var(--radius);
+    padding:28px 24px;box-shadow:var(--shadow-sm);position:relative;overflow:hidden;
+    transition:transform .25s ease,box-shadow .25s ease;}
+  .fcard:hover{transform:translateY(-6px) scale(1.01);box-shadow:var(--shadow);}
+  .fcard .glow{position:absolute;bottom:-40px;right:-40px;width:120px;height:120px;border-radius:50%;
+    background:radial-gradient(circle,color-mix(in srgb,var(--purple) 60%,transparent),transparent 70%);}
+  .fcard .mini{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(circle at 34% 30%,#fff,color-mix(in srgb,var(--c) 60%,transparent));color:#fff;margin-bottom:16px;box-shadow:0 0 16px color-mix(in srgb,var(--c) 45%,transparent);}
+  .fcard h3{font-size:17.5px;font-weight:800;margin-bottom:8px;}
+  .fcard .d{font-size:13px;color:var(--text-2);line-height:1.8;margin-bottom:14px;}
+  .fcard .tags{display:flex;flex-wrap:wrap;gap:7px;}
+  .fcard .tags span{font-size:11.5px;background:color-mix(in srgb,var(--blue) 50%,var(--card-soft));color:#3a4a55;
+    border:1px solid var(--divider);padding:4px 10px;border-radius:999px;}
+
+  /* ===== (6) 全场景 星座标签 ===== */
+  .scenes{max-width:880px;margin:0 auto;}
+  .tabs{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:26px;}
+  .tab{position:relative;display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:var(--text-2);
+    background:var(--card);border:1px solid var(--divider);padding:9px 18px;border-radius:999px;cursor:pointer;
+    transition:color .2s ease,border-color .2s ease,background .2s ease;}
+  .tab .dot{width:9px;height:9px;border-radius:50%;background:var(--divider);transition:all .2s ease;}
+  .tab:hover .dot{background:color-mix(in srgb,var(--c) 50%,transparent);}
+  .tab.active{color:#fff;background:linear-gradient(135deg,var(--primary-strong),#D98A6E);border-color:transparent;
+    box-shadow:0 6px 16px color-mix(in srgb,var(--c) 38%,transparent);}
+  .tab.active .dot{background:#fff;box-shadow:0 0 8px #fff;animation:breath 1.8s ease-in-out infinite;}
+  @keyframes breath{0%,100%{opacity:1}50%{opacity:.4}}
+  .panel{background:var(--card);border:1px solid var(--divider);border-radius:var(--radius);padding:30px 28px;
+    box-shadow:var(--shadow-sm);min-height:140px;transition:opacity .3s ease;}
+  .panel .pt{font-size:17px;font-weight:800;margin-bottom:8px;color:var(--c);}
+  .panel .pd{font-size:14px;color:var(--text-2);line-height:1.95;}
+
+  /* ===== (7) 迭代对比 ===== */
+  .cmp{display:flex;flex-direction:column;gap:22px;max-width:940px;margin:0 auto;}
+  .crow{display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:center;}
+  .colbox{border-radius:var(--radius);padding:22px 22px;box-shadow:var(--shadow-sm);border:1px solid var(--divider);}
+  .colbox.old{background:var(--card-soft);border-style:dashed;}
+  .colbox.old .ct{color:var(--text-2);}
+  .colbox.new{background:linear-gradient(160deg,color-mix(in srgb,var(--c) 12%,var(--card)),var(--card));}
+  .colbox .ct{font-size:13px;font-weight:700;letter-spacing:.5px;margin-bottom:10px;}
+  .colbox .ct b{font-size:15px;color:var(--text);}
+  .colbox ol{list-style:none;}
+  .colbox li{font-size:13.5px;color:var(--text-2);line-height:1.8;padding-left:18px;position:relative;margin-bottom:4px;}
+  .colbox.old li::before{content:"•";position:absolute;left:4px;color:var(--text-2);}
+  .colbox.new li::before{content:"✓";position:absolute;left:2px;color:var(--c);font-weight:800;}
+  .colbox.new li b{color:var(--text);}
+  .arrow{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    background:var(--card);border:1px solid var(--divider);color:var(--c);font-size:22px;box-shadow:var(--shadow-sm);}
+  @media(max-width:760px){.crow{grid-template-columns:1fr;}.arrow{transform:rotate(90deg);margin:0 auto;}}
+
+  /* ===== (8) 质量与风控 ===== */
+  .qg{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:center;}
+  .qg .ring{display:flex;flex-direction:column;align-items:center;gap:14px;background:var(--card);
+    border:1px solid var(--divider);border-radius:var(--radius);padding:30px 24px;box-shadow:var(--shadow-sm);}
+  .qg .ring svg{width:150px;height:150px;transform:rotate(-90deg);}
+  .qg .ring .rt{text-align:center;}
+  .qg .ring .rt .n{font-family:var(--serif);font-size:30px;font-weight:800;color:var(--c);}
+  .qg .ring .rt .l{font-size:12.5px;color:var(--text-2);}
+  .qg .desc{background:var(--card);border:1px solid var(--divider);border-radius:var(--radius);padding:28px 26px;box-shadow:var(--shadow-sm);}
+  .qg .desc h3{font-size:17px;font-weight:800;margin-bottom:10px;}
+  .qg .desc .item{margin-bottom:14px;}
+  .qg .desc .item .t{font-weight:700;font-size:14px;}
+  .qg .desc .item .d{color:var(--text-2);font-size:13px;}
+  .qg .desc .pill{display:inline-block;font-size:11.5px;font-weight:700;color:#3a4a55;background:color-mix(in srgb,var(--blue) 50%,var(--card-soft));border:1px solid var(--divider);padding:4px 10px;border-radius:999px;margin:3px 4px 0 0;}
+
+  /* ===== (9) 数据收尾 ===== */
+  .data{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:760px;margin:0 auto 30px;}
+  .datac{text-align:center;background:var(--card);border:1px solid var(--divider);border-radius:var(--radius);
+    padding:22px 16px;box-shadow:var(--shadow-sm);position:relative;overflow:hidden;}
+  .datac::before{content:"";position:absolute;top:-30px;left:50%;transform:translateX(-50%);width:90px;height:90px;border-radius:50%;
+    background:radial-gradient(circle,color-mix(in srgb,var(--purple) 55%,transparent),transparent 70%);}
+  .datac .n{position:relative;font-family:var(--serif);font-size:30px;font-weight:800;color:var(--c);}
+  .datac .l{position:relative;font-size:13px;color:var(--text-2);margin-top:2px;}
+  .end{text-align:center;}
+  .end .btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:18px;}
+
+  /* 小程序码占位 */
+  .mpcode{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:26px;}
+  .mpcode .qr{width:130px;height:130px;border:2px dashed var(--c);border-radius:16px;background:var(--card-soft);
+    display:flex;align-items:center;justify-content:center;color:var(--c);box-shadow:var(--shadow-sm);}
+  .mpcode .qr svg{width:70px;height:70px;}
+  .mpcode .cap{font-size:12.5px;color:var(--text-2);}
+
+  /* ===== (9) 资产沉淀 ===== */
+  .ass{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;max-width:760px;margin:0 auto;}
+  .afile{background:var(--card);border:1px solid var(--divider);border-radius:var(--radius);overflow:hidden;
+    transition:all .25s ease;cursor:pointer;display:flex;flex-direction:column;}
+  .afile:hover{transform:translateY(-5px);border-color:var(--c);box-shadow:var(--shadow-lg);}
+  .afile .preview{flex:1;background:linear-gradient(180deg,var(--card-soft) 0%,var(--card) 100%);
+    padding:20px;border-bottom:1px solid var(--divider);display:flex;flex-direction:column;gap:5px;min-height:140px;position:relative;}
+  .afile .preview::before{content:"";position:absolute;left:14px;top:14px;width:36px;height:4px;background:var(--c);border-radius:2px;}
+  .afile .preview .ln{height:6px;background:var(--divider);border-radius:3px;width:88%;margin-top:9px;
+    box-shadow:0 11px 0 var(--divider),0 22px 0 var(--divider),0 33px 0 color-mix(in srgb,var(--c-edge) 65%,transparent);}
+  .afile .preview .ln.s{width:62%;background:var(--c-edge);}
+  .afile .preview .ln.t{width:72%;}
+  .afile .preview .tag{font-family:var(--mono);font-size:9px;color:var(--text-3);position:absolute;right:14px;top:14px;letter-spacing:.5px;}
+  .afile .meta{padding:14px 18px;}
+  .afile .meta h4{font-size:13.5px;font-weight:700;margin-bottom:3px;}
+  .afile .meta p{font-size:11.5px;color:var(--text-2);}
+  .afile .meta .ft{display:flex;justify-content:space-between;align-items:center;margin-top:8px;}
+  .afile .meta .ft span{font-family:var(--mono);font-size:10.5px;color:var(--text-3);}
+  .afile .meta .ft a{font-size:11.5px;color:var(--c);text-decoration:none;font-weight:700;}
+  @media (max-width:860px){ .ass{grid-template-columns:repeat(2,1fr);} }
+
+  /* 页脚（三页统一） */
+  .foot{padding:40px 0 46px;text-align:center;border-top:1px solid var(--divider);margin-top:30px;}
+  .foot .copy{color:var(--text-2);font-size:12.5px;letter-spacing:.3px;}
+
+  /* 滚动淡入（三页统一） */
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s ease;}
+  .reveal.in{opacity:1;transform:none;}
+
+  @media (max-width:860px){ .sec-head h2{font-size:23px;} }
+
+  @media (max-width:860px){
+    .kv h1{font-size:38px;}
+    .ov{grid-template-columns:1fr 1fr;}
+    .idea{grid-template-columns:1fr;}
+    .fgrid{grid-template-columns:1fr;}
+    .qg{grid-template-columns:1fr;}
+    .data{grid-template-columns:1fr;}
+    .orbit-wrap{aspect-ratio:1/1.1;}
+  }
+</style>
+</head>
+<body>
+
+  <!-- 顶栏 -->
+  <div class="topbar">
+    <div class="row">
+      <a class="back" href="portfolio.html">← 返回作品集首页</a>
+      <div class="brand">缓择星球 <span>· 详情</span></div>
+      <button class="theme-btn" id="themeBtn" title="切换深浅主题" aria-label="切换深色模式">◐</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <!-- (1) 首屏 KV -->
+    <section class="kv" id="kv">
+      <svg class="rings" viewBox="0 0 680 680"><ellipse cx="340" cy="340" rx="330" ry="200" transform="rotate(28 340 340)"/><ellipse cx="340" cy="340" rx="250" ry="150" transform="rotate(-18 340 340)"/></svg>
+      <svg class="rings2" viewBox="0 0 520 520"><ellipse cx="260" cy="260" rx="250" ry="160" transform="rotate(12 260 260)"/><ellipse cx="260" cy="260" rx="170" ry="110" transform="rotate(-24 260 260)"/></svg>
+      <svg class="rings3" viewBox="0 0 840 840"><ellipse cx="420" cy="420" rx="410" ry="250" transform="rotate(6 420 420)"/><ellipse cx="420" cy="420" rx="320" ry="200" transform="rotate(-34 420 420)"/></svg>
+      <div class="meteor"></div>
+      <div class="kv-inner reveal">
+        <div class="phone">
+          <span class="notch"></span>
+          <div class="scr">
+            <span class="dot"></span>
+            <span class="b l"></span>
+            <span class="b m"></span>
+            <span class="b s"></span>
+            <span class="b m"></span>
+            <span class="b l"></span>
+            <span class="b s"></span>
+          </div>
+        </div>
+        <h1>缓择星球</h1>
+        <p class="sub">理性拆解选择，减少决策后悔</p>
+        <div class="label">多智能体 AI 决策辅助小程序</div>
+        <div class="cta">
+          <a class="btn disabled" href="#" aria-disabled="true" tabindex="-1">小程序敬请期待</a>
+        </div>
+        <div class="mpcode">
+          <div class="qr">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7" rx="1.4"/><rect x="14" y="3" width="7" height="7" rx="1.4"/>
+              <rect x="3" y="14" width="7" height="7" rx="1.4"/><path d="M14 14h3v3M21 14v7M14 21h7"/>
+            </svg>
+          </div>
+          <div class="cap">小程序码 · 占位（正式上线后替换）</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- (2) 项目概览 -->
+    <section class="sec" id="overview">
+      <div class="sec-head reveal">
+        <div class="kcap">OVERVIEW</div>
+        <h2>项目概览</h2>
+        <p>温柔陪伴、理性决策——一颗帮你把纠结讲清楚的星球</p>
+      </div>
+      <div class="ov">
+        <div class="ovc reveal"><span class="pl"></span>
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          <h3>产品定位</h3><p>多智能体 AI 决策辅助，结构化引导而非直接给答案。</p>
+        </div>
+        <div class="ovc reveal"><span class="pl"></span>
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5z"/></svg>
+          <h3>核心价值</h3><p>降低决策焦虑，把模糊的纠结拆成可衡量的选项。</p>
+        </div>
+        <div class="ovc reveal"><span class="pl"></span>
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+          <h3>我的角色</h3><p>AI 产品设计师，从 0 到 1 定义形态与交互。</p>
+        </div>
+        <div class="ovc reveal"><span class="pl"></span>
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>
+          <h3>项目周期</h3><p>2026 · 多轮迭代打磨体验。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- (3) 设计理念 -->
+    <section class="sec" id="idea">
+      <div class="sec-head reveal">
+        <div class="kcap">PHILOSOPHY</div>
+        <h2>设计理念</h2>
+        <p>不替你做决定，只帮你把选择想得更清楚</p>
+      </div>
+      <div class="idea">
+        <div class="ideac reveal">
+          <div class="ic"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 6h16M4 12h10M4 18h13"/><circle cx="18" cy="12" r="2.4"/></svg></div>
+          <h3>场景化决策体系</h3>
+          <p>覆盖 7 大高频生活场景，用结构化引导代替空洞建议——先理解你纠结的到底是什么，再陪你把每个选项的利弊摊开。</p>
+        </div>
+        <div class="ideac reveal">
+          <div class="ic"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="9" r="3.2"/><circle cx="15" cy="15" r="3.2"/><path d="M9 12v4a3 3 0 0 0 3 3h1"/></svg></div>
+          <h3>无性别平等设计</h3>
+          <p>中立化话术，不预设用户身份，也不替用户做最终选择。所有输出保持克制——陪伴，而不是替代。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- (4) 四Agent 星轨流转 -->
+    <section class="sec" id="agents">
+      <div class="sec-head reveal">
+        <div class="kcap">AGENTS</div>
+        <h2>四 Agent 核心架构</h2>
+        <p>需求挖掘 → 方案检索 → 反向纠偏 → 代价预演，形成完整决策闭环</p>
+      </div>
+      <div class="orbit-wrap reveal" id="orbitWrap">
+        <svg viewBox="0 0 1000 360" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="g" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#E0D4F0"/><stop offset="1" stop-color="#E98A68"/>
+            </linearGradient>
+          </defs>
+          <path class="base" d="M60,230 C190,70 250,108 330,108 C470,108 520,250 600,250 C740,250 780,108 880,108"/>
+          <path class="prog" d="M60,230 C190,70 250,108 330,108 C470,108 520,250 600,250 C740,250 780,108 880,108"/>
+        </svg>
+        <div class="planet" style="left:6%;top:64%"><div class="pn">需求挖掘</div><div class="ps">Agent 1</div>
+          <div class="bubble"><b>需求挖掘 Agent</b><br>把模糊的纠结拆成可衡量的真实诉求，识别你真正在意的维度。</div></div>
+        <div class="planet" style="left:33%;top:30%"><div class="pn">方案检索</div><div class="ps">Agent 2</div>
+          <div class="bubble"><b>方案检索 Agent</b><br>基于场景知识库，结构化召回可行方案与参考路径。</div></div>
+        <div class="planet" style="left:60%;top:69%"><div class="pn">反向纠偏</div><div class="ps">Agent 3</div>
+          <div class="bubble"><b>反向纠偏 Agent</b><br>主动挑战你的预设，提示被忽略的风险与盲点。</div></div>
+        <div class="planet" style="left:88%;top:30%"><div class="pn">代价预演</div><div class="ps">Agent 4</div>
+          <div class="bubble"><b>代价预演 Agent</b><br>可视化所选收益与放弃代价，让决策成本看得见。</div></div>
+      </div>
+      <div class="orbit-note reveal">悬停任意星球，查看对应 Agent 的作用</div>
+    </section>
+
+    <!-- (5) 核心功能模块 -->
+    <section class="sec" id="features">
+      <div class="sec-head reveal">
+        <div class="kcap">FEATURES</div>
+        <h2>核心功能模块</h2>
+        <p>三个星球卡片，对应决策旅程里的关键一步</p>
+      </div>
+      <div class="fgrid">
+        <div class="fcard reveal"><span class="glow"></span>
+          <div class="mini"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+          <h3>双模式需求采集</h3>
+          <div class="d">文字对话 + 结构化卡片并行，压缩需求收集轮次，快速定位核心纠结点。</div>
+          <div class="tags"><span>自由对话</span><span>结构化卡片</span><span>需求收敛</span></div>
+        </div>
+        <div class="fcard reveal"><span class="glow"></span>
+          <div class="mini"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18M3 12h18M3 18h18"/><path d="M9 6v12M15 6v12" stroke-opacity=".5"/></svg></div>
+          <h3>权衡官中立对比</h3>
+          <div class="d">多方案维度化拆解，中立呈现利弊，不替你下结论，只让差异更可见。</div>
+          <div class="tags"><span>维度拆解</span><span>中立对比</span><span>利弊可视</span></div>
+        </div>
+        <div class="fcard reveal"><span class="glow"></span>
+          <div class="mini"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="9"/></svg></div>
+          <h3>反事实代价预演</h3>
+          <div class="d">所选收益 + 放弃代价 + 总结收束，把「万一后悔」提前算清楚。</div>
+          <div class="tags"><span>收益</span><span>放弃代价</span><span>收束建议</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- (6) 全场景知识库 -->
+    <section class="sec" id="scenes">
+      <div class="sec-head reveal">
+        <div class="kcap">SCENARIOS</div>
+        <h2>全场景知识库</h2>
+        <p>7 大高频生活场景，覆盖你最容易纠结的地方</p>
+      </div>
+      <div class="scenes reveal">
+        <div class="tabs" id="sceneTabs">
+          <div class="tab active" data-i="0"><span class="dot"></span>租房</div>
+          <div class="tab" data-i="1"><span class="dot"></span>职业</div>
+          <div class="tab" data-i="2"><span class="dot"></span>旅行</div>
+          <div class="tab" data-i="3"><span class="dot"></span>购物</div>
+          <div class="tab" data-i="4"><span class="dot"></span>健康</div>
+          <div class="tab" data-i="5"><span class="dot"></span>搬家</div>
+          <div class="tab" data-i="6"><span class="dot"></span>学习</div>
+        </div>
+        <div class="panel" id="scenePanel">
+          <div class="pt" id="sceneTitle">租房</div>
+          <div class="pd" id="sceneDesc">从通勤、预算到合租边界，把「租哪儿」拆成可比较的维度，避免被中介话术带着走。</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- (7) 迭代优化与体验升级 -->
+    <section class="sec" id="iterate">
+      <div class="sec-head reveal">
+        <div class="kcap">ITERATION</div>
+        <h2>迭代优化与体验升级</h2>
+        <p>每一次迭代，都让决策收口更轻、更准</p>
+      </div>
+      <div class="cmp">
+        <div class="crow reveal">
+          <div class="colbox old"><div class="ct">迭代前 · <b>记忆交互</b></div><ol>
+            <li>直白调取历史记录</li><li>用户易有「被窥探感」</li><li>负面体验率偏高</li></ol></div>
+          <div class="arrow">→</div>
+          <div class="colbox new"><div class="ct">迭代后 · <b>记忆交互</b></div><ol>
+            <li><b>征询式引用</b>历史</li><li>主动确认而非默认调取</li><li>负面体验率 <b>&lt; 5%</b></li></ol></div>
+        </div>
+        <div class="crow reveal">
+          <div class="colbox old"><div class="ct">迭代前 · <b>反向纠偏</b></div><ol>
+            <li>单点风险提示</li><li>用户常忽略盲点</li><li>触发率低</li></ol></div>
+          <div class="arrow">→</div>
+          <div class="colbox new"><div class="ct">迭代后 · <b>反向纠偏</b></div><ol>
+            <li><b>反事实预演卡片</b></li><li>把代价直接摊开</li><li>触发成功率 <b>&gt; 70%</b></li></ol></div>
+        </div>
+        <div class="crow reveal">
+          <div class="colbox old"><div class="ct">迭代前 · <b>首页体验</b></div><ol>
+            <li>信息杂乱堆砌</li><li>入口不清晰</li><li>决策收口慢</li></ol></div>
+          <div class="arrow">→</div>
+          <div class="colbox new"><div class="ct">迭代后 · <b>首页体验</b></div><ol>
+            <li><b>场景化入口</b></li><li>一眼找到纠结类型</li><li>决策收口效率提升</li></ol></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- (8) 质量与风控 -->
+    <section class="sec" id="quality">
+      <div class="sec-head reveal">
+        <div class="kcap">QUALITY</div>
+        <h2>质量与风控体系</h2>
+        <p>多维度测试 + 全流程风控，保障稳定合规</p>
+      </div>
+      <div class="qg">
+        <div class="ring reveal">
+          <svg viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="50" fill="none" stroke="var(--divider)" stroke-width="10"/>
+            <circle id="ringProg" cx="60" cy="60" r="50" fill="none" stroke="url(#g2)" stroke-width="10"
+              stroke-linecap="round" stroke-dasharray="314" stroke-dashoffset="314" transition="stroke-dashoffset 1.6s ease"/>
+            <defs><linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E0D4F0"/><stop offset="1" stop-color="#E98A68"/></linearGradient></defs>
+          </svg>
+          <div class="rt"><div class="n" id="ringNum">0</div><div class="l">测试覆盖度</div></div>
+        </div>
+        <div class="desc reveal">
+          <h3>测试维度与风控机制</h3>
+          <div class="item"><div class="t">多维度测试</div><div class="d">覆盖正常流程、矛盾需求、情绪化输入、跨场景记忆等关键路径。</div></div>
+          <div class="item"><div class="t">Agent 4 全流程风控</div><div class="d">代价预演 Agent 同时承担合规与稳定性校验，保障输出安全。</div></div>
+          <div class="item"><div class="t">标签沉淀</div><div>
+            <span class="pill">正常流程</span><span class="pill">矛盾需求</span><span class="pill">情绪化输入</span><span class="pill">跨场景记忆</span><span class="pill">合规校验</span>
+          </div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- (9) 资产沉淀 -->
+    <section class="sec" id="assets">
+      <div class="sec-head reveal">
+        <div class="kcap">ASSETS</div>
+        <h2>不只是上线 · 是把方法变成可复用资产</h2>
+        <p>两份可交付物：分层全场景测试集 / 迭代方案与复盘。点击预览。</p>
+      </div>
+      <div class="ass">
+        <div class="afile reveal">
+          <div class="preview">
+            <span class="tag">.xlsx</span>
+            <div class="ln"></div><div class="ln s"></div><div class="ln"></div><div class="ln t"></div>
+          </div>
+          <div class="meta">
+            <h4>全场景测试集</h4>
+            <p>分层用例 / 真实场景覆盖</p>
+            <div class="ft"><span>v1.5 · 18 KB</span><a href="HuanZe-TestSet.xlsx" target="_blank" rel="noopener">预览 →</a></div>
+          </div>
+        </div>
+        <div class="afile reveal">
+          <div class="preview">
+            <span class="tag">.pdf</span>
+            <div class="ln"></div><div class="ln t"></div><div class="ln s"></div><div class="ln"></div>
+          </div>
+          <div class="meta">
+            <h4>迭代方案与复盘</h4>
+            <p>v1.0 → v1.5 完整决策记录</p>
+            <div class="ft"><span>v1.5 · 4 页 · 13 KB</span><a href="HuanZe-Review.pdf" target="_blank" rel="noopener">预览 →</a></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- (10) 数据迭代与收尾 -->
+    <section class="sec end" id="end">
+      <div class="sec-head reveal">
+        <div class="kcap">DATA & CLOSE</div>
+        <h2>数据迭代与收尾</h2>
+        <p>6 项核心埋点指标，驱动「数据—反馈—迭代」闭环</p>
+      </div>
+      <div class="data">
+        <div class="datac reveal"><div class="n">6</div><div class="l">核心埋点指标</div></div>
+        <div class="datac reveal"><div class="n">&lt;5%</div><div class="l">交互负面率</div></div>
+        <div class="datac reveal"><div class="n">&gt;70%</div><div class="l">纠偏触发率</div></div>
+      </div>
+      <div class="btns reveal">
+        <a class="btn btn-primary" href="huanzexingqiu-web/index.html" target="_blank" rel="noopener">打开网页版 ↗</a>
+        <a class="btn btn-doc" href="PRD-HuanZe.pdf" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;">
+            <path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9 13h6M9 17h6"/>
+          </svg>
+          查看 PRD ↗
+        </a>
+        <a class="btn btn-ghost" href="portfolio.html">返回作品集首页</a>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- 页脚 -->
+  <footer class="foot">
+    <div class="copy">韩佳雪 · AI 产品作品集</div>
+  </footer>
+
+<script>
+  // 深浅主题（与首页一致）
+  (function(){
+    var btn=document.getElementById('themeBtn');
+    var saved=localStorage.getItem('hx-theme');
+    if(saved==='dark'){document.body.classList.add('dark');btn.textContent='◐';}
+    btn.addEventListener('click',function(){
+      document.body.classList.toggle('dark');
+      var dark=document.body.classList.contains('dark');
+      btn.textContent='◐';
+      localStorage.setItem('hx-theme',dark?'dark':'light');
+    });
+  })();
+
+  // 滚动淡入
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
+
+  // 四 Agent 星轨点亮
+  var orbit=document.getElementById('orbitWrap');
+  var io2=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){orbit.classList.add('lit');io2.unobserve(e.target);}});},{threshold:.25});
+  io2.observe(orbit);
+
+  // 质量环形 + 数字滚动
+  var ringProg=document.getElementById('ringProg'), ringNum=document.getElementById('ringNum');
+  var io3=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){
+    ringProg.setAttribute('stroke-dashoffset','31'); // 90%
+    var cur=0,t=setInterval(function(){cur+=2;if(cur>=90){cur=90;clearInterval(t);}ringNum.textContent=cur+'%';},18);
+    io3.unobserve(e.target);}});},{threshold:.4});
+  io3.observe(ringProg);
+
+  // 场景标签切换
+  var scenes=[
+    ['租房','从通勤、预算到合租边界，把「租哪儿」拆成可比较的维度，避免被中介话术带着走。'],
+    ['职业','结合岗位与个人诉求，梳理「稳定 / 成长 / 兴趣」的权重，让跳槽或转行不再拍脑袋。'],
+    ['旅行','在预算、时间、体验之间做取舍，避开「攻略越看越乱」的决策疲劳。'],
+    ['购物','大额消费前先算清真实需求与替代方案，减少冲动与后悔。'],
+    ['健康','把就医、运动、作息等选择结构化呈现，辅助而非替代专业判断。'],
+    ['搬家','跨城 / 换房的多变量权衡，把琐碎事项收敛成可执行清单。'],
+    ['学习','选课、考证、技能投入的优先级排序，让时间花在更值得的地方。']
+  ];
+  var tabs=document.querySelectorAll('#sceneTabs .tab');
+  var st=document.getElementById('sceneTitle'),sd=document.getElementById('sceneDesc');
+  var panel=document.getElementById('scenePanel');
+  tabs.forEach(function(t){t.addEventListener('click',function(){
+    tabs.forEach(function(x){x.classList.remove('active');});
+    t.classList.add('active');
+    var i=+t.getAttribute('data-i');
+    panel.style.opacity=0;
+    setTimeout(function(){st.textContent=scenes[i][0];sd.textContent=scenes[i][1];panel.style.opacity=1;},150);
+  });});
+</script>
+</body>
+</html>

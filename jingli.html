@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>经历翻译官 · 详情 ｜ 韩佳雪</title>
+<style>
+  :root{
+    --bg:#FAF7F2;            /* 暖米白基底 */
+    --paper:#FFFFFF;
+    --paper-soft:#FDFBF7;
+    --card:var(--paper);
+    --card-soft:var(--paper-soft);
+    --text:#3A3532;         /* 深棕灰（避免纯黑） */
+    --text-2:#6B635C;       /* 加深至 AA 4.5:1 */
+    --text-3:#9A8F86;
+    --divider:#E5E2DE;
+    --divider-strong:#D8D2CA;
+    --c:#F5A98A;            /* 主色 柔珊瑚橙 */
+    --green:#B7C9B0;        /* 正向指标 */
+    --bluegray:#A8B5C0;     /* 次要信息 */
+    --on-c:#5a3320;         /* 主按钮文字（深棕） */
+    --doc-c:#3a5bd9;        /* 文档按钮（蓝） */
+    --shadow:0 2px 6px rgba(58,53,50,.05), 0 14px 34px rgba(58,53,50,.08);
+    --shadow-sm:0 1px 3px rgba(58,53,50,.05), 0 8px 20px rgba(58,53,50,.06);
+    --radius:10px;
+    --radius-btn:999px;
+    --maxw:1080px;
+    --font:"PingFang SC","Microsoft YaHei","Hiragino Sans GB","Helvetica Neue",Arial,sans-serif;
+    --serif:"Songti SC","STSong","SimSun",Georgia,"Times New Roman",serif;
+    --font-head:var(--serif);
+    --font-mono:"SF Mono","JetBrains Mono","Roboto Mono","Menlo",Consolas,monospace;
+  }
+  body.dark{
+    --bg:#2B2724; --paper:#34302B; --paper-soft:#2F2B27; --card:#34302B; --card-soft:#2F2B27;
+    --text:#EDE6DC; --text-2:#B7A99B; --text-3:#8C8074; --divider:#3D3731; --divider-strong:#4A433C;
+    --on-c:#F3D9C8; --doc-c:#9DB4F0;
+    --shadow:0 2px 6px rgba(0,0,0,.30), 0 14px 34px rgba(0,0,0,.42);
+    --shadow-sm:0 1px 3px rgba(0,0,0,.26), 0 8px 20px rgba(0,0,0,.32);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  html{scroll-behavior:smooth;}
+  /* 可访问性：焦点环 + 动效降级 */
+  :focus-visible{outline:2px solid var(--c);outline-offset:2px;border-radius:6px;}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important;}}
+  body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.8;
+    font-size:15px;letter-spacing:.2px;-webkit-font-smoothing:antialiased;font-weight:400;
+    transition:background .4s ease,color .4s ease;overflow-x:hidden;}
+  /* 宣纸颗粒纹理（加强） */
+  body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.085;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+  body.dark::before{opacity:.05;}
+  /* 横格信纸线（人文纸感） */
+  body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.42;
+    background-image:repeating-linear-gradient(0deg,transparent 0 33px,color-mix(in srgb,var(--divider) 72%,transparent) 33px 34px);
+    -webkit-mask-image:linear-gradient(90deg,transparent 5%,#000 15%,#000 85%,transparent 95%);
+    mask-image:linear-gradient(90deg,transparent 5%,#000 15%,#000 85%,transparent 95%);}
+  body.dark::after{opacity:.2;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;}
+
+  /* ===== 顶栏（三页统一） ===== */
+  .topbar{position:sticky;top:0;z-index:60;backdrop-filter:saturate(140%) blur(10px);
+    background:color-mix(in srgb,var(--bg) 82%,transparent);border-bottom:1px solid var(--divider);
+    transition:background .4s ease,border-color .4s ease;}
+  .topbar .row{max-width:var(--maxw);margin:0 auto;padding:13px 24px;display:flex;align-items:center;justify-content:space-between;}
+  .back{text-decoration:none;color:var(--text);font-size:14px;font-weight:600;display:inline-flex;align-items:center;gap:7px;
+    border:1px solid var(--divider);background:var(--card);padding:8px 15px;border-radius:999px;box-shadow:var(--shadow-sm);
+    transition:transform .15s ease,border-color .15s ease;}
+  .back:hover{transform:translateY(-2px);border-color:var(--c);}
+  .brand{font-weight:800;letter-spacing:.5px;font-size:15px;}
+  .brand span{color:var(--text-2);font-weight:600;font-size:12.5px;margin-left:6px;}
+  .theme-btn{border:1px solid var(--divider);background:var(--card);color:var(--text);width:40px;height:40px;border-radius:50%;
+    cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm);
+    transition:transform .15s ease,border-color .15s ease,background .4s ease;}
+  .theme-btn:hover{transform:translateY(-2px);border-color:var(--c);}
+
+  /* ===== 通用 section（三页统一） ===== */
+  .sec{padding:64px 0;}
+  .sec-head{text-align:center;margin-bottom:40px;}
+  .sec-head .eyebrow,.sec-head .kcap,.sec-head .num{display:inline-block;font-family:var(--font-mono);font-size:11.5px;letter-spacing:2.5px;font-weight:700;
+    color:var(--c);margin-bottom:10px;text-transform:uppercase;}
+  .sec-head h2{font-family:var(--font-head);font-size:28px;font-weight:800;letter-spacing:.5px;line-height:1.3;}
+  .sec-head p{margin-top:9px;color:var(--text-2);font-size:14.5px;max-width:560px;margin-left:auto;margin-right:auto;line-height:1.8;}
+
+  /* 按钮（家族统一，颜色随主题） */
+  .btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:700;font-size:14.5px;
+    padding:13px 27px;border-radius:var(--radius-btn);cursor:pointer;
+    transition:transform .15s ease,box-shadow .2s ease,border-color .2s ease,background .2s ease,color .2s ease;}
+  .btn-primary{background:var(--c);color:var(--on-c);border:1px solid var(--c);box-shadow:var(--shadow-sm);}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:var(--shadow);}
+  .btn-ghost{background:transparent;color:var(--text);border:1.5px solid var(--divider-strong);}
+  .btn-ghost:hover{transform:translateY(-2px);border-color:var(--c);color:var(--c);}
+  .btn-doc{background:transparent;color:var(--doc-c,var(--c));border:1.5px solid var(--doc-c,var(--c));}
+  .btn-doc:hover{transform:translateY(-2px);background:var(--doc-c,var(--c));color:#fff;}
+  .btn.disabled,.btn[aria-disabled="true"]{background:var(--card-soft);color:var(--text-2);border:1px solid var(--divider);box-shadow:none;cursor:default;}
+  .btn.disabled:hover,.btn[aria-disabled="true"]:hover{transform:none;}
+
+  /* ===== (1) 档案封面首屏 ===== */
+  .cover{position:relative;padding:84px 0 58px;text-align:center;}
+  .cover .cover-inner{position:relative;max-width:760px;margin:0 auto;padding:48px 40px 40px;
+    background:linear-gradient(180deg,var(--paper),var(--paper-soft));
+    border:1.5px solid var(--divider);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;}
+  /* 封面档案袋：封口胶带 + 装订线 */
+  .cover .cover-inner::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);
+    width:168px;height:28px;background:repeating-linear-gradient(90deg,color-mix(in srgb,var(--c) 34%,transparent) 0 8px,transparent 8px 15px);
+    border-radius:0 0 7px 7px;box-shadow:0 2px 6px rgba(58,53,50,.06);}
+  .cover .cover-inner::after{content:"";position:absolute;left:18px;top:56px;bottom:26px;width:2px;
+    background:color-mix(in srgb,var(--c) 42%,transparent);border-radius:2px;}
+  .cover .cover-inner>*{position:relative;z-index:2;}
+  .cover .tagline{display:inline-block;font-size:12px;font-weight:700;letter-spacing:1.5px;color:var(--c);
+    background:color-mix(in srgb,var(--c) 14%,transparent);padding:6px 14px;border-radius:999px;margin-bottom:22px;}
+  .cover .seals{display:flex;justify-content:center;gap:18px;margin-bottom:8px;}
+  .seal-chip{font-family:var(--serif);font-size:13px;font-weight:700;color:#8a4a2f;border:1.5px dashed var(--c);
+    padding:3px 9px;border-radius:4px;background:color-mix(in srgb,var(--c) 8%,transparent);transform:rotate(-4deg);}
+  .seal-chip.r{transform:rotate(4deg);}
+  .cover h1{font-family:var(--serif);font-size:54px;line-height:1.15;font-weight:800;letter-spacing:2px;margin-bottom:18px;}
+  .cover .sub{font-size:17px;color:var(--text-2);max-width:560px;margin:0 auto;line-height:1.95;}
+  .cover .base-label{margin-top:20px;font-size:13.5px;font-weight:700;color:var(--text-2);letter-spacing:.5px;}
+  .cover .seam{position:relative;max-width:420px;margin:22px auto 0;height:1px;}
+  .cover .seam::before{content:"";position:absolute;left:0;right:0;top:0;border-top:1px dashed var(--divider);}
+  .cover .seam .stamp{position:absolute;right:0;top:-22px;width:42px;height:42px;border-radius:50%;border:2px solid var(--c);
+    color:var(--c);font-family:var(--serif);font-weight:800;font-size:18px;display:flex;align-items:center;justify-content:center;
+    background:color-mix(in srgb,var(--c) 10%,transparent);transform:rotate(-8deg);}
+  .cover .cta{margin-top:30px;text-align:right;}
+
+  /* ===== (2) 痛点便签 ===== */
+  .split{display:grid;grid-template-columns:1fr 1.05fr;gap:40px;align-items:start;}
+  .split .lead h3{font-family:var(--serif);font-size:20px;font-weight:800;margin-bottom:14px;}
+  .split .lead p{color:var(--text);font-size:14.5px;margin-bottom:14px;line-height:1.95;}
+  .split .lead .blk{background:var(--paper-soft);border:1px solid var(--divider);border-radius:var(--radius);
+    padding:16px 18px;margin-bottom:14px;box-shadow:var(--shadow-sm);}
+  .split .lead .blk b{color:var(--c);}
+  .notes{display:flex;flex-direction:column;gap:18px;}
+  .note{position:relative;background:var(--paper);border:1px solid var(--divider);border-radius:8px;
+    padding:18px 20px 18px 54px;box-shadow:var(--shadow-sm);transition:transform .2s ease,box-shadow .2s ease;
+    font-size:14px;line-height:1.8;}
+  .note:nth-child(1){transform:rotate(-2.2deg);}
+  .note:nth-child(2){transform:rotate(1.6deg);}
+  .note:nth-child(3){transform:rotate(-1.4deg);}
+  .note:hover{transform:rotate(0) translateY(-4px);box-shadow:var(--shadow);}
+  .note::before{content:"";position:absolute;top:-7px;left:50%;transform:translateX(-50%);
+    width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#c0584a 58%,#8a3a2c);
+    box-shadow:0 2px 5px rgba(58,53,50,.3);z-index:3;} /* 图钉 */
+  .note .ic{position:absolute;left:18px;top:18px;width:26px;height:26px;color:var(--c);}
+  .note b{display:block;margin-bottom:3px;font-size:14.5px;}
+
+  /* ===== (3) 价值卡 ===== */
+  .vgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .vcard{position:relative;background:var(--paper);border:1px solid var(--divider);border-radius:var(--radius);
+    padding:26px 22px;box-shadow:var(--shadow-sm);overflow:hidden;transition:transform .2s ease,box-shadow .2s ease;}
+  .vcard:hover{transform:translateY(-5px);box-shadow:var(--shadow);}
+  .vcard .vtag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.5px;color:#8a4a2f;
+    background:color-mix(in srgb,var(--c) 14%,transparent);padding:4px 10px;border-radius:6px;margin-bottom:14px;}
+  .vcard h3{font-size:18px;font-weight:800;margin-bottom:8px;}
+  .vcard p{color:var(--text-2);font-size:13.5px;line-height:1.85;}
+  .vcard .fold{position:absolute;top:0;right:0;width:0;height:0;border-top:22px solid var(--divider);
+    border-left:22px solid transparent;} /* 折角 */
+  .vcard .fold::after{content:"";position:absolute;top:-22px;right:0;width:0;height:0;
+    border-top:22px solid var(--paper);border-left:22px solid transparent;}
+
+  /* ===== (4) 功能闭环流程 ===== */
+  .flow{position:relative;background:var(--paper);border:1px solid var(--divider);border-radius:var(--radius);
+    padding:34px 26px 30px;box-shadow:var(--shadow-sm);}
+  .flow-steps{position:relative;display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+  .flow-steps .rail{position:absolute;top:25px;left:6%;right:6%;height:2px;border-top:2px dashed var(--divider);}
+  .flow-steps .prog{position:absolute;top:25px;left:6%;height:2px;width:0;
+    background:linear-gradient(90deg,var(--c),color-mix(in srgb,var(--c) 60%,#fff));transition:width 1.7s ease;}
+  .flow-steps.lit .prog{width:88%;}
+  .step{flex:1;min-width:120px;text-align:center;position:relative;z-index:2;}
+  .step .num{width:50px;height:50px;margin:0 auto 12px;border-radius:50%;border:2px solid var(--c);
+    background:var(--paper);color:var(--c);font-weight:800;font-size:18px;display:flex;align-items:center;justify-content:center;
+    opacity:.4;transition:opacity .4s ease,transform .4s ease,background .4s ease;}
+  .flow-steps.lit .step .num{opacity:1;background:color-mix(in srgb,var(--c) 14%,var(--paper));}
+  .flow-steps.lit .step:nth-child(3) .num{transition-delay:.15s}
+  .flow-steps.lit .step:nth-child(4) .num{transition-delay:.3s}
+  .flow-steps.lit .step:nth-child(5) .num{transition-delay:.45s}
+  .flow-steps.lit .step:nth-child(6) .num{transition-delay:.6s}
+  .flow-steps.lit .step:nth-child(7) .num{transition-delay:.75s}
+  .step .t{font-weight:700;font-size:13.5px;}
+  .step .d{color:var(--text-2);font-size:12px;margin-top:2px;}
+
+  /* ===== (5) 功能卡 + 弹窗 ===== */
+  .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+  .fcard{position:relative;background:var(--paper);border:1px solid var(--divider);border-radius:var(--radius);
+    padding:24px 22px;box-shadow:var(--shadow-sm);cursor:pointer;transition:transform .2s ease,box-shadow .2s ease;overflow:hidden;}
+  .fcard:hover{transform:translateY(-5px);box-shadow:var(--shadow);}
+  .fcard .corner{position:absolute;top:0;right:0;width:0;height:0;border-top:20px solid var(--c);border-left:20px solid transparent;opacity:.85;}
+  .fcard .corner::after{content:"";position:absolute;top:-20px;right:0;border-top:20px solid var(--paper);border-left:20px solid transparent;}
+  .fcard h3{font-size:17.5px;font-weight:800;margin-bottom:6px;padding-right:18px;}
+  .fcard .scene{color:var(--text-2);font-size:13px;margin-bottom:14px;line-height:1.75;}
+  .fcard .thumb{height:96px;border:1px dashed var(--divider);border-radius:8px;margin-bottom:14px;position:relative;
+    background:repeating-linear-gradient(180deg,transparent 0 16px,color-mix(in srgb,var(--c) 12%,transparent) 16px 17px);}
+  .fcard .thumb .badge{position:absolute;bottom:8px;right:8px;font-size:10.5px;font-weight:700;color:var(--c);
+    background:color-mix(in srgb,var(--c) 14%,transparent);padding:3px 8px;border-radius:5px;}
+  .fcard .thought{font-size:13px;color:var(--text);line-height:1.8;}
+  .fcard .more{margin-top:12px;font-size:12.5px;font-weight:700;color:var(--c);}
+
+  .modal{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:24px;
+    background:rgba(43,39,36,.42);backdrop-filter:blur(3px);}
+  .modal.open{display:flex;}
+  .modal .box{background:var(--paper);border:1px solid var(--divider);border-radius:14px;max-width:540px;width:100%;
+    padding:30px 28px;box-shadow:var(--shadow);position:relative;max-height:86vh;overflow:auto;
+    animation:pop .25s ease;}
+  @keyframes pop{from{opacity:0;transform:scale(.96) translateY(10px)}to{opacity:1;transform:none}}
+  .modal .box .corner{position:absolute;top:0;right:0;width:0;height:0;border-top:22px solid var(--c);border-left:22px solid transparent;}
+  .modal .box h3{font-size:20px;font-weight:800;margin-bottom:14px;padding-right:18px;}
+  .modal .box .label{font-size:12px;font-weight:700;color:var(--c);letter-spacing:.5px;margin-bottom:6px;}
+  .modal .box p{font-size:14px;line-height:1.9;margin-bottom:14px;}
+  .modal .close{position:absolute;top:14px;right:16px;width:30px;height:30px;border-radius:50%;border:1px solid var(--divider);
+    background:var(--paper-soft);cursor:pointer;font-size:16px;color:var(--text-2);}
+  .modal .close:hover{border-color:var(--c);color:var(--c);}
+
+  /* ===== (6) 技术架构 ===== */
+  .arch{display:flex;flex-direction:column;gap:0;max-width:820px;margin:0 auto;}
+  .layer{position:relative;background:var(--paper);border:1.5px dashed var(--divider);border-radius:10px;
+    padding:22px 24px 22px 76px;box-shadow:var(--shadow-sm);}
+  .layer+.layer{margin-top:18px;}
+  .layer .idx{position:absolute;left:22px;top:22px;width:40px;height:40px;border-radius:8px;background:var(--c);
+    color:#5a3320;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;}
+  .layer h3{font-size:17px;font-weight:800;margin-bottom:5px;}
+  .layer .en{font-size:11.5px;letter-spacing:1px;color:var(--text-2);font-weight:700;margin-bottom:8px;}
+  .layer p{font-size:13.5px;color:var(--text-2);line-height:1.85;}
+
+  /* ===== (7) 成果印章 ===== */
+  .res{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+  .rcard{text-align:center;}
+  .rcard .stamp{width:158px;height:158px;margin:0 auto 16px;border-radius:50%;border:2.5px dashed var(--c);
+    background:color-mix(in srgb,var(--c) 8%,transparent);display:flex;flex-direction:column;align-items:center;justify-content:center;
+    box-shadow:inset 0 0 0 6px color-mix(in srgb,var(--c) 10%,transparent), var(--shadow-sm);
+    animation:stampIn .6s cubic-bezier(.2,1.5,.4,1) both;}
+  @keyframes stampIn{0%{transform:scale(1.55) rotate(-14deg);opacity:0}60%{opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
+  .rcard .num{font-family:var(--serif);font-size:34px;font-weight:800;color:#8a4a2f;line-height:1.1;}
+  .rcard .num small{font-size:18px;}
+  .rcard .lab{font-size:14px;font-weight:700;}
+  .rcard .desc{font-size:12.5px;color:var(--text-2);margin-top:4px;}
+
+  /* ===== (8) 设计亮点 ===== */
+  .hl{display:flex;flex-direction:column;gap:0;max-width:820px;margin:0 auto;border-left:2px dashed var(--divider);padding-left:24px;}
+  .hl .item{position:relative;padding:14px 0 14px 6px;}
+  .hl .item::before{content:"";position:absolute;left:-33px;top:18px;width:14px;height:14px;border-radius:50%;
+    background:var(--paper);border:2px solid var(--c);}
+  .hl .item h3{font-size:16px;font-weight:800;margin-bottom:3px;}
+  .hl .item p{color:var(--text-2);font-size:13.5px;line-height:1.85;}
+
+  /* ===== (9) 收尾 ===== */
+  .end{text-align:center;padding:20px 0 12px;}
+  .end .btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:18px;}
+  .end .meta{color:var(--text-2);font-size:12.5px;}
+
+  /* ===== 页脚（三页统一） ===== */
+  .foot{padding:40px 0 46px;text-align:center;border-top:1px solid var(--divider);margin-top:30px;}
+  .foot .copy{color:var(--text-2);font-size:12.5px;letter-spacing:.3px;}
+
+  /* 滚动淡入（三页统一） */
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s ease;}
+  .reveal.in{opacity:1;transform:none;}
+
+  @media (max-width:860px){ .sec-head h2{font-size:23px;} }
+
+  @media (max-width:860px){
+    .cover h1{font-size:40px;}
+    .split{grid-template-columns:1fr;gap:26px;}
+    .vgrid{grid-template-columns:1fr;}
+    .fgrid{grid-template-columns:1fr;}
+    .res{grid-template-columns:1fr;gap:30px;}
+    .flow-steps .rail,.flow-steps .prog{display:none;}
+    .step{min-width:45%;}
+    .cover .cta{text-align:center;}
+  }
+</style>
+</head>
+<body>
+
+  <!-- 顶栏 -->
+  <div class="topbar">
+    <div class="row">
+      <a class="back" href="portfolio.html">← 返回作品集首页</a>
+      <div class="brand">经历翻译官 <span>· 详情</span></div>
+      <button class="theme-btn" id="themeBtn" title="切换深浅主题" aria-label="切换深色模式">◐</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <!-- (1) 档案封面首屏 -->
+    <section class="cover" id="cover">
+      <div class="cover-inner reveal">
+        <span class="tagline">AI 求职工具 · RAG 架构</span>
+        <div class="seals">
+          <span class="seal-chip">档</span>
+          <span class="seal-chip r">案</span>
+        </div>
+        <h1>经历翻译官</h1>
+        <p class="sub">把零散的职业过往，翻译成面试官听得懂的专业语言</p>
+        <div class="base-label">全链路求职能力迁移诊断工具</div>
+        <div class="seam"><span class="stamp">译</span></div>
+        <div class="cta">
+          <a class="btn btn-primary" href="index.html" target="_blank" rel="noopener">在线体验 ↗</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- (2) 项目背景与用户痛点 -->
+    <section class="sec" id="pain">
+      <div class="sec-head reveal">
+        <div class="kcap">BACKGROUND</div>
+        <h2>项目背景与用户痛点</h2>
+        <p>通用 AI 改写千篇一律，而真实的求职陪伴需要温度与边界</p>
+      </div>
+      <div class="split">
+        <div class="lead reveal">
+          <h3>目标用户</h3>
+          <p>应届生、跨行业求职者——他们手里往往有真实的经历，却不知道如何把它讲成「专业语言」。</p>
+          <div class="blk"><b>同质化严重</b>：通用 AI 简历改写产出模板化文案，缺乏个人语气与岗位针对性。</div>
+          <div class="blk"><b>匹配度低</b>：经历与岗位之间的能力映射模糊，用户难以判断「我到底够不够格」。</div>
+          <div class="blk"><b>隐私顾虑</b>：简历包含大量敏感信息，用户不愿把它交给不知名的云端服务。</div>
+        </div>
+        <div class="notes reveal">
+          <div class="note">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+            <b>经历不会提炼</b>做了很多事，却说不清「我到底擅长什么、价值在哪」。
+          </div>
+          <div class="note">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>
+            <b>岗位匹配度低</b>投了很多岗位石沉大海，却得不到任何结构化反馈。
+          </div>
+          <div class="note">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+            <b>隐私安全顾虑</b>简历是高度敏感资料，不敢随意上传到陌生 AI 工具。
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- (3) 产品定位与核心价值 -->
+    <section class="sec" id="value">
+      <div class="sec-head reveal">
+        <div class="kcap">POSITIONING</div>
+        <h2>产品定位与核心价值</h2>
+        <p>主打「温和求职、能力转译」的求职陪练，不贩卖焦虑</p>
+      </div>
+      <div class="vgrid">
+        <div class="vcard reveal"><span class="fold"></span>
+          <span class="vtag">价值 01</span>
+          <h3>精准能力拆解</h3>
+          <p>把零散经历拆成可复用、可举证的能力标签，让用户先看清自己。</p>
+        </div>
+        <div class="vcard reveal"><span class="fold"></span>
+          <span class="vtag">价值 02</span>
+          <h3>多版本简历优化</h3>
+          <p>同一段经历，生成不同侧重的改写版本，匹配不同岗位叙事。</p>
+        </div>
+        <div class="vcard reveal"><span class="fold"></span>
+          <span class="vtag">价值 03</span>
+          <h3>本地隐私存储</h3>
+          <p>简历与诊断数据仅存于浏览器本地，不上传服务器，安心使用。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- (4) 全链路功能闭环 -->
+    <section class="sec" id="loop">
+      <div class="sec-head reveal">
+        <div class="kcap">WORKFLOW</div>
+        <h2>全链路功能闭环</h2>
+        <p>从录入到成长规划，一条温和不焦虑的求职陪伴路径</p>
+      </div>
+      <div class="flow reveal">
+        <div class="flow-steps" id="flowSteps">
+          <div class="rail"></div><div class="prog"></div>
+          <div class="step"><div class="num">1</div><div class="t">深度录入</div><div class="d">简历粘贴 / 上传</div></div>
+          <div class="step"><div class="num">2</div><div class="t">经历拆解</div><div class="d">结构化抽取</div></div>
+          <div class="step"><div class="num">3</div><div class="t">能力评估</div><div class="d">可迁移能力</div></div>
+          <div class="step"><div class="num">4</div><div class="t">简历改写</div><div class="d">三版侧重</div></div>
+          <div class="step"><div class="num">5</div><div class="t">面试题库</div><div class="d">STAR 应答</div></div>
+          <div class="step"><div class="num">6</div><div class="t">成长规划</div><div class="d">补强路径</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- (5) 核心功能模块详解 -->
+    <section class="sec" id="features">
+      <div class="sec-head reveal">
+        <div class="kcap">MODULES</div>
+        <h2>核心功能模块详解</h2>
+        <p>六大模块，对应报告的不同章节——点击卡片查看设计思路</p>
+      </div>
+      <div class="fgrid" id="fgrid">
+        <div class="fcard reveal" data-title="经历核心信息"
+             data-scene="粘贴或上传简历，自动提取教育、工作、项目等关键字段，并保留你的原始表达。"
+             data-thought="用 OCR + 结构化解析降低录入门槛，让诊断从「会写简历的人」开始，而不是把门槛转嫁给用户。">
+          <span class="corner"></span>
+          <h3>经历核心信息</h3>
+          <div class="scene">粘贴 / 上传简历，自动提取关键信息字段。</div>
+          <div class="thumb"><span class="badge">界面示意</span></div>
+          <div class="thought">OCR + 结构化解析，降低录入门槛，保留原始表达。</div>
+          <div class="more">查看设计思路 →</div>
+        </div>
+        <div class="fcard reveal" data-title="可迁移能力"
+             data-scene="把零散经历翻译成跨岗位可复用的能力标签与证据。"
+             data-thought="以能力模型为锚，弱化行业术语壁垒，凸显用户底层的、可迁移的竞争力。">
+          <span class="corner"></span>
+          <h3>可迁移能力</h3>
+          <div class="scene">将经历映射为跨岗位可复用的能力标签。</div>
+          <div class="thumb"><span class="badge">界面示意</span></div>
+          <div class="thought">以能力模型为锚，弱化术语壁垒，凸显底层竞争力。</div>
+          <div class="more">查看设计思路 →</div>
+        </div>
+        <div class="fcard reveal" data-title="岗位匹配度"
+             data-scene="输入目标 JD，给出匹配度评分与差距清单。"
+             data-thought="关键词 + 语义双路比对，并为每条结论附上置信度分级，让用户知道「哪条结论更可信」。"
+             data-confidence="是">
+          <span class="corner"></span>
+          <h3>岗位匹配度</h3>
+          <div class="scene">输入目标 JD，输出匹配度评分与差距清单。</div>
+          <div class="thumb"><span class="badge">界面示意</span></div>
+          <div class="thought">双路比对 + 置信度分级，结论可解释、可信任。</div>
+          <div class="more">查看设计思路 →</div>
+        </div>
+        <div class="fcard reveal" data-title="简历优化文案"
+             data-scene="一键生成三版不同侧重的简历改写。"
+             data-thought="支持单段落局部改写，避免整篇模板化，保留个人语气与真实痕迹。"
+             data-confidence="是">
+          <span class="corner"></span>
+          <h3>简历优化文案</h3>
+          <div class="scene">一键生成三版不同侧重的简历改写。</div>
+          <div class="thumb"><span class="badge">界面示意</span></div>
+          <div class="thought">单段落局部改写，拒绝整篇模板化，保留个人语气。</div>
+          <div class="more">查看设计思路 →</div>
+        </div>
+        <div class="fcard reveal" data-title="面试问答素材"
+             data-scene="针对每段经历生成高频追问与应答要点。"
+             data-thought="围绕 STAR 结构拆解，提供可背诵、也可临场发挥的话术，降低面试焦虑。"
+             data-confidence="是">
+          <span class="corner"></span>
+          <h3>面试问答素材</h3>
+          <div class="scene">针对经历生成高频追问与应答要点。</div>
+          <div class="thumb"><span class="badge">界面示意</span></div>
+          <div class="thought">STAR 结构拆解，提供可背诵、可临场发挥的话术。</div>
+          <div class="more">查看设计思路 →</div>
+        </div>
+        <div class="fcard reveal" data-title="求职提升建议"
+             data-scene="给出短期可落地的能力补强路径。"
+             data-thought="结合岗位差距与用户当前阶段，分层给出建议，不空谈、不做焦虑营销。"
+             data-confidence="是">
+          <span class="corner"></span>
+          <h3>求职提升建议</h3>
+          <div class="scene">给出短期可落地的能力补强路径。</div>
+          <div class="thumb"><span class="badge">界面示意</span></div>
+          <div class="thought">结合差距与阶段，分层建议，不空谈、不贩卖焦虑。</div>
+          <div class="more">查看设计思路 →</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- (6) 技术架构说明 -->
+    <section class="sec" id="arch">
+      <div class="sec-head reveal">
+        <div class="kcap">ARCHITECTURE</div>
+        <h2>技术架构说明</h2>
+        <p>前端轻、原型快、自研准——三层各司其职</p>
+      </div>
+      <div class="arch">
+        <div class="layer reveal"><div class="idx">01</div>
+          <h3>前端层</h3><div class="en">FRONTEND</div>
+          <p>原生 HTML 单页实现，本地存储（LocalStorage）保障隐私，零后端依赖即可体验核心流程。</p>
+        </div>
+        <div class="layer reveal"><div class="idx">02</div>
+          <h3>原型层</h3><div class="en">PROTOTYPE · COZE</div>
+          <p>Coze（扣子）搭建工作流，用于方案验证与演示，快速跑通「输入—诊断—输出」闭环。</p>
+        </div>
+        <div class="layer reveal"><div class="idx">03</div>
+          <h3>自研层</h3><div class="en">SELF-BUILT · RAG</div>
+          <p>LangChain + RAG 检索增强生成，结合岗位知识库提升内容精准度，降低模型幻觉。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- (7) 核心成果数据 -->
+    <section class="sec" id="result">
+      <div class="sec-head reveal">
+        <div class="kcap">RESULTS</div>
+        <h2>核心成果数据</h2>
+        <p>用可量化的指标，替代「感觉好像有用」</p>
+      </div>
+      <div class="res">
+        <div class="rcard reveal"><div class="stamp"><div class="num">85<small>%+</small></div></div>
+          <div class="lab">岗位内容匹配度</div><div class="desc">关键能力项与 JD 的对齐程度</div></div>
+        <div class="rcard reveal"><div class="stamp"><div class="num">&lt;5<small>%</small></div></div>
+          <div class="lab">模型幻觉发生率</div><div class="desc">经评测集校验的失准比例</div></div>
+        <div class="rcard reveal"><div class="stamp"><div class="num">全链路</div></div>
+          <div class="lab">自动化闭环覆盖</div><div class="desc">录入→诊断→改写→规划贯通</div></div>
+      </div>
+    </section>
+
+    <!-- (8) 设计亮点总结 -->
+    <section class="sec" id="highlights">
+      <div class="sec-head reveal">
+        <div class="kcap">HIGHLIGHTS</div>
+        <h2>设计亮点总结</h2>
+        <p>四个贯穿全程的产品取舍</p>
+      </div>
+      <div class="hl">
+        <div class="item reveal"><h3>双模式输入</h3><p>支持自由文本粘贴与结构化引导录入，兼顾效率与完整度。</p></div>
+        <div class="item reveal"><h3>单段落局部改写</h3><p>可只改某一段，而非整篇重写，保留用户真实语气与个人痕迹。</p></div>
+        <div class="item reveal"><h3>本地隐私存储</h3><p>简历与诊断数据仅存浏览器本地，不上传服务器，安心使用。</p></div>
+        <div class="item reveal"><h3>置信度分级体系</h3><p>每条结论标注可信等级，让用户知道「哪条更值得参考」。</p></div>
+      </div>
+    </section>
+
+    <!-- (9) 入口与收尾 -->
+    <section class="sec end" id="end">
+      <div class="reveal">
+        <div class="btns">
+          <a class="btn btn-primary" href="index.html" target="_blank" rel="noopener">在线体验 Demo ↗</a>
+          <a class="btn btn-doc" href="PRD-Experience.pdf" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;">
+              <path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9 13h6M9 17h6"/>
+            </svg>
+            查看 PRD ↗
+          </a>
+          <a class="btn btn-ghost" href="portfolio.html">返回作品集首页</a>
+        </div>
+        <div class="meta">项目角色：AI 产品设计师（0→1 定义与交互）｜ 周期：2026</div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- 功能卡弹窗 -->
+  <div class="modal" id="modal">
+    <div class="box">
+      <button class="close" id="modalClose">×</button>
+      <span class="corner"></span>
+      <h3 id="mTitle">模块</h3>
+      <div class="label">场景说明</div>
+      <p id="mScene"></p>
+      <div class="label">设计思路</div>
+      <p id="mThought"></p>
+    </div>
+  </div>
+
+  <!-- 页脚 -->
+  <footer class="foot">
+    <div class="copy">韩佳雪 · AI 产品作品集</div>
+  </footer>
+
+<script>
+  // 深浅主题（与首页一致）
+  (function(){
+    var btn=document.getElementById('themeBtn');
+    var saved=localStorage.getItem('hx-theme');
+    if(saved==='dark'){document.body.classList.add('dark');btn.textContent='◐';}
+    btn.addEventListener('click',function(){
+      document.body.classList.toggle('dark');
+      var dark=document.body.classList.contains('dark');
+      btn.textContent='◐';
+      localStorage.setItem('hx-theme',dark?'dark':'light');
+    });
+  })();
+
+  // 滚动淡入
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
+
+  // 流程点亮
+  var flowSteps=document.getElementById('flowSteps');
+  var io2=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){flowSteps.classList.add('lit');io2.unobserve(e.target);}});},{threshold:.3});
+  io2.observe(flowSteps);
+
+  // 封面滚动上移褪色
+  var cover=document.getElementById('cover');
+  window.addEventListener('scroll',function(){
+    var y=window.scrollY||document.documentElement.scrollTop;
+    if(y<420){cover.style.transform='translateY('+(y*0.12)+'px)';cover.style.opacity=Math.max(.25,1-y/380);}
+  },{passive:true});
+
+  // 功能卡弹窗
+  var modal=document.getElementById('modal');
+  document.querySelectorAll('.fcard').forEach(function(card){
+    card.addEventListener('click',function(){
+      document.getElementById('mTitle').textContent=card.getAttribute('data-title');
+      document.getElementById('mScene').textContent=card.getAttribute('data-scene');
+      document.getElementById('mThought').textContent=card.getAttribute('data-thought');
+      modal.classList.add('open');
+    });
+  });
+  function closeModal(){modal.classList.remove('open');}
+  document.getElementById('modalClose').addEventListener('click',closeModal);
+  modal.addEventListener('click',function(e){if(e.target===modal)closeModal();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
+</script>
+</body>
+</html>

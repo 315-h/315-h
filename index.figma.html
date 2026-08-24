@@ -887,7 +887,7 @@ const state = {
 /* 真实接口模式开关：默认 true → 打开网页即走本地 LangChain 后端（DeepSeek / Qwen）；
    后端未启动或无密钥时，generateReport / rewriteBlock / sendChat 会自动回落至内置演示数据，不会白屏；
    若想纯离线演示，手动关闭右上角「真实接口模式」开关即可 */
-let USE_REAL_API = true;
+let USE_REAL_API = false; /* Figma 原型专用：纯 mock，不发起任何后端请求，导入即见完整界面 */
 /* 页面加载时同步开关 UI（仅视觉，不弹确认）：真实接口模式默认开启 */
 (function syncRealApiUI(){
   const sw = document.getElementById('real-api-switch');
@@ -1873,6 +1873,24 @@ try{
 document.addEventListener('DOMContentLoaded', function(){
   const jr=document.getElementById('job-row');
   if(jr && jr.children.length===0){ renderJobs(); updateHomeHint(); }
+
+  /* ===== Figma 产品原型专用：预渲染一份完整示例报告，使导入即见全貌 =====
+     纯前端 generateMockReport 生成，不依赖任何网络/后端；默认直接展示报告页，
+     首屏录入区仍在 DOM 中可被查看。拖入 Figma（html.to.design 等插件）即得到带内容的原型。 */
+  try {
+    const demoInput = {
+      job: '产品经理',
+      style: '通用平衡',
+      stage: '中级（3-5年）',
+      jobDesc: '负责 B 端 SaaS 产品从 0 到 1，搭建增长漏斗与核心数据看板，协同产研与运营推动关键功能上线，核心模块月活提升 38%。'
+    };
+    const demoReport = generateMockReport(demoInput);
+    state.report = demoReport;
+    state.meta = { job: demoInput.job, mode: 'deep', stage: demoInput.stage, style: demoInput.style, modules: MODULES.slice() };
+    renderReport(demoReport, state.meta);
+    const jt = document.getElementById('raw-text'); if (jt) jt.value = demoInput.jobDesc;
+    showPage('report'); /* 原型优先展示完整报告页 */
+  } catch(e){ console.warn('figma prerender skipped:', e); }
 });
 </script>
 

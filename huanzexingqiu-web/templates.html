@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>抉择模板库 · 缓择星球</title>
+  <meta name="description" content="纯工具类决策模板，无需调用 AI，本地梳理利弊。" />
+  <link rel="stylesheet" href="assets/css/theme.css" />
+</head>
+<body>
+
+  <!-- 顶部导航 -->
+  <div id="nav-mount"></div>
+
+  <!-- 模板库主区 -->
+  <main class="container page-hero">
+    <section class="section">
+      <div id="tpl-index">
+        <h1>抉择模板库</h1>
+        <p class="lead" style="margin:12px 0 32px;">纯工具类决策模板，无需调用 AI，本地梳理利弊</p>
+        <div class="tpl-grid" id="tpl-grid"></div>
+      </div>
+      <div id="tpl-fill" style="display:none;">
+        <div class="tpl-fill-head">
+          <a class="btn btn-ghost" id="tpl-back">← 返回模板库</a>
+          <div class="tpl-fill-actions">
+            <a class="btn btn-ghost" href="bottomline.html">底线</a>
+            <a class="btn btn-ghost" href="history.html">历史</a>
+          </div>
+        </div>
+        <div class="card tpl-fill" id="tpl-form"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 页脚 -->
+  <footer class="footer">
+    <p class="slogan">理性拆解选择，减少后悔抉择</p>
+    <p>© 2026 缓择星球 · 慢慢选</p>
+  </footer>
+
+  <!-- 移动端底部导航 -->
+  <div id="tabbar-mount"></div>
+
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/theme.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/templates.js"></script>
+</body>
+</html>

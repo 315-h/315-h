@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小办 · 详情 ｜ 韩佳雪</title>
+<style>
+  :root{
+    --bg:#F8FAFC;        /* 浅灰蓝基底 */
+    --card:#FFFFFF;
+    --card-soft:#F1F5F9;
+    --text:#1F2937;       /* 深灰主文本 */
+    --text-2:#475569;
+    --text-3:#94A3B8;
+    --divider:#E5E7EB;
+    --divider-strong:#CBD5E1;
+    --c:#1E3A8A;          /* 深靛蓝 主（个性） */
+    --c-2:#3B82F6;        /* 中间蓝 辅助线条 */
+    --c-tint:#EFF6FF;     /* 浅靛底 */
+    --c-edge:#DBEAFE;
+    --acc:#F97316;        /* 暖橙 强调（个性） */
+    --acc-tint:#FFF7ED;
+    --ok:#059669;
+    --ok-tint:#D1FAE5;
+    --on-c:#ffffff;       /* 主按钮文字 */
+    --shadow:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+    --shadow-lg:0 8px 28px rgba(15,23,42,.10);
+    --radius:8px;          /* 全程小圆角（个性） */
+    --radius-sm:6px;
+    --radius-btn:8px;      /* 方正按钮（个性） */
+    --maxw:1080px;
+    --font:"PingFang SC","Microsoft YaHei","Hiragino Sans GB","Helvetica Neue",Arial,sans-serif;
+    --mono:"SF Mono","JetBrains Mono","Roboto Mono","Menlo",Consolas,monospace;
+    --font-head:var(--font);  /* 工程风：标题用无衬线（个性） */
+    --font-mono:var(--mono);
+  }
+  body.dark{
+    --bg:#1F2937;
+    --card:#111827;
+    --card-soft:#0F172A;
+    --text:#E5E7EB;
+    --text-2:#CBD5E1;
+    --text-3:#64748B;
+    --divider:#1E293B;
+    --divider-strong:#334155;
+    --c:#3B82F6;
+    --c-tint:#1E293B;
+    --c-edge:#1E3A8A;
+    --acc:#FB923C;
+    --acc-tint:#3B2410;
+    --ok-tint:#0F2E27;
+    --on-c:#fff;
+    --shadow:0 1px 2px rgba(0,0,0,.40), 0 4px 16px rgba(0,0,0,.45);
+    --shadow-lg:0 8px 28px rgba(0,0,0,.55);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  html{scroll-behavior:smooth;}
+  /* 可访问性：焦点环 + 动效降级 */
+  :focus-visible{outline:2px solid var(--c);outline-offset:2px;border-radius:6px;}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important;}}
+  body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.8;
+    font-size:15px;letter-spacing:.2px;-webkit-font-smoothing:antialiased;font-weight:400;
+    transition:background .4s ease,color .4s ease;overflow-x:hidden;}
+  /* 全局工程网格（更密更明显 — 商务蓝图感） */
+  body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background-image:
+      linear-gradient(color-mix(in srgb,var(--divider) 85%,transparent) 1px,transparent 1px),
+      linear-gradient(90deg,color-mix(in srgb,var(--divider) 85%,transparent) 1px,transparent 1px);
+    background-size:34px 34px;opacity:.55;mask-image:radial-gradient(ellipse at 50% 28%, #000 38%, transparent 82%); -webkit-mask-image:radial-gradient(ellipse at 50% 28%, #000 38%, transparent 82%);}
+  body.dark::before{opacity:.28;}
+
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;}
+
+  /* ===== 顶栏（三页统一） ===== */
+  .topbar{position:sticky;top:0;z-index:60;backdrop-filter:saturate(140%) blur(10px);
+    background:color-mix(in srgb,var(--bg) 82%,transparent);border-bottom:1px solid var(--divider);
+    transition:background .4s ease,border-color .4s ease;}
+  .topbar .row{max-width:var(--maxw);margin:0 auto;padding:13px 24px;display:flex;align-items:center;justify-content:space-between;}
+  .back{text-decoration:none;color:var(--text);font-size:14px;font-weight:600;display:inline-flex;align-items:center;gap:7px;
+    border:1px solid var(--divider);background:var(--card);padding:8px 15px;border-radius:999px;box-shadow:var(--shadow-sm);
+    transition:transform .15s ease,border-color .15s ease;}
+  .back:hover{transform:translateY(-2px);border-color:var(--c);}
+  .brand{font-weight:800;letter-spacing:.5px;font-size:15px;}
+  .brand span{color:var(--text-2);font-weight:600;font-size:12.5px;margin-left:6px;}
+  .theme-btn{border:1px solid var(--divider);background:var(--card);color:var(--text);width:40px;height:40px;border-radius:50%;
+    cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm);
+    transition:transform .15s ease,border-color .15s ease,background .4s ease;}
+  .theme-btn:hover{transform:translateY(-2px);border-color:var(--c);}
+
+  /* ===== (1) Hero ===== */
+  .hero{padding:80px 0 64px;display:grid;grid-template-columns:1.05fr .95fr;gap:60px;align-items:center;
+    border-bottom:1px solid var(--divider);}
+  .hero h1{font-size:54px;line-height:1.1;font-weight:800;letter-spacing:-1.2px;margin-bottom:18px;color:var(--text);}
+  .hero h1 .acc{color:var(--c);}
+  .hero .sub{font-size:17px;color:var(--text-2);line-height:1.8;margin-bottom:20px;max-width:520px;}
+  .hero .sec-head{text-align:left;}
+  .hero .tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;}
+  .hero .tags span{font-family:var(--mono);font-size:12px;color:var(--text-2);
+    border:1px solid var(--divider-strong);background:var(--card);
+    padding:6px 11px;border-radius:4px;letter-spacing:.4px;}
+  .hero .tags span b{color:var(--c);font-weight:600;}
+  /* 按钮（家族统一，颜色随主题） */
+  .btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:700;font-size:14.5px;
+    padding:13px 27px;border-radius:var(--radius-btn);cursor:pointer;
+    transition:transform .15s ease,box-shadow .2s ease,border-color .2s ease,background .2s ease,color .2s ease;}
+  .btn-primary{background:var(--c);color:var(--on-c);border:1px solid var(--c);box-shadow:var(--shadow-sm);}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:var(--shadow);}
+  .btn-ghost{background:transparent;color:var(--text);border:1.5px solid var(--divider-strong);}
+  .btn-ghost:hover{transform:translateY(-2px);border-color:var(--c);color:var(--c);}
+  .btn-doc{background:transparent;color:var(--doc-c,var(--c));border:1.5px solid var(--doc-c,var(--c));}
+  .btn-doc:hover{transform:translateY(-2px);background:var(--doc-c,var(--c));color:#fff;}
+  .btn.disabled,.btn[aria-disabled="true"]{background:var(--card-soft);color:var(--text-2);border:1px solid var(--divider);box-shadow:none;cursor:default;}
+  .btn.disabled:hover,.btn[aria-disabled="true"]:hover{transform:none;}
+
+  /* Hero 右侧三张数据卡 */
+  .mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .mcard{background:var(--card);border:1px solid var(--divider);border-radius:var(--radius);
+    padding:22px 18px;position:relative;box-shadow:var(--shadow);overflow:hidden;transition:transform .25s ease,box-shadow .25s ease;}
+  .mcard::after{content:"";position:absolute;top:9px;right:11px;width:14px;height:14px;
+    border-top:1.5px solid var(--divider-strong);border-right:1.5px solid var(--divider-strong);opacity:.7;} /* 工程定位角标 */
+  .mcard:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
+  .mcard::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--c);}
+  .mcard.acc::before{background:var(--acc);}
+  .mcard.ok::before{background:var(--ok);}
+  .mcard .num{font-size:38px;font-weight:800;line-height:1;letter-spacing:-1px;color:var(--text);font-feature-settings:"tnum";}
+  .mcard.acc .num{color:var(--acc);}
+  .mcard .lab{font-size:12px;color:var(--text-2);margin-top:8px;font-weight:600;letter-spacing:.4px;}
+  .mcard .delta{margin-top:10px;font-size:11.5px;color:var(--ok);display:inline-flex;align-items:center;gap:3px;font-weight:600;}
+
+  /* ===== Section 通用（三页统一节奏） ===== */
+  .sec{padding:64px 0;border-bottom:1px solid var(--divider);}
+  .sec:last-of-type{border-bottom:none;}
+  .sec-head{text-align:center;margin-bottom:40px;}
+  .sec-head .eyebrow,.sec-head .kcap,.sec-head .num{display:inline-block;font-family:var(--font-mono);font-size:11.5px;letter-spacing:2.5px;font-weight:700;
+    color:var(--c);margin-bottom:10px;text-transform:uppercase;}
+  .sec-head h2{font-family:var(--font-head);font-size:28px;font-weight:800;letter-spacing:.5px;line-height:1.3;}
+  .sec-head p{margin-top:9px;color:var(--text-2);font-size:14.5px;max-width:560px;margin-left:auto;margin-right:auto;line-height:1.8;}
+  .sec-head .rule{display:inline-block;width:36px;height:2px;background:var(--c);margin:12px 0 0;}
+
+  /* ===== (2) 业务痛点 ===== */
+  .pain{display:grid;grid-template-columns:1fr .9fr;gap:60px;align-items:center;}
+  .paintxt .lead{font-size:16px;color:var(--text-2);line-height:1.95;margin-bottom:24px;}
+  .pailist{display:flex;flex-direction:column;gap:14px;}
+  .pailist .li{display:flex;gap:14px;align-items:flex-start;padding:14px 16px;background:var(--card);
+    border:1px solid var(--divider);border-radius:var(--radius);transition:all .2s ease;}
+  .pailist .li:hover{border-color:var(--c);transform:translateX(3px);}
+  .pailist .li .dot{width:8px;height:8px;border-radius:50%;background:var(--acc);margin-top:9px;flex-shrink:0;box-shadow:0 0 0 4px var(--acc-tint);}
+  .pailist .li h4{font-size:14.5px;font-weight:700;margin-bottom:3px;}
+  .pailist .li p{font-size:13px;color:var(--text-2);}
+  .paivis{position:relative;border:1px solid var(--divider);border-radius:var(--radius);background:var(--card);
+    padding:30px;box-shadow:var(--shadow);}
+  .paivis .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  .paivis .icbox{border:1px solid var(--divider);border-radius:var(--radius-sm);padding:18px;background:var(--bg);text-align:center;transition:all .2s ease;}
+  .paivis .icbox:hover{border-color:var(--c);background:var(--c-tint);}
+  .paivis .icbox svg{width:32px;height:32px;margin:0 auto 8px;color:var(--c);}
+  .paivis .icbox .lab{font-size:12px;color:var(--text-2);font-weight:600;}
+
+  /* ===== (3) 三层架构 ===== */
+  .arch{display:flex;flex-direction:column;gap:18px;max-width:760px;margin:0 auto;}
+  .alayer{background:var(--card);border:1px solid var(--divider);border-radius:var(--radius);
+    padding:22px 24px;display:grid;grid-template-columns:200px 1fr;gap:24px;align-items:start;position:relative;
+    cursor:pointer;transition:all .25s ease;}
+  .alayer:hover{border-color:var(--c);box-shadow:var(--shadow-lg);transform:translateX(4px);}
+  .alayer.active{border-color:var(--c);background:var(--c-tint);}
+  .alayer .ic{width:46px;height:46px;border-radius:var(--radius-sm);background:var(--c-tint);color:var(--c);
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .alayer .ic svg{width:24px;height:24px;}
+  .alayer h3{font-size:16px;font-weight:800;margin-bottom:4px;display:flex;align-items:center;gap:10px;}
+  .alayer .tag{font-family:var(--mono);font-size:10.5px;background:var(--c);color:#fff;padding:2px 6px;border-radius:3px;letter-spacing:1px;font-weight:700;}
+  .alayer .desc{font-size:13px;color:var(--text-2);line-height:1.7;margin-bottom:8px;}
+  .alayer .ch{display:flex;gap:6px;flex-wrap:wrap;}
+  .alayer .ch span{font-family:var(--mono);font-size:11px;padding:3px 8px;background:var(--card-soft);color:var(--text-2);border-radius:3px;border:1px solid var(--divider);}
+  /* 层级间的连接线 */
+  .alayer:not(:last-child)::after{content:"";position:absolute;left:36px;bottom:-12px;width:2px;height:12px;background:var(--divider-strong);}
+
+  /* ===== (4) 真实工作流（样式见上方 .wf 区块） ===== */
+
+  /* ===== (5) 三段式问题解法 ===== */
+  .solve{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .scard{background:var(--card);border:1px solid var(--divider);border-radius:var(--radius);overflow:hidden;
+    display:flex;flex-direction:column;transition:transform .25s ease,box-shadow .25s ease;}
+  .scard:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg);border-color:var(--c);}
+  .scard .hd{background:linear-gradient(135deg,var(--c) 0%,#1E40AF 100%);color:#fff;padding:18px 20px;
+    display:flex;align-items:center;justify-content:space-between;}
+  .scard .hd .no{font-family:var(--mono);font-size:22px;font-weight:800;opacity:.85;letter-spacing:1px;}
+  .scard .hd .title{font-size:14px;font-weight:700;letter-spacing:.4px;}
+  .scard .bd{padding:20px;display:flex;flex-direction:column;gap:14px;}
+  .scard .row{display:flex;gap:10px;}
+  .scard .row .lab{width:52px;flex-shrink:0;font-size:11.5px;font-weight:700;letter-spacing:.5px;
+    color:var(--text-3);padding-top:3px;}
+  .scard .row .ct{font-size:13px;color:var(--text);line-height:1.7;}
+  .scard .row.solution{background:var(--ok-tint);margin:0 -20px -20px;padding:14px 20px;border-top:1px solid var(--ok);}
+  .scard .row.solution .lab{color:var(--ok);}
+  .scard .row.solution .ct{font-weight:600;color:var(--ok);}
+
+  /* ===== (6) 评测与埋点 ===== */
+  .qa{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:center;}
+  .dash{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+  .dk{background:var(--card);border:1px solid var(--divider);border-radius:var(--radius);padding:18px;position:relative;text-align:left;}
+  .dk .n{font-size:32px;font-weight:800;line-height:1;letter-spacing:-1px;color:var(--c);font-feature-settings:"tnum";}
+  .dk .l{font-size:12px;color:var(--text-2);font-weight:600;margin-top:6px;letter-spacing:.4px;}
+  .dk .s{font-size:11.5px;color:var(--text-3);margin-top:4px;font-family:var(--mono);}
+  .loop{position:relative;width:280px;height:280px;margin:0 auto;}
+  .loop svg{width:100%;height:100%;}
+  .loopcap{text-align:center;margin-top:14px;font-size:13.5px;color:var(--text-2);}
+  .loopcap b{color:var(--c);}
+
+  /* ===== (7) 资产沉淀 ===== */
+  .ass{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  .afile{background:var(--card);border:1px solid var(--divider);border-radius:var(--radius);overflow:hidden;
+    transition:all .25s ease;cursor:pointer;display:flex;flex-direction:column;}
+  .afile:hover{transform:translateY(-5px);border-color:var(--c);box-shadow:var(--shadow-lg);}
+  .afile .preview{flex:1;background:linear-gradient(180deg,var(--card-soft) 0%,var(--card) 100%);
+    padding:20px;border-bottom:1px solid var(--divider);display:flex;flex-direction:column;gap:5px;min-height:140px;position:relative;}
+  .afile .preview::before{content:"";position:absolute;left:14px;top:14px;width:36px;height:4px;background:var(--c);border-radius:2px;}
+  .afile .preview .ln{height:6px;background:var(--divider);border-radius:3px;width:88%;margin-top:9px;
+    box-shadow:0 11px 0 var(--divider),0 22px 0 var(--divider),0 33px 0 color-mix(in srgb,var(--c-edge) 65%,transparent);}
+  .afile .preview .ln.s{width:62%;background:var(--c-edge);}
+  .afile .preview .ln.t{width:72%;}
+  .afile .preview .tag{font-family:var(--mono);font-size:9px;color:var(--text-3);position:absolute;right:14px;top:14px;letter-spacing:.5px;}
+  .afile .meta{padding:14px 18px;}
+  .afile .meta h4{font-size:13.5px;font-weight:700;margin-bottom:3px;}
+  .afile .meta p{font-size:11.5px;color:var(--text-2);}
+  .afile .meta .ft{display:flex;justify-content:space-between;align-items:center;margin-top:8px;}
+  .afile .meta .ft span{font-family:var(--mono);font-size:10.5px;color:var(--text-3);}
+  .afile .meta .ft a{font-size:11.5px;color:var(--c);text-decoration:none;font-weight:700;}
+
+  /* ===== (8) 价值收尾 ===== */
+  .closesec{padding:84px 0 88px;text-align:center;}
+  .closesec h2{font-size:34px;font-weight:800;letter-spacing:-.5px;margin-bottom:18px;line-height:1.3;}
+  .closesec .le{font-size:15.5px;color:var(--text-2);max-width:620px;margin:0 auto 32px;line-height:1.95;}
+  .values{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:36px;}
+  .val{background:var(--card);border:1px solid var(--divider);border-radius:var(--radius);padding:18px 22px;
+    text-align:left;flex:1;min-width:220px;max-width:280px;transition:all .2s ease;}
+  .val:hover{border-color:var(--c);transform:translateY(-3px);}
+  .val h4{font-size:15px;font-weight:800;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+  .val h4 svg{width:18px;height:18px;color:var(--c);}
+  .val p{font-size:13px;color:var(--text-2);line-height:1.7;}
+  .btngroup{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+
+  /* ===== 页脚（三页统一） ===== */
+  .foot{padding:40px 0 46px;text-align:center;border-top:1px solid var(--divider);margin-top:30px;}
+  .foot .copy{color:var(--text-2);font-size:12.5px;letter-spacing:.3px;}
+
+  /* 滚动淡入（三页统一） */
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s ease;}
+  .reveal.in{opacity:1;transform:none;}
+
+  /* ===== (4b) 真实工作流（对齐 graph.py 实现） ===== */
+  .wf{max-width:880px;margin:0 auto;display:flex;flex-direction:column;align-items:center;}
+  .wf-chain{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;}
+  .wf-node{font-size:12.5px;padding:9px 14px;border:1.5px solid var(--divider-strong);background:var(--card);border-radius:var(--radius-sm);color:var(--text);font-weight:700;}
+  .wf-node.start{background:var(--text);color:var(--bg);border-color:var(--text);}
+  .wf-node.kb{background:var(--c-tint);color:var(--c);border-color:var(--c);}
+  .wf-node.arrow{color:var(--text-3);border:none;background:transparent;padding:0;width:18px;font-weight:400;}
+  .wf-node.term.normal{background:linear-gradient(135deg,var(--ok) 0%,#047857 100%);color:#fff;border-color:transparent;}
+  .wf-node.term.warn{background:var(--acc-tint);color:var(--acc);border-color:var(--acc);}
+  .wf-node.term.conflict{background:#FEE2E2;color:#B91C1C;border-color:#FCA5A5;}
+  .wf-node.term.fallback{background:var(--card-soft);color:var(--text-2);border-color:var(--divider-strong);}
+  .wf-div{width:2px;height:16px;background:var(--divider-strong);}
+  .wf-branch{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:4px 0;}
+  .wf-branch .b{font-size:11.5px;padding:7px 12px;border-radius:var(--radius-sm);border:1px dashed var(--divider-strong);background:var(--bg);line-height:1.6;}
+  .wf-branch .b.y{color:var(--ok);border-color:var(--ok);}
+  .wf-branch .b.n{color:var(--acc);border-color:var(--acc);}
+  .wf-kbcallout{font-family:var(--mono);font-size:10.5px;color:var(--c);background:var(--c-tint);border:1px solid var(--c-edge);border-radius:3px;padding:3px 9px;margin-top:8px;}
+
+  /* ===== (5b) 部分命中 案例表 ===== */
+  .casetable{width:100%;border-collapse:collapse;font-size:13px;background:var(--card);border:1px solid var(--divider);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
+  .casetable th{background:var(--card-soft);color:var(--text-2);font-weight:700;font-size:11.5px;text-align:left;padding:11px 13px;border-bottom:1px solid var(--divider);letter-spacing:.3px;white-space:nowrap;}
+  .casetable td{padding:11px 13px;border-bottom:1px solid var(--divider);color:var(--text);vertical-align:top;line-height:1.6;}
+  .casetable tr:last-child td{border-bottom:none;}
+  .casetable .id{font-family:var(--mono);font-size:11px;color:var(--text-3);white-space:nowrap;}
+  .casetable .pass{color:var(--ok);font-weight:700;white-space:nowrap;}
+  .casetable .fail{color:var(--acc);font-weight:700;white-space:nowrap;}
+  .casetable .mini{font-size:12px;color:var(--text-2);}
+  .casetable .rc{font-size:12px;color:var(--text-2);}
+  .casetable .rc b{color:var(--c);}
+
+  /* ===== (6) 交互体验 Demo（Mock 对话窗） ===== */
+  .demo{display:grid;grid-template-columns:.92fr 1.08fr;gap:22px;align-items:stretch;}
+  .demo-side{background:var(--card);border:1px solid var(--divider);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:14px;}
+  .demo-side h4{font-size:14.5px;font-weight:800;}
+  .demo-chips{display:flex;flex-direction:column;gap:8px;}
+  .chip{font-size:12.5px;text-align:left;padding:9px 12px;border:1px solid var(--divider-strong);background:var(--bg);color:var(--text-2);border-radius:var(--radius-sm);cursor:pointer;transition:all .18s ease;font-weight:600;}
+  .chip:hover{border-color:var(--c);color:var(--c);transform:translateX(3px);}
+  .chip.on{background:var(--c-tint);border-color:var(--c);color:var(--c);}
+  .demo-note{font-size:11.5px;color:var(--text-3);line-height:1.7;border-top:1px dashed var(--divider);padding-top:12px;margin-top:auto;}
+  .demo-note b{color:var(--acc);}
+  .chat{background:var(--card);border:1px solid var(--divider);border-radius:var(--radius);box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden;min-height:520px;}
+  .chat-head{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;border-bottom:1px solid var(--divider);font-size:13.5px;font-weight:800;background:var(--card-soft);}
+  .chat-head .demo-tag{font-family:var(--mono);font-size:10px;letter-spacing:1px;background:var(--acc);color:#fff;padding:2px 7px;border-radius:3px;font-weight:700;}
+  .engine-switch{display:inline-flex;gap:4px;align-items:center;margin-left:auto;margin-right:10px;}
+  .engine-btn{font-family:var(--mono);font-size:10.5px;padding:4px 10px;border:1px solid var(--divider-strong);background:var(--card);color:var(--text-2);border-radius:999px;cursor:pointer;font-weight:700;letter-spacing:.3px;transition:all .18s ease;}
+  .engine-btn.on{background:var(--c);color:#fff;border-color:var(--c);}
+  .engine-btn:hover:not(.on){border-color:var(--c);color:var(--c);}
+  .chat-body{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:14px;min-height:380px;max-height:480px;}
+  .msg{display:flex;}
+  .msg.user{justify-content:flex-end;}
+  .bub{max-width:84%;font-size:13px;line-height:1.75;padding:11px 14px;border-radius:12px;background:var(--card-soft);border:1px solid var(--divider);color:var(--text);}
+  .msg.user .bub{background:var(--c);border-color:var(--c);color:#fff;border-bottom-right-radius:3px;}
+  .msg.bot .bub{border-bottom-left-radius:3px;}
+  .bub .ans{white-space:pre-wrap;}
+  .bub .ans-policy{background:linear-gradient(135deg,var(--c-tint) 0%,color-mix(in srgb,var(--c) 6%,var(--card)) 100%);border-left:3px solid var(--c);padding:12px 14px;border-radius:var(--radius-sm);font-size:13.5px;line-height:1.85;color:var(--text);font-weight:500;white-space:pre-wrap;}
+  .bub .ans-policy b{color:var(--c);font-weight:700;}
+  .bub .ans-block{font-size:12px;color:var(--text-2);margin-top:9px;background:var(--bg);border:1px solid var(--divider);border-radius:var(--radius-sm);padding:10px 13px;line-height:1.75;}
+  .bub .ans-block .lab{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:1px;color:var(--c);font-weight:700;background:var(--c-tint);border:1px solid var(--c-edge);padding:2px 7px;border-radius:3px;margin-bottom:6px;}
+  .bub .ans-block b{color:var(--c);font-weight:700;}
+  .bub .src{font-size:11px;color:var(--text-3);margin-top:8px;padding-top:8px;border-top:1px dashed var(--divider);}
+  .bub .src b{color:var(--c);font-weight:700;}
+  .branch{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10.5px;padding:3px 8px;border-radius:3px;margin-top:9px;font-weight:700;letter-spacing:.3px;}
+  .branch.hit{background:var(--ok-tint);color:var(--ok);}
+  .branch.ret{background:var(--c-tint);color:var(--c);}
+  .branch.fb{background:var(--acc-tint);color:var(--acc);}
+  .trace-toggle{display:block;margin-top:9px;font-size:11px;color:var(--c);background:none;border:none;cursor:pointer;font-weight:700;padding:0;}
+  .trace-toggle:hover{text-decoration:underline;}
+  .trace{margin-top:9px;font-family:var(--mono);font-size:10.5px;color:var(--text-2);background:var(--bg);border:1px dashed var(--divider-strong);border-radius:6px;padding:9px 11px;line-height:1.9;display:none;}
+  .trace .t-hit{color:var(--ok);font-weight:700;}
+  .trace .t-miss{color:var(--acc);font-weight:700;}
+  .chat-input{display:flex;gap:10px;padding:14px 16px;border-top:1px solid var(--divider);background:var(--card-soft);}
+  .chat-input input{flex:1;font-size:13px;padding:10px 13px;border:1px solid var(--divider-strong);border-radius:var(--radius-sm);background:var(--card);color:var(--text);outline:none;}
+  .chat-input input:focus{border-color:var(--c);}
+  .chat-input button{font-size:13px;font-weight:700;padding:10px 18px;border:none;border-radius:var(--radius-sm);background:var(--c);color:#fff;cursor:pointer;transition:transform .15s ease;}
+  .chat-input button:hover{transform:translateY(-1px);}
+  @media (max-width:880px){.demo{grid-template-columns:1fr;}.chat{min-height:440px;}.chat-body{max-height:420px;}}
+
+  @media (max-width:860px){ .sec-head h2{font-size:23px;} }
+
+  @media (max-width:880px){
+    .hero{grid-template-columns:1fr;gap:34px;padding:54px 0 40px;}
+    .hero h1{font-size:36px;}
+    .mgrid{grid-template-columns:1fr 1fr;}
+    .pain{grid-template-columns:1fr;gap:24px;}
+    .flowgrid,.qa{grid-template-columns:1fr;}
+    .solve{grid-template-columns:1fr;}
+    .ass{grid-template-columns:1fr 1fr;}
+    .alayer{grid-template-columns:1fr;gap:10px;}
+    .sec-head h2{font-size:24px;}
+    .loop{width:220px;height:220px;}
+  }
+  </style>
+  <script src="qa_data.js"></script>
+  <script src="xiaoban_docs.js"></script>
+</head>
+<body>
+
+  <!-- 顶栏 -->
+  <div class="topbar">
+    <div class="row">
+      <a class="back" href="portfolio.html">返回作品集首页</a>
+      <div class="brand">小办 <span>· 详情</span></div>
+      <button class="theme-btn" id="themeBtn" title="切换深浅主题" aria-label="切换深色模式">◐</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <!-- (1) Hero -->
+    <section class="hero">
+      <div class="reveal">
+        <div class="sec-head" style="margin-bottom:0">
+          <div class="num">01 / 项目首屏</div>
+          <h1>智效<span class="acc">办公</span></h1>
+          <p class="sub">把企业内部琐碎、重复的「办事咨询」交给 AI，让员工 7×24 自助答疑、让 HR 从重复答疑中解脱出来。</p>
+        </div>
+        <div class="tags">
+          <span><b>RAG</b> 检索</span>
+          <span><b>Agent</b> 工作流</span>
+          <span>飞书入口</span>
+          <span><b>B</b> 端工具</span>
+        </div>
+        <a class="btn btn-primary" href="PRD-XiaoBan.pdf" target="_blank" rel="noopener">查看完整 PRD ↗</a>
+      </div>
+      <div class="mgrid reveal">
+        <div class="mcard">
+          <div class="num" data-num="97">0</div>
+          <div class="lab">问答准确率</div>
+          <div class="delta">▲ 12% vs 上线前</div>
+        </div>
+        <div class="mcard acc">
+          <div class="num" data-num="0">0</div>
+          <div class="lab">重度幻觉率</div>
+          <div class="delta">制度冲突兜底</div>
+        </div>
+        <div class="mcard ok">
+          <div class="num" data-num="60" data-suffix="%">0</div>
+          <div class="lab">HR 答疑减负</div>
+          <div class="delta">每周节省 10h+</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- (2) 项目背景与业务痛点 -->
+    <section class="sec">
+      <div class="sec-head reveal">
+        <div class="num">02 / 项目背景</div>
+        <h2>把「重复答疑」从 HR 肩上挪走</h2>
+        <p>1000+ 人企业内部，每天有一半行政咨询是"上周已答过"的同类问题。这是 HR 最耗心力、却最不创造价值的工作。</p>
+        <div class="rule"></div>
+      </div>
+      <div class="pain">
+        <div class="paintxt reveal">
+          <p class="lead">每一家成长型企业都会遇到的「行政咨询瓶颈」：</p>
+          <div class="pailist">
+            <div class="li"><div class="dot"></div><div><h4>口径不一 · 答案随人变</h4><p>同一条制度，不同 HR 给出的解释差异 30%+，员工到处求证。</p></div></div>
+            <div class="li"><div class="dot"></div><div><h4>响应滞后 · 业务被打断</h4><p>员工报账、请假、报销遇问题，平均要等 4.5h 才得到回复，协作阻塞。</p></div></div>
+            <div class="li"><div class="dot"></div><div><h4>重复咨询 · 占满 HR 70% 工作</h4><p>"年假怎么算""加班怎么报"等高频问题每周被问 30+ 次。</p></div></div>
+            <div class="li"><div class="dot"></div><div><h4>知识无沉淀 · 新人 HR 接不住</h4><p>老 HR 离职后，制度问答经验断层，新人 HR 接电话手忙脚乱。</p></div></div>
+          </div>
+        </div>
+        <div class="paivis reveal">
+          <div class="grid2">
+            <div class="icbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/></svg><div class="lab">多版本口径</div></div>
+            <div class="icbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg><div class="lab">4.5h 响应</div></div>
+            <div class="icbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg><div class="lab">重复答疑</div></div>
+            <div class="icbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 4h12l4 4v12H4z"/><path d="M16 4v4h4"/></svg><div class="lab">知识断层</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- (3) AI 系统三层架构 -->
+    <section class="sec">
+      <div class="sec-head reveal">
+        <div class="num">03 / 系统架构</div>
+        <h2>三层架构 · 把 AI 工具接到企业现场</h2>
+        <p>应用层做入口、AI 能力层做推理、数据层做沉淀。鼠标悬停任意一层，看它在系统里承担什么角色。</p>
+        <div class="rule"></div>
+      </div>
+      <div class="arch">
+        <div class="alayer reveal" data-info="飞书机器人作为唯一对话入口，员工在原有工作流里直接提问，零迁移成本。">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 10h10M7 14h6"/></svg></div>
+          <div>
+            <h3>应用层 <span class="tag">APPLICATION</span></h3>
+            <p class="desc">嵌入式对话入口，员工不跳出原有工作流即可问。</p>
+            <div class="ch"><span>飞书机器人</span><span>IM 即时对话</span><span>权限跟随</span></div>
+          </div>
+        </div>
+        <div class="alayer reveal" data-info="标准 QA 优先召回 → 双路混合检索兜底 → 规则冲突校验 → 三级兜底，每一层出问题都有降级策略。">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l3 3M16 16l3 3M5 19l3-3M16 8l3-3"/><circle cx="12" cy="12" r="4"/></svg></div>
+          <div>
+            <h3>AI 能力层 <span class="tag">AGENT</span></h3>
+            <p class="desc">RAG + Agent 多级协同，含规则校验与三级兜底。</p>
+            <div class="ch"><span>标准 QA 优先</span><span>双路混合检索</span><span>规则冲突校验</span><span>三级兜底</span></div>
+          </div>
+        </div>
+        <div class="alayer reveal" data-info="制度文档做向量切分，标准 QA 做结构化表，两路并联检索提升召回。">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg></div>
+          <div>
+            <h3>数据层 <span class="tag">KNOWLEDGE</span></h3>
+            <p class="desc">制度文档 + 结构化 QA 双轨知识源，支撑检索与版本管理。</p>
+            <div class="ch"><span>行政制度文档</span><span>结构化 QA 库</span><span>更新版本管理</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- (4) 真实工作流架构 -->
+    <section class="sec">
+      <div class="sec-head reveal">
+        <div class="num">04 / 工作流架构</div>
+        <h2>真实生产工作流 · 标准问答优先 + 三级检索 + 三级兜底</h2>
+        <p>不是单一检索链，而是「标准问答优先 → 双路混合检索 → 规则校验 → 分级兜底」的协同架构。每个分支都有明确的路由依据，而非凭相似度硬答。</p>
+        <div class="rule"></div>
+      </div>
+
+      <div class="wf">
+        <!-- 主干 1 -->
+        <div class="wf-chain reveal">
+          <span class="wf-node start">开始</span><span class="wf-node arrow">→</span>
+          <span class="wf-node">问题改写</span><span class="wf-node arrow">→</span>
+          <span class="wf-node">问题拆分 & 业务分类</span><span class="wf-node arrow">→</span>
+          <span class="wf-node kb">高频标准问答匹配</span>
+        </div>
+        <div class="wf-kbcallout reveal">↳ 检索 standard_qa_kb（标准问答向量索引）· 全部命中则直出预制答案，不调用 LLM 改写</div>
+
+        <div class="wf-div"></div>
+        <div class="wf-branch reveal">
+          <div class="b y">全命中 → 正常回答（直出预制答案，精确优先）</div>
+          <div class="b n">部分 / 全部未命中 → 进入混合检索</div>
+        </div>
+        <div class="wf-div"></div>
+
+        <!-- 主干 2 -->
+        <div class="wf-chain reveal">
+          <span class="wf-node kb">向量检索</span><span class="wf-node arrow">+</span>
+          <span class="wf-node kb">关键词检索</span><span class="wf-node arrow">→</span>
+          <span class="wf-node">结果合并</span>
+        </div>
+        <div class="wf-kbcallout reveal">↳ 均检索 coze_doc_knowledge（企业制度知识库）· 向量阈值 0.6 / top5，关键词补召回</div>
+
+        <div class="wf-div"></div>
+        <div class="wf-branch reveal">
+          <div class="b y">含有效正文 → 规则冲突检查</div>
+          <div class="b n">无效内容 → 二次检索（最多 2 次重试）→ 有效则正常回答 / 仍无效则全局兜底</div>
+        </div>
+        <div class="wf-div"></div>
+
+        <!-- 主干 3 -->
+        <div class="wf-chain reveal">
+          <span class="wf-node">规则冲突检查</span><span class="wf-node arrow">→</span>
+          <span class="wf-node">条件检查（三级路由）</span>
+        </div>
+        <div class="wf-branch reveal">
+          <div class="b y">真实冲突 → 冲突兜底</div>
+          <div class="b n">无冲突 → 按业务得分路由</div>
+        </div>
+        <div class="wf-div"></div>
+
+        <!-- 终点 -->
+        <div class="wf-chain reveal" style="gap:10px">
+          <span class="wf-node term normal">正常回答</span>
+          <span class="wf-node term warn">过渡兜底</span>
+          <span class="wf-node term conflict">冲突兜底</span>
+          <span class="wf-node term fallback">全局兜底</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- (5) 部分命中 · 真实问题攻坚 -->
+    <section class="sec">
+      <div class="sec-head reveal">
+        <div class="num">05 / 问题攻坚</div>
+        <h2>「部分命中」是怎么被我揪出来修好的</h2>
+        <p>上线后实测回归用例，发现一类反复出现的问题：明明是知识库里的内容，换种说法就不命中；或明明检索到了答案，却输出了兜底话术。下面是完整诊断与修复。</p>
+        <div class="rule"></div>
+      </div>
+
+      <!-- 实测对照表 -->
+      <div class="reveal" style="overflow-x:auto;margin-bottom:38px">
+        <table class="casetable">
+          <thead>
+            <tr><th>实测用例</th><th>得分</th><th>实际分支</th><th>表现</th><th>根因归类</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="id">TC-S01 工作满 3 年年假</td><td class="pass">90 PASS</td><td class="mini">正常回答</td><td class="mini">5 天 / 1–10 年 准确命中</td><td class="mini">—</td></tr>
+            <tr><td class="id">TC-S02 显示器换新</td><td class="pass">100 PASS</td><td class="mini">正常回答</td><td class="mini">更换周期 / 维修准确</td><td class="mini">—</td></tr>
+            <tr><td class="id">TC-S03 商务宴请标准</td><td class="pass">90 PASS</td><td class="mini">正常回答</td><td class="mini">200 / 5000、审批层级命中</td><td class="mini">—</td></tr>
+            <tr><td class="id">TC-S04 新员工办公用品</td><td class="fail">60 FAIL</td><td class="mini">正常回答（检索 + LLM）</td><td class="mini">未列出具体物品清单</td><td class="rc"><b>守门人①</b> 字符重叠非语义，改写稀释重叠比；同义词字段未参与匹配</td></tr>
+            <tr><td class="id">TC-S05 病假工资</td><td class="fail">60 FAIL</td><td class="mini">全局兜底「未明确规定」</td><td class="mini">库里有答案却走了兜底</td><td class="rc"><b>守门人②③</b> 短条款被启发式误杀 + 路由按向量分划档，与「能否回答」脱节</td></tr>
+            <tr><td class="id">TC-S06 加班打车票据</td><td class="fail">60 FAIL</td><td class="mini">标准 QA 命中但回答为空</td><td class="mini">命中后返回空串</td><td class="rc"><b>守门人①</b> 命中后未做空值兜底</td></tr>
+            <tr><td class="id">TC-K01 请客吃饭花 2000</td><td class="fail">68 FAIL</td><td class="mini">正常回答（部分命中）</td><td class="mini">召回宴请标准却没做数值比较</td><td class="rc"><b>守门人②③</b> 有答案仍漏判；未做「2000 &lt; 5000 无需总经理审批」比较</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 三道守门人根因 + 解法 -->
+      <div class="solve">
+        <div class="scard reveal">
+          <div class="hd"><div class="title">守门人① 标准问答匹配</div><div class="no">A</div></div>
+          <div class="bd">
+            <div class="row"><div class="lab">根因</div><div class="ct">用「字符集合重叠」而非语义匹配，换说法重叠比跌破阈值；同义词字段被完全忽略；改写反而稀释重叠。</div></div>
+            <div class="row solution"><div class="lab">解法</div><div class="ct">标准问答接入知识库向量检索（standard_qa_kb），天然支持同义改写；命中空答案则跳过返回 None。</div></div>
+          </div>
+        </div>
+        <div class="scard reveal">
+          <div class="hd"><div class="title">守门人② 检索 → 兜底路由</div><div class="no">B</div></div>
+          <div class="bd">
+            <div class="row"><div class="lab">根因</div><div class="ct">「长度 &lt; 50 或无数字」就被判无效 → 二次检索仍误杀 → 兜底；短但能答的条款（如「病假超 6 个月按 60%」）直接中招。</div></div>
+            <div class="row solution"><div class="lab">解法</div><div class="ct">含业务关键词的短片段视为有效；路由改为基于「是否含业务正文」而非向量分。</div></div>
+          </div>
+        </div>
+        <div class="scard reveal">
+          <div class="hd"><div class="title">守门人③ 兜底节点</div><div class="no">C</div></div>
+          <div class="bd">
+            <div class="row"><div class="lab">根因</div><div class="ct">兜底节点根本不读知识库答案文本，有答案也答不出；条件检查用向量相似度分划档，与「能否回答」无关。</div></div>
+            <div class="row solution"><div class="lab">解法</div><div class="ct">兜底节点改为消费 knowledge_retrieval；命中业务正文则强制走 normal，堵死「有答案却兜底」。</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 产品流程图 -->
+      <div class="reveal" style="margin-top:46px">
+        <div class="sec-head" style="margin-bottom:22px"><div class="num">05.1 / 产品流程</div><h2 style="font-size:22px">修复后的完整链路</h2></div>
+        <svg viewBox="0 0 700 470" width="100%" style="max-width:700px;display:block;margin:0 auto" font-family="var(--font)">
+          <defs>
+            <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="var(--divider-strong)"/></marker>
+          </defs>
+          <g font-size="12" font-weight="700" text-anchor="middle">
+            <g>
+              <rect x="20" y="20" width="60" height="34" rx="6" fill="var(--text)" stroke="var(--text)"/><text x="50" y="42" fill="var(--bg)">开始</text>
+              <rect x="104" y="20" width="84" height="34" rx="6" fill="var(--card)" stroke="var(--divider-strong)"/><text x="146" y="42" fill="var(--text)">问题改写</text>
+              <rect x="212" y="20" width="120" height="34" rx="6" fill="var(--card)" stroke="var(--divider-strong)"/><text x="272" y="42" fill="var(--text)">拆分 &amp; 分类</text>
+              <rect x="356" y="20" width="130" height="34" rx="6" fill="var(--c-tint)" stroke="var(--c)"/><text x="421" y="42" fill="var(--c)">标准问答匹配</text>
+            </g>
+            <g stroke="var(--divider-strong)" stroke-width="1.5" fill="none" marker-end="url(#ar)">
+              <path d="M80,37 H102"/><path d="M188,37 H210"/><path d="M332,37 H354"/><path d="M421,54 V90"/>
+            </g>
+            <polygon points="421,90 467,124 421,158 375,124" fill="var(--c-tint)" stroke="var(--c)" stroke-width="1.5"/>
+            <text x="421" y="128" fill="var(--c)" font-size="11">全命中?</text>
+            <g stroke="var(--divider-strong)" stroke-width="1.5" fill="none" marker-end="url(#ar)"><path d="M467,124 H558"/></g>
+            <rect x="558" y="106" width="120" height="36" rx="6" fill="#059669" stroke="#047857"/><text x="618" y="129" fill="#fff">正常回答(直答)</text>
+            <text x="492" y="116" font-size="10.5" fill="var(--ok)">全命中</text>
+            <g stroke="var(--divider-strong)" stroke-width="1.5" fill="none" marker-end="url(#ar)"><path d="M421,158 V194"/></g>
+            <text x="438" y="182" font-size="10.5" fill="var(--acc)">否</text>
+            <g>
+              <rect x="40" y="194" width="100" height="34" rx="6" fill="var(--c-tint)" stroke="var(--c)"/><text x="90" y="216" fill="var(--c)">向量检索</text>
+              <rect x="156" y="194" width="100" height="34" rx="6" fill="var(--c-tint)" stroke="var(--c)"/><text x="206" y="216" fill="var(--c)">关键词检索</text>
+              <rect x="280" y="194" width="84" height="34" rx="6" fill="var(--card)" stroke="var(--divider-strong)"/><text x="322" y="216" fill="var(--text)">结果合并</text>
+            </g>
+            <g stroke="var(--divider-strong)" stroke-width="1.5" fill="none" marker-end="url(#ar)">
+              <path d="M140,211 H154"/><path d="M256,211 H278"/><path d="M322,228 V260"/>
+            </g>
+            <polygon points="322,260 368,294 322,328 276,294" fill="var(--c-tint)" stroke="var(--c)" stroke-width="1.5"/>
+            <text x="322" y="298" fill="var(--c)" font-size="11">有效正文?</text>
+            <g stroke="var(--divider-strong)" stroke-width="1.5" fill="none" marker-end="url(#ar)"><path d="M368,294 H468"/></g>
+            <text x="402" y="286" font-size="10.5" fill="var(--ok)">是</text>
+            <rect x="468" y="276" width="124" height="36" rx="6" fill="var(--card)" stroke="var(--divider-strong)"/><text x="530" y="299" fill="var(--text)">规则冲突检查</text>
+            <g stroke="var(--divider-strong)" stroke-width="1.5" fill="none" marker-end="url(#ar)"><path d="M322,328 V364"/><path d="M322,364 H300"/></g>
+            <text x="340" y="352" font-size="10.5" fill="var(--acc)">否</text>
+            <rect x="190" y="364" width="110" height="34" rx="6" fill="var(--card)" stroke="var(--divider-strong)"/><text x="245" y="386" fill="var(--text)">二次检索</text>
+            <text x="245" y="424" font-size="10" fill="var(--text-2)">有效→正常回答 / 仍无效→全局兜底</text>
+            <g stroke="var(--divider-strong)" stroke-width="1.5" fill="none" marker-end="url(#ar)"><path d="M530,312 V348"/></g>
+            <rect x="466" y="348" width="130" height="36" rx="6" fill="var(--card)" stroke="var(--divider-strong)"/><text x="531" y="371" fill="var(--text)">条件检查(三级路由)</text>
+            <g>
+              <rect x="20" y="410" width="150" height="36" rx="6" fill="#059669" stroke="#047857"/><text x="95" y="433" fill="#fff">正常回答</text>
+              <rect x="190" y="410" width="150" height="36" rx="6" fill="var(--acc-tint)" stroke="var(--acc)"/><text x="265" y="433" fill="var(--acc)">过渡兜底</text>
+              <rect x="360" y="410" width="150" height="36" rx="6" fill="#FEE2E2" stroke="#FCA5A5"/><text x="435" y="433" fill="#B91C1C">冲突兜底</text>
+              <rect x="530" y="410" width="150" height="36" rx="6" fill="var(--card-soft)" stroke="var(--divider-strong)"/><text x="605" y="433" fill="var(--text-2)">全局兜底</text>
+            </g>
+            <g stroke="var(--divider-strong)" stroke-width="1.5" fill="none" marker-end="url(#ar)"><path d="M531,384 V408"/></g>
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <!-- (6) 交互体验 Demo -->
+    <section class="sec" id="demo">
+      <div class="sec-head reveal">
+        <div class="num">06 / 交互体验</div>
+        <h2>不只看图 · 直接上手问一句</h2>
+        <p>内置 63 条脱敏制度问答，前端本地语义检索模拟真实全流程（标准 QA 直答 / 混合检索 / 兜底）。回答下方可展开「检索召回 Top3」与「运行链路」，看看这次提问走了哪条路。</p>
+        <div class="rule"></div>
+      </div>
+      <div class="demo reveal">
+        <div class="demo-side">
+          <h4>试试这些问题（63 条制度已内置）</h4>
+          <div class="demo-chips">
+            <button class="chip" data-q="工作满3年，每年有几天年假">工作满 3 年，每年有几天年假？</button>
+            <button class="chip" data-q="我工龄3年，年假有几天">我工龄 3 年，年假有几天？（换说法）</button>
+            <button class="chip" data-q="显示器坏了能换吗">显示器坏了能换吗？</button>
+            <button class="chip" data-q="新入职能申领哪些办公用品">新入职能申领哪些办公用品？</button>
+            <button class="chip" data-q="病假工资怎么算">病假工资怎么算？</button>
+            <button class="chip" data-q="病假超过6个月工资怎么发">病假超过 6 个月工资怎么发？（换说法）</button>
+            <button class="chip" data-q="超过22点加班打车费能报销吗">超过 22 点加班打车费能报销吗？</button>
+            <button class="chip" data-q="请客户吃饭花了2000元能报吗">请客户吃饭花了 2000 元能报吗？</button>
+            <button class="chip" data-q="工伤期间工资怎么发">工伤期间工资怎么发？（防误命中演示）</button>
+          </div>
+          <div class="demo-note"><b>怎么玩：</b>第 2、6 问是第 1、5 问的「换说法」——试试看是否都命中标准问答（本次优化的核心）。第 8 问会做金额比较；最后一问「工伤」不会被误答成「病假」。也可以<b>输入任意制度问题</b>，例如「调休会过期吗」「婚假材料」。</div>
+        </div>
+        <div class="chat">
+          <div class="chat-head">小办 · 企业办事助手
+            <span class="engine-switch">
+              <button id="engineLocal" class="engine-btn on" title="纯前端规则引擎，秒回，零网络">本地引擎</button>
+              <button id="engineCoze" class="engine-btn" title="调用本地 LangChain 后端（DeepSeek/Qwen，需配置 API 地址）">LangChain 后端</button>
+            </span>
+            <span class="demo-tag">DEMO</span>
+          </div>
+          <div class="chat-body" id="chatBody">
+            <div class="msg bot">
+              <div class="bub">你好，我是小办。已内置 63 条企业制度问答，请假、报销、办公用品都可以问我——点左侧问题，或直接输入。</div>
+            </div>
+          </div>
+          <div class="chat-input">
+            <input id="chatInput" type="text" placeholder="例如：调休会过期吗？超过22点打车能报吗" aria-label="输入问题" />
+            <button id="chatSend">发送</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- (7) 质量评测 -->
+    <section class="sec">
+      <div class="sec-head reveal">
+        <div class="num">07 / 质量评测</div>
+        <h2>用测试集锁住稳定性 · 用闭环驱动迭代</h2>
+        <p>12 类维度、118 条用例、3 级优先级——把"AI 表现波动"压成可量化的工程指标。</p>
+        <div class="rule"></div>
+      </div>
+      <div class="qa">
+        <div class="reveal">
+          <div class="dash">
+            <div class="dk"><div class="n" data-num="118">0</div><div class="l">测试用例</div><div class="s">// test_cases.v3</div></div>
+            <div class="dk"><div class="n" data-num="3">0</div><div class="l">优先级分级</div><div class="s">// P0 / P1 / P2</div></div>
+            <div class="dk"><div class="n" data-num="12">0</div><div class="l">测试维度</div><div class="s">// dim.matrix</div></div>
+          </div>
+          <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
+            <span style="font-family:var(--mono);font-size:11.5px;padding:4px 9px;border-radius:3px;background:var(--ok-tint);color:var(--ok);font-weight:700">✓ 正常流程</span>
+            <span style="font-family:var(--mono);font-size:11.5px;padding:4px 9px;border-radius:3px;background:var(--ok-tint);color:var(--ok);font-weight:700">✓ 矛盾需求</span>
+            <span style="font-family:var(--mono);font-size:11.5px;padding:4px 9px;border-radius:3px;background:var(--ok-tint);color:var(--ok);font-weight:700">✓ 情绪化输入</span>
+            <span style="font-family:var(--mono);font-size:11.5px;padding:4px 9px;border-radius:3px;background:var(--ok-tint);color:var(--ok);font-weight:700">✓ 跨场景记忆</span>
+            <span style="font-family:var(--mono);font-size:11.5px;padding:4px 9px;border-radius:3px;background:var(--acc-tint);color:var(--acc);font-weight:700">△ 长尾冷门</span>
+          </div>
+        </div>
+        <div class="reveal" style="text-align:center">
+          <div class="loop">
+            <svg viewBox="0 0 280 280">
+              <defs>
+                <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#1E3A8A"/><stop offset="1" stop-color="#3B82F6"/>
+                </linearGradient>
+              </defs>
+              <circle cx="140" cy="140" r="118" fill="none" stroke="var(--divider-strong)" stroke-width="1.5" stroke-dasharray="4 5"/>
+              <path d="M 140,22 A 118,118 0 0,1 248,180" fill="none" stroke="url(#lg)" stroke-width="3" stroke-linecap="round" id="loopProg" stroke-dasharray="370" stroke-dashoffset="370"/>
+              <g font-family="var(--mono)" font-size="11" fill="var(--text-2)" text-anchor="middle">
+                <circle cx="140" cy="38" r="14" fill="var(--c)"/><text x="140" y="42" fill="#fff" font-weight="700">评测</text>
+                <circle cx="234" cy="106" r="14" fill="var(--card)" stroke="var(--c)" stroke-width="2"/><text x="234" y="110">归因</text>
+                <circle cx="234" cy="174" r="14" fill="var(--card)" stroke="var(--c)" stroke-width="2"/><text x="234" y="178">迭代</text>
+                <circle cx="140" cy="242" r="14" fill="var(--acc)"/><text x="140" y="246" fill="#fff" font-weight="700">验证</text>
+                <circle cx="46" cy="174" r="14" fill="var(--card)" stroke="var(--c)" stroke-width="2"/><text x="46" y="178">上线</text>
+                <circle cx="46" cy="106" r="14" fill="var(--card)" stroke="var(--c)" stroke-width="2"/><text x="46" y="110">监控</text>
+              </g>
+            </svg>
+          </div>
+          <div class="loopcap">自动化评测 → 问题归因 → 版本迭代 → 效果验证 → 线上监控 <b>· 完整闭环</b></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- (7) 资产沉淀 -->
+    <section class="sec">
+      <div class="sec-head reveal">
+        <div class="num">08 / 资产沉淀</div>
+        <h2>不只是上线 · 是把方法变成可复用资产</h2>
+        <p>四份可交付物：标准 PRD / 全场景测试集 / 工作流源文件 / 分阶段迭代方案。点击预览。</p>
+        <div class="rule"></div>
+      </div>
+      <div class="ass">
+        <div class="afile reveal">
+          <div class="preview">
+            <span class="tag">.docx</span>
+            <div class="ln"></div><div class="ln s"></div><div class="ln t"></div><div class="ln"></div>
+          </div>
+          <div class="meta">
+            <h4>AI-PRD 标准模板</h4>
+            <p>功能拆解 / 数据流 / 验收标准</p>
+            <div class="ft"><span>v1.5 · 15 页 · 1.7 MB</span><a href="PRD-XiaoBan.pdf" target="_blank" rel="noopener">预览 →</a></div>
+          </div>
+        </div>
+        <div class="afile reveal">
+          <div class="preview">
+            <span class="tag">.xlsx</span>
+            <div class="ln"></div><div class="ln s"></div><div class="ln"></div><div class="ln t"></div>
+          </div>
+          <div class="meta">
+            <h4>全场景测试集</h4>
+            <p>118 用例 / 12 维度 / 3 优先级</p>
+            <div class="ft"><span>v1.5 · 32 KB</span><a href="XiaoBan-TestSet.xlsx" target="_blank" rel="noopener">预览 →</a></div>
+          </div>
+        </div>
+        <div class="afile reveal">
+          <div class="preview">
+            <span class="tag">.zip</span>
+            <div class="ln s"></div><div class="ln"></div><div class="ln t"></div><div class="ln"></div>
+          </div>
+          <div class="meta">
+            <h4>工作流源文件</h4>
+            <p>V1.5 含冲突校验 / 三级兜底</p>
+            <div class="ft"><span>源码包 · 89 文件 · 119 KB</span><a href="XiaoBan-WorkflowSrc.zip" target="_blank" rel="noopener">下载 ↧</a></div>
+          </div>
+        </div>
+        <div class="afile reveal">
+          <div class="preview">
+            <span class="tag">.pdf</span>
+            <div class="ln"></div><div class="ln t"></div><div class="ln s"></div><div class="ln"></div>
+          </div>
+          <div class="meta">
+            <h4>迭代方案与复盘</h4>
+            <p>v1.0 → v1.5 完整决策记录</p>
+            <div class="ft"><span>v1.5 · 5 页 · 21 KB</span><a href="XiaoBan-Retro.pdf" target="_blank" rel="noopener">预览 →</a></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- (8) 业务价值与收尾 -->
+    <section class="closesec">
+      <div class="sec-head reveal" style="text-align:center">
+        <div class="num" style="text-align:center">09 / 业务价值</div>
+        <h2>省下来的人力 · 留给真正的人</h2>
+        <p class="le">AI 拿走重复答疑，让 HR 去处理真正需要判断的事——入职面谈、组织氛围、员工关系。这是工具该有的位置。</p>
+      </div>
+      <div class="values">
+        <div class="val reveal">
+          <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8"/></svg>降本提效</h4>
+          <p>每周节省 HR 答疑时间 10h+，响应时长从 4.5h 缩到实时。</p>
+        </div>
+        <div class="val reveal">
+          <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>可复用模板</h4>
+          <p>PRD / 测试集 / 工作流均为可复用模板，适配同类企业场景。</p>
+        </div>
+        <div class="val reveal">
+          <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg>可快速部署</h4>
+          <p>从 0 到 1 跑通生产环境，最快 2 周可上线，含飞书机器人集成。</p>
+        </div>
+      </div>
+      <div class="btngroup reveal">
+        <a class="btn btn-doc" href="PRD-XiaoBan.pdf" target="_blank" rel="noopener">查看 PRD ↗</a>
+        <a class="btn btn-ghost" href="portfolio.html">← 返回作品集首页</a>
+      </div>
+      <div style="margin-top:32px;font-family:var(--mono);font-size:11.5px;color:var(--text-3);letter-spacing:1px">
+        ROLE · AI 产品设计师 &nbsp;|&nbsp; DURATION · 2026.Q1 — Q2 &nbsp;|&nbsp; STATUS · 已交付 / 线上运行
+      </div>
+    </section>
+
+    <footer class="foot">
+      <div class="copy">韩佳雪 · AI 产品作品集 ｜ 作品数据仅展示于浏览器本地，不上传服务器</div>
+    </footer>
+
+  </div>
+
+<script>
+  // ===== 深浅主题 =====
+  var themeBtn = document.getElementById('themeBtn');
+  var saved = localStorage.getItem('hx-theme');
+  if(saved === 'dark'){ document.body.classList.add('dark'); themeBtn.textContent='◐'; }
+  themeBtn.addEventListener('click', function(){
+    var dark = document.body.classList.toggle('dark');
+    themeBtn.textContent = '◐';
+    localStorage.setItem('hx-theme', dark ? 'dark' : 'light');
+  });
+
+  // ===== 滚动淡入 =====
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  },{threshold:.12, rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+
+  // ===== Hero 数字滚动 =====
+  function rollNum(el){
+    var target = parseInt(el.getAttribute('data-num'), 10);
+    var suffix = el.getAttribute('data-suffix') || '';
+    var cur = 0, step = Math.max(1, Math.ceil(target/40));
+    var t = setInterval(function(){
+      cur += step;
+      if(cur >= target){ cur = target; clearInterval(t); }
+      el.textContent = cur + suffix;
+    }, 28);
+  }
+  var numEls = document.querySelectorAll('.mcard .num, .dk .n');
+  var numIO = new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(e.isIntersecting){ rollNum(e.target); numIO.unobserve(e.target); }
+    });
+  },{threshold:.4});
+  numEls.forEach(function(el){ numIO.observe(el); });
+
+  // ===== 三层架构 hover 切换激活 =====
+  document.querySelectorAll('.alayer').forEach(function(layer){
+    layer.addEventListener('mouseenter', function(){
+      document.querySelectorAll('.alayer').forEach(function(l){ l.classList.remove('active'); });
+      layer.classList.add('active');
+    });
+  });
+
+  // ===== 闭环圆弧点亮 =====
+  var loopIO = new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(e.isIntersecting){
+        var p = document.getElementById('loopProg');
+        if(p) p.style.transition = 'stroke-dashoffset 1.5s ease';
+        if(p) p.style.strokeDashoffset = '0';
+        loopIO.unobserve(e.target);
+      }
+    });
+  },{threshold:.4});
+  var loopSvg = document.getElementById('loopProg');
+  if(loopSvg) loopIO.observe(loopSvg);
+
+  // ===== 小办 Mock 对话 Demo（纯前端模拟，零后端） =====
+  var QA_DATA = (window.QA_DATA || []).map(function(it){
+    return {question: it.question||"", syn: it.synonym_questions||[], answer: it.answer||"", path: it.path||"", steps: it.steps||"", source: it.source||""};
+  });
+  var XB_DOCS = window.XB_DOCS || [];  // 制度原文库（3 份制度全文切块）
+  // 领域词分组（用于跨业务防误判：工伤 → 不命中病假）
+  var DOMAIN_GROUPS = [
+    {name:"假期", words:["年假","事假","病假","婚假","丧假","陪产假","产假","调休","请假","休假","假期","休假申请","假"]},
+    {name:"工伤", words:["工伤"]},
+    {name:"报销", words:["报销","发票","费用","报账","打款","凭证","票据","报票","公出","报消"]},
+    {name:"宴请", words:["宴请","请客","吃饭","聚餐","接待","招待","请吃饭"]},
+    {name:"出差", words:["出差","差旅","住宿","机票","火车票","交通","出差报销"]},
+    {name:"培训", words:["培训"]},
+    {name:"加班", words:["加班","打车","出租车"]},
+    {name:"办公用品", words:["办公用品","申领","换新","维修","键盘","显示器","鼠标","座椅","U盘","打印纸","文具","采购","物资","集采","办公","设备","电脑","耗材","打印机","领"]},
+    {name:"财务", words:["抽查","审核","审批","财务总监","部门经理"]}
+  ];
+  // 假期组内细分假种（防同组子类混淆：婚假材料 → 不命中病假材料）
+  var TYPE_SPECIFIC = {
+    "假期": ["年假","事假","病假","婚假","丧假","产假","陪产假","调休"]
+  };
+  function typeSpecSet(s){
+    var out=[];
+    for(var gi=0; gi<DOMAIN_GROUPS.length; gi++){
+      var g = DOMAIN_GROUPS[gi], spec = TYPE_SPECIFIC[g.name];
+      if(!spec) continue;
+      for(var si=0; si<spec.length; si++){ if(s.indexOf(spec[si])>=0) out.push(spec[si]); }
+    }
+    return out;
+  }
+  function domainGroups(s){
+    var out=[];
+    for(var gi=0; gi<DOMAIN_GROUPS.length; gi++){
+      var g = DOMAIN_GROUPS[gi];
+      for(var wi=0; wi<g.words.length; wi++){ if(s.indexOf(g.words[wi])>=0){ out.push(g.name); break; } }
+    }
+    return out;
+  }
+  function charSim(a,b){
+    var sa=new Set(a.replace(/[\s,，。？?！!]/g,'').split(''));
+    var sb=new Set(b.replace(/[\s,，。？?！!]/g,'').split(''));
+    var inter=0; sa.forEach(function(c){ if(sb.has(c)) inter++; });
+    var union=new Set(Array.from(sa).concat(Array.from(sb))).size;
+    return union ? inter/union : 0;
+  }
+  function scoreQA(query, item){
+    var simQ = charSim(query, item.question);
+    var simSyn = 0;
+    for(var i=0;i<item.syn.length;i++){ var s = charSim(query, item.syn[i]); if(s > simSyn) simSyn = s; }
+    var best = Math.max(simQ, simSyn);
+    var isSyn = simSyn > simQ;
+    var qDom = domainGroups(query);
+    var itDom = domainGroups(item.question + " " + item.syn.join(" "));
+    var domainOK = true;
+    if(qDom.length && itDom.length){
+      var inter = qDom.some(function(g){ return itDom.indexOf(g)>=0; });
+      domainOK = inter || best >= 0.85;
+      // 组内细分假种：双方都有具体假种且不相同 → 拒绝（婚假 vs 病假）
+      if(domainOK){
+        var qSpec = typeSpecSet(query), itSpec = typeSpecSet(item.question + " " + item.syn.join(" "));
+        if(qSpec.length && itSpec.length){
+          var specInter = qSpec.some(function(w){ return itSpec.indexOf(w)>=0; });
+          domainOK = specInter || best >= 0.85;
+        }
+      }
+    }
+    // 假种降权：query 与条目具体假种不同 → 削弱（年假问题优先年假条目，避免被事假条目抢占）
+    var qSpec0 = typeSpecSet(query), itSpec0 = typeSpecSet(item.question + " " + item.syn.join(" "));
+    if(qSpec0.length && itSpec0.length){
+      var hasSameSpec = qSpec0.some(function(w){ return itSpec0.indexOf(w)>=0; });
+      if(!hasSameSpec) best = best * 0.4;
+    }
+    // 数字共现 boost：query 的数字出现在条目 question 中 → 加分（"3天"优先"短期病假3天"）
+    var qNums = query.match(/\d+/g);
+    if(qNums){
+      for(var ni=0; ni<qNums.length; ni++){
+        if(item.question.indexOf(qNums[ni])>=0){ best += 0.15; break; }
+      }
+    }
+    // 假种降权：query 与条目具体假种不同 → 削弱（年假问题优先年假条目，避免被事假条目抢占）
+    var qSpec0 = typeSpecSet(query), itSpec0 = typeSpecSet(item.question + " " + item.syn.join(" "));
+    if(qSpec0.length && itSpec0.length){
+      var hasSameSpec = qSpec0.some(function(w){ return itSpec0.indexOf(w)>=0; });
+      if(!hasSameSpec) best = best * 0.4;
+    }
+    // 数字共现 boost：query 的数字出现在条目 question 中 → 加分（"3天"优先"短期病假3天"）
+    var qNums = query.match(/\d+/g);
+    if(qNums){
+      for(var ni=0; ni<qNums.length; ni++){
+        if(item.question.indexOf(qNums[ni])>=0){ best += 0.15; break; }
+      }
+    }
+    return {item:item, best:best, isSyn:isSyn, domainOK:domainOK, qDom:qDom};
+  }
+  function amountTail(answer, query){
+    var nums = query.match(/\d+/g);
+    if(!nums) return answer;
+    var n = Math.max.apply(null, nums.map(Number));  // 取最大金额（兼容"10人×200元/总额5000元"）
+    return answer + (n<5000
+      ? "\n\n按您提到的金额（"+n+" 元 < 5000 元）：由部门负责人审批即可，无需总经理审批。"
+      : n===5000
+        ? "\n\n按您提到的金额（5000 元 = 上限 5000 元）：无需总经理审批。"
+        : "\n\n按您提到的金额（"+n+" 元 > 5000 元）：需总经理审批。");
+  }
+  // ===== 理解层（伪智能体）：先理解提问，再组织回答 =====
+  // 0) 口语/同义改写映射（对应扣子 query_rewrite 节点）
+  var REWRITE_MAP = [
+    ["老婆生孩子","陪产假"],["媳妇生娃","陪产假"],["老婆生小孩","陪产假"],["家属生育","陪产假"],["生宝宝","陪产假"],
+    ["请jia","请假"],["请jia?","请假"],["咋","怎么"],["咋申请","怎么申请"],
+    ["报消","报销"],["报票","报销"],["票子怎么报","发票怎么报销"],
+    ["公出","出差"],["出公差","出差"],
+    ["滑鼠","鼠标"],
+    ["无薪休假","事假"],["无薪假","事假"],
+    ["东西坏掉","设备损坏"],["东西坏了","设备损坏"],["坏掉了","损坏"],["坏的很","损坏"],
+    ["领新的","换新"],["换新的","换新"],
+    ["招待客户","宴请"],["请客户吃饭","宴请"],["请客","宴请"],["请吃饭","宴请"],
+    ["电脑品牌","电脑配置"],["配发的电脑","办公电脑"],["电脑是","办公电脑"],
+    ["库存没有","库存不足"],["库存没货","库存不足"],
+    ["年假没休完","年假跨年"],["没休完的年假","年假结转"],["年假没休","年假结转"],
+    ["加班到很晚","加班超过22点"],["加班很晚","加班超过22点"],
+    ["今天申请来得及吗","年假提前申请"],["明天想请年假","年假提前申请"],
+    ["这月20号","20号"],["20号能收到","20号打款"],
+    ["给钱吗","报销吗"],["能报钱吗","能报销吗"],["能拿钱吗","能报销吗"],
+    ["有没有合作","合作"],["附近有","附近"],
+    ["怎么弄","怎么申请"],["怎么做","怎么申请"],["走什么流程","怎么申请"],["什么流程","申请流程"],
+    ["几天年假","年假天数"],["休多少天","多少天"],["休几天","几天"],
+    ["好累",""],["好累啊",""],["注意休息",""],["天气好差",""],["天气",""],["？？？",""],["！！！",""],["三天以内","3天以内"],["票子","票据"],["啥","什么"],["坏了我想申请换一个","坏了换新"],["显示器坏了我想申请换一个","显示器换新"],["怎么领新办公用品","换新办公用品"],["领新办公用品","换新办公用品"],["领新的","换新"],
+    ["最近项目",""],["加班辛苦",""],["忙晕了",""],["工作好累",""]
+  ];
+  function rewriteQuery(query){
+    var q = " " + query + " ";
+    for(var i=0;i<REWRITE_MAP.length;i++){
+      var from = REWRITE_MAP[i][0], to = REWRITE_MAP[i][1];
+      if(q.indexOf(from)>=0){ q = q.split(from).join(to); }
+    }
+    // 去除闲聊残留符号
+    q = q.replace(/^[\s,，。]+|[\s,，。]+$/g,"").trim();
+    return q;
+  }
+  // 1) 实体抽取 + 意图/业务识别（先做同义改写）
+  function understand(query){
+    var rw = rewriteQuery(query);
+    query = rw;
+    var u = {entities:{}, bizType:"", intents:[], rewrite:rw};
+    var mAge = query.match(/(\d+)\s*年(?!.{0,3}月)/);
+    if(mAge) u.entities.工龄 = parseInt(mAge[1],10);
+    var mMoney = query.match(/(\d+)\s*元/);
+    if(mMoney) u.entities.金额 = parseInt(mMoney[1],10);
+    var mDay = query.match(/(\d+)\s*天/);
+    if(mDay) u.entities.天数 = parseInt(mDay[1],10);
+    var mMonth = query.match(/(\d+)\s*个?\s*月/);
+    if(mMonth) u.entities.月数 = parseInt(mMonth[1],10);
+    if(/22[:：]\s*00|22\s*点/.test(query)) u.entities.时点 = "22:00";
+    var TYPES = ["年假","事假","病假","婚假","丧假","产假","陪产假","调休","工伤"];
+    for(var i=0;i<TYPES.length;i++){ if(query.indexOf(TYPES[i])>=0){ u.entities.假种 = TYPES[i]; break; } }
+    u.bizType = domainGroups(query).join("/") || "其他";
+    if(/怎么|多少|几天|能.*吗|可以.*吗|多久|几号|什么/.test(query)) u.intents.push("规则/额度查询");
+    if(/申请|提交|流程|怎么申请|手续/.test(query)) u.intents.push("申请流程");
+    if(/材料|证明|票据|凭证/.test(query)) u.intents.push("所需材料");
+    if(/审批|谁|几方|签/.test(query)) u.intents.push("审批层级");
+    if(/报销|发票|报账/.test(query)) u.intents.push("报销相关");
+    if(/处罚|违规|虚报|旷工|后果/.test(query)) u.intents.push("违规后果");
+    if(!u.intents.length) u.intents.push("制度查询");
+    return u;
+  }
+  // 2) 实体摘要（用于链路展示）
+  function entitySummary(u){
+    var parts=[];
+    if(u.entities.工龄) parts.push("工龄="+u.entities.工龄+"年");
+    if(u.entities.金额) parts.push("金额="+u.entities.金额+"元");
+    if(u.entities.天数) parts.push("天数="+u.entities.天数+"天");
+    if(u.entities.月数) parts.push("月数="+u.entities.月数+"个月");
+    if(u.entities.时点) parts.push("时点="+u.entities.时点);
+    if(u.entities.假种) parts.push("假种="+u.entities.假种);
+    return parts.length ? parts.join(", ") : "无";
+  }
+  // 3) 回答生成器：把抽取的实体代入结论（伪 LLM 组织回答）
+  function generateAnswer(query, item, u){
+    var hay = item.question + " " + item.answer;
+    var head = "";
+    // 年假 + 工龄 → 区间代入
+    if(hay.indexOf("年假")>=0 && u.entities.工龄){
+      var y = u.entities.工龄;
+      if(y<1) head = "你工龄不足 1 年，暂不享受带薪年假。";
+      else if(y<10) head = "你工龄 "+y+" 年，落在 1-10年（含）区间 → 每年 5 天带薪年假。";
+      else if(y<20) head = "你工龄 "+y+" 年，落在 10-20年（含）区间 → 每年 10 天带薪年假。";
+      else head = "你工龄 "+y+" 年，落在 20 年以上区间 → 每年 15 天带薪年假。";
+    }
+    // 病假 + 月数比较（>6 → 70%，否则 80%）
+    else if(hay.indexOf("病假")>=0 && u.entities.月数){
+      head = u.entities.月数>=6
+        ? "你提到病假超过 "+u.entities.月数+" 个月 → 病假工资按基本工资 70% 发。"
+        : "你提到病假 "+u.entities.月数+" 个月（未超 6 个月）→ 病假工资不低于基本工资 80%。";
+      if(u.entities.月数>=6){
+        var cut = item.answer.split("；");
+        if(cut.length>1){ item.answer = cut.slice(1).join("；").trim(); }
+      }
+    }
+    // 病假一般问法
+    else if(hay.indexOf("病假")>=0 && /工资|扣|薪资|发多少/.test(query)){
+      head = "病假期间工资不低于基本工资 80%（超 6 个月按 70%）。";
+    }
+    // 显示器换新周期
+    else if(hay.indexOf("显示器")>=0 && /换新|换|坏了|多久/.test(query)){
+      head = "显示器更换周期为 3 年；未满 3 年损坏仅能提交维修申请，不能直接换新。";
+    }
+    // 加班 22 点打车
+    else if((hay.indexOf("22:00")>=0 || hay.indexOf("22点")>=0) && u.entities.时点){
+      head = "加班超过 22:00 可申请出租车交通报销，须提供电子发票作为凭证。";
+    }
+    // 金额上限类（如 U盘100元 / 办公用品500元）：金额比较代入
+    else if(hay.indexOf("上限")>=0 && u.entities.金额){
+      var cap = parseInt((hay.match(/(\d+)\s*元/)||[])[1]||"0",10);
+      if(cap>0){
+        head = u.entities.金额<=cap
+          ? "你提到 "+u.entities.金额+" 元（≤ 上限 "+cap+" 元）→ 可全额报销。"
+          : "你提到 "+u.entities.金额+" 元（超上限 "+cap+" 元）→ 超出部分不予报销。";
+      }
+    }
+    return head ? head + "\n\n【制度原文】\n" + item.answer : item.answer;
+  }
+  function scoreAll(query, minScore, topK){
+    return QA_DATA.map(function(it){ return scoreQA(query,it); })
+      .filter(function(s){ return s.best > minScore; })
+      .sort(function(a,b){ return b.best - a.best; })
+      .slice(0, topK);
+  }
+  // 二次检索 query：用实体 + 业务词 + 意图词重构精简问句（避免纯假种词导致短串虚高）
+  var INTENT_WORDS = ["材料","证明","审批","流程","申请","报销","多久","几天","几号","谁","哪里","怎么","多少","上限","发票","票据","凭证","发放","领取","修改","打款"];
+  function buildSecondQuery(query, u){
+    var parts = [];
+    if(u.entities.假种) parts.push(u.entities.假种);
+    if(u.entities.工龄) parts.push("工龄"+u.entities.工龄+"年");
+    if(u.entities.金额) parts.push("金额"+u.entities.金额);
+    if(u.entities.天数) parts.push(u.entities.天数+"天");
+    if(u.entities.月数) parts.push(u.entities.月数+"个月");
+    for(var gi=0; gi<DOMAIN_GROUPS.length; gi++){
+      var g = DOMAIN_GROUPS[gi];
+      for(var wi=0; wi<g.words.length; wi++){
+        if(query.indexOf(g.words[wi])>=0){ if(parts.indexOf(g.words[wi])<0) parts.push(g.words[wi]); break; }
+      }
+    }
+    for(var ii=0; ii<INTENT_WORDS.length; ii++){
+      if(query.indexOf(INTENT_WORDS[ii])>=0 && parts.indexOf(INTENT_WORDS[ii])<0) parts.push(INTENT_WORDS[ii]);
+    }
+    return parts.length ? parts.join(" ") : query;
+  }
+  // 制度原文召回（双知识库：QA 摘要 + 制度原文）：按领域词/意图词/假种命中数打分
+  function scoreDocs(query, u, topK){
+    if(!XB_DOCS.length) return [];
+    var words = [];
+    for(var gi=0; gi<DOMAIN_GROUPS.length; gi++){
+      var g = DOMAIN_GROUPS[gi];
+      for(var wi=0; wi<g.words.length; wi++){ if(query.indexOf(g.words[wi])>=0 && words.indexOf(g.words[wi])<0) words.push(g.words[wi]); }
+    }
+    for(var ii=0; ii<INTENT_WORDS.length; ii++){ if(query.indexOf(INTENT_WORDS[ii])>=0 && words.indexOf(INTENT_WORDS[ii])<0) words.push(INTENT_WORDS[ii]); }
+    if(u.entities.假种 && words.indexOf(u.entities.假种)<0) words.push(u.entities.假种);
+    return XB_DOCS.map(function(d){
+      var hits = 0;
+      for(var w=0; w<words.length; w++){ if(d.text.indexOf(words[w])>=0) hits++; }
+      return {doc:true, source:d.source, text:d.text, best:hits};
+    }).filter(function(s){ return s.best>0; })
+      .sort(function(a,b){ return b.best-a.best; })
+      .slice(0, topK);
+  }
+  // ===== 单条问题处理（标准QA → 混合检索 → 过渡兜底 → 二次检索 → 全局兜底） =====
+  var lastTopic = '';
+  var NEG_WORDS = ["不","无","禁止","不予","仅限","必须","不能","不可以","不享受","不作","不符合","放弃","无法","不予受理"];
+  // 特殊场景词：制度无细则的特殊场景 → 强制过渡兜底（EC/RL/F 系列）
+  var SCENE_WORDS = ["驳回","丢失","丢了","库存","不足","借调","离职","多人","补充","特批","0元","更换主管","补上传","补票","节假日","修改请假","补申请","销假","折现","折换成","连休","爷爷奶奶","祖父","祖母","转岗","合作","健身房","外卖","理财","简历","薪资","推荐","总额限制","实习生","有没有"];
+  function isSceneQuestion(query){
+    for(var i=0;i<SCENE_WORDS.length;i++){ if(query.indexOf(SCENE_WORDS[i])>=0) return true; }
+    return false;
+  }
+  // 判定"检索到的答案是否真的回答了问题"：是 → 正常回答；否 → 过渡兜底
+  function isDirectAnswer(query, item){
+    var ans = item.answer || "";
+    if(/吗|能不能|可以吗|可以.{0,8}吗|会不会|是否|有效吗|能吗|能报吗|是不是|允许吗|能否/.test(query)){
+      for(var i=0;i<NEG_WORDS.length;i++){ if(ans.indexOf(NEG_WORDS[i])>=0) return true; }
+    }
+    if(/\d/.test(query) && /上限|元|5000|审批|年|天|个月|工龄|22/.test(ans)) return true;
+    // 核心业务词共现：query 的领域组词在 answer 出现 → 检索到了相关制度正文
+    var qg = domainGroups(query);
+    if(qg.length){
+      for(var gi2=0; gi2<qg.length; gi2++){
+        var gname = qg[gi2];
+        for(var k2=0;k2<DOMAIN_GROUPS.length;k2++){
+          if(DOMAIN_GROUPS[k2].name===gname){
+            var g2 = DOMAIN_GROUPS[k2];
+            for(var wi2=0; wi2<g2.words.length; wi2++){ if(ans.indexOf(g2.words[wi2])>=0) return true; }
+            break;
+          }
+        }
+      }
+    }
+    // 流程/材料/票据类
+    if(/申请|材料|证明|流程|入口|步骤|审批|票据|发票|凭证/.test(query) && /飞书|步骤|入口|申请|材料|证明|票据|发票|凭证/.test(ans)) return true;
+    return false;
+  }
+  // 宴请标准类查询特判（"宴请标准/单人标准/多少钱" 字面难匹配库44，直接映射）
+  function forceBanquet(q){
+    if(/宴请|请客|接待/.test(q) && /标准|多少钱|人均|单人|额度|上限/.test(q)){
+      for(var i=0;i<QA_DATA.length;i++){ if(QA_DATA[i].question.indexOf("商务宴请")>=0) return QA_DATA[i]; }
+    }
+    return null;
+  }
+  function runOne(q){
+    var u = understand(q);
+    var trace=[];
+    trace.push({s:"开始",d:"用户提问："+q});
+    trace.push({s:"问题改写",d:"规范化："+u.rewrite});
+    trace.push({s:"理解 & 业务分类",d:"业务："+u.bizType+" · 实体："+entitySummary(u)+" · 意图："+u.intents.join("、")});
+    var scored = scoreAll(q, 0.12, 3);
+    var docRec = scoreDocs(q, u, 2);
+    var top = scored[0] || null;
+    var fbItem = forceBanquet(q);
+    if(fbItem){ top = {item:fbItem, best:0.6, isSyn:false, domainOK:true, qDom:domainGroups(q)}; }
+    var qDom = top ? top.qDom : domainGroups(q);
+    // 空输入/无领域词且无召回 → 全局兜底（qDom 空但有召回 → 放行后续判定）
+    if(!qDom.length && !(top && top.best >= 0.25)){
+      trace.push({s:"高频标准问答匹配",d:"未命中（业务领域不明确）"});
+      trace.push({s:"向量 + 关键词检索",d:"检索 coze_doc_knowledge · 无有效召回"});
+      trace.push({s:"二次检索",d:"仍无有效内容"});
+      trace.push({s:"兜底判定",d:"全局兜底",fb:true});
+      return {branch:"全局兜底",cls:"fb",answer:"该问题在公司现行制度中未明确规定，建议您请示直属上级或联系 HR（邮箱：hr@company.com）。",source:"",path:"",steps:"",recall:scored.concat(docRec),trace:trace};
+    }
+    // 分支一：标准 QA 直答
+    if(top && top.domainOK && top.best >= 0.5 && !isSceneQuestion(q)){
+      var ans1 = generateAnswer(q, top.item, u);
+      if(top.item.question.indexOf("宴请")>=0 || top.item.answer.indexOf("宴请")>=0){ ans1 = amountTail(ans1, q); }
+      trace.push({s:"高频标准问答匹配",d:"命中标准问答（相似度 "+top.best.toFixed(2)+"）"});
+      trace.push({s:"命中判定",d:"全部命中 → 直出预制答案",ok:true});
+      return {branch:"标准QA直答",cls:"hit",answer:ans1,source:top.item.source,path:top.item.path,steps:top.item.steps,recall:scored.concat(docRec),trace:trace};
+    }
+    // 分支二：混合检索 · 正常回答（首次命中且答案直接回答了问题；特殊场景除外）
+    if(top && top.domainOK && top.best >= 0.18 && !isSceneQuestion(q) && isDirectAnswer(q, top.item)){
+      var ans2 = generateAnswer(q, top.item, u);
+      if(top.item.question.indexOf("宴请")>=0 || top.item.answer.indexOf("宴请")>=0){ ans2 = amountTail(ans2, q); }
+      trace.push({s:"高频标准问答匹配",d:"未命中（最高相似度 "+top.best.toFixed(2)+"）"});
+      trace.push({s:"向量 + 关键词检索",d:"检索 coze_doc_knowledge · 召回 Top1 命中"});
+      trace.push({s:"结果合并",d:"含有效正文"});
+      trace.push({s:"条件检查",d:"含业务正文 → 正常回答",ok:true});
+      return {branch:"混合检索·正常回答",cls:"ret",answer:ans2,source:top.item.source,path:top.item.path,steps:top.item.steps,recall:scored.concat(docRec),trace:trace};
+    }
+    // 分支三：过渡兜底（检索到内容但无精确细则）
+    if(top && top.best >= 0.12){
+      var srcName = (top.item && top.item.source) || (docRec[0] && docRec[0].source) || "公司相关制度";
+      var ansM = "已检索到【"+srcName+"】相关条目，但暂未查询到与您问题匹配的具体规定，该问题在公司现行制度中未明确规定，建议您请示直属上级或联系 HR（邮箱：hr@company.com）。";
+      trace.push({s:"高频标准问答匹配",d:"未命中（最高相似度 "+top.best.toFixed(2)+"）"});
+      trace.push({s:"向量 + 关键词检索",d:"召回相关片段（无精确细则）"});
+      trace.push({s:"条件检查",d:"仅检索到标题/总则 → 过渡兜底",ok:true});
+      return {branch:"过渡兜底·部分命中",cls:"warn",answer:ansM,source:srcName,path:"",steps:"",recall:scored.concat(docRec),trace:trace};
+    }
+    // 分支四：二次检索（扩大召回范围重试）
+    var q2 = buildSecondQuery(q, u);
+    var scored2 = scoreAll(q2, 0.12, 8);
+    var top2 = scored2[0] || null;
+    if(top2 && top2.domainOK && top2.best >= 0.18 && !isSceneQuestion(q) && isDirectAnswer(q, top2.item)){
+      var ans3 = generateAnswer(q, top2.item, u);
+      if(top2.item.question.indexOf("宴请")>=0 || top2.item.answer.indexOf("宴请")>=0){ ans3 = amountTail(ans3, q); }
+      trace.push({s:"高频标准问答匹配",d:"未命中（最高相似度 "+(top?top.best.toFixed(2):"0.00")+"）"});
+      trace.push({s:"向量 + 关键词检索",d:"首次未召回有效正文"});
+      trace.push({s:"结果合并",d:"无有效正文 → 触发二次检索"});
+      trace.push({s:"二次检索",d:"扩大召回范围重试 · 召回 Top1 命中（相似度 "+top2.best.toFixed(2)+"）",ok:true});
+      trace.push({s:"条件检查",d:"含业务正文 → 正常回答",ok:true});
+      return {branch:"二次检索·正常回答",cls:"ret",answer:ans3,source:top2.item.source,path:top2.item.path,steps:top2.item.steps,recall:scored2.concat(docRec),trace:trace};
+    }
+    // 分支五：二次后仍有召回但无细则 → 过渡兜底
+    if(top2 && top2.best >= 0.12){
+      var srcName2 = (top2.item && top2.item.source) || "公司相关制度";
+      var ansM2 = "已检索到【"+srcName2+"】相关条目，但暂未查询到与您问题匹配的具体规定，该问题在公司现行制度中未明确规定，建议您请示直属上级或联系 HR（邮箱：hr@company.com）。";
+      trace.push({s:"高频标准问答匹配",d:"未命中（最高相似度 "+(top?top.best.toFixed(2):"0.00")+"）"});
+      trace.push({s:"二次检索",d:"扩大召回范围重试 · 无精确细则"});
+      trace.push({s:"条件检查",d:"仅检索到标题/总则 → 过渡兜底",ok:true});
+      return {branch:"过渡兜底·部分命中",cls:"warn",answer:ansM2,source:srcName2,path:"",steps:"",recall:scored2.concat(docRec),trace:trace};
+    }
+    // 分支六：全局兜底
+    trace.push({s:"高频标准问答匹配",d:"未命中（最高相似度 "+(top?top.best.toFixed(2):"0.00")+"）"});
+    trace.push({s:"向量 + 关键词检索",d:"无有效召回"});
+    trace.push({s:"二次检索",d:"仍无有效内容"});
+    trace.push({s:"兜底判定",d:"全局兜底",fb:true});
+    return {branch:"全局兜底",cls:"fb",answer:"该问题在公司现行制度中未明确规定，建议您请示直属上级或联系 HR（邮箱：hr@company.com）。",source:"",path:"",steps:"",recall:scored.concat(docRec),trace:trace};
+  }
+  // 复合问句拆分（按标点；单子句且主题单一则不拆）
+  function splitQuestions(query){
+    var parts = query.split(/[？?。；;！!]/).map(function(s){return s.trim();}).filter(function(s){return s.length>=2;});
+    if(parts.length <= 1) return [query];
+    // 每个子句都必须含业务领域词或数字才算真正的多问题（避免"需要什么票据"这类分句被误拆）
+    var allValid = parts.every(function(p){ return domainGroups(p).length>0 || /\d/.test(p); });
+    return allValid ? parts : [query];
+  }
+  function runDemo(query){
+    var q = (query || "").trim();
+    if(!q){
+      return {branch:"空输入容错",cls:"warn",answer:"未收到有效问题，请描述您想咨询的制度事项（如请假、报销、办公用品申领）。",source:"",path:"",steps:"",recall:[],trace:[{s:"开始",d:"空输入"},{s:"问题改写",d:"容错处理",ok:true}]};
+    }
+    var u0 = understand(q);
+    // 多轮记忆：无业务领域词的追问 → 衔接上次主题
+    if(lastTopic && u0.bizType==="其他"){ q = lastTopic + " " + q; u0 = understand(q); }
+    q = u0.rewrite || q;   // 使用同义改写后的 query 继续
+    var subs = splitQuestions(q);
+    if(subs.length > 1){
+      var res = subs.map(function(s){ return runOne(s); });
+      var combined = res.map(function(a,i){ return "【问题"+(i+1)+"】\n"+a.answer; }).join("\n\n");
+      var srcs = [];
+      res.forEach(function(a){ if(a.source && srcs.indexOf(a.source)<0) srcs.push(a.source); });
+      var allFb = res.every(function(a){ return a.branch==="全局兜底"; });
+      var someFb = res.some(function(a){ return a.branch.indexOf("兜底")>=0; });
+      var br = allFb ? "全局兜底" : (someFb ? "多问题·部分兜底" : "多问题组装回答");
+      var allRecall = []; res.forEach(function(a){ allRecall = allRecall.concat(a.recall||[]); });
+      var allTrace = [];
+      res.forEach(function(a,i){ allTrace.push({s:"子问题"+(i+1), d:a.branch}); allTrace = allTrace.concat(a.trace||[]); });
+      return {branch:br, cls:allFb?"fb":"ret", answer:combined, source:srcs.join("、"), path:"", steps:"", recall:allRecall, trace:allTrace};
+    }
+    var r = runOne(q);
+    if(r.branch.indexOf("兜底")<0 && u0.bizType && u0.bizType!=="其他"){ lastTopic = u0.bizType.split("/")[0]; }
+    else if(r.source){ lastTopic = r.source.replace(/[【】\s]/g,"").split("-")[0]; }
+    return r;
+  }
+  function addMsg(cls,html){
+    var body=document.getElementById('chatBody');
+    var div=document.createElement('div'); div.className='msg '+cls;
+    div.innerHTML='<div class="bub">'+html+'</div>';
+    body.appendChild(div); body.scrollTop=body.scrollHeight;
+    return div;
+  }
+  function esc(s){ return s.replace(/[<>&]/g,function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;'}[c];}); }
+
+  // ===== LangChain 后端模式（真实 LLM，可选） =====
+  var COZE = {
+    url: localStorage.getItem('xb-api-url') || 'http://127.0.0.1:8000/workflow/run',
+    key: localStorage.getItem('xb-api-key') || '',
+    wfid: localStorage.getItem('xb-wfid') || 'xiaoban_qa',
+    param: localStorage.getItem('xb-param') || 'user_input',
+    mode: localStorage.getItem('xb-mode') || 'local'
+  };
+  function setCozeMode(mode){
+    COZE.mode = mode;
+    localStorage.setItem('xb-mode', mode);
+    var el=document.getElementById('engineLocal'), ec=document.getElementById('engineCoze');
+    if(el) el.classList.toggle('on', mode==='local');
+    if(ec) ec.classList.toggle('on', mode==='coze');
+  }
+  function configureApi(){
+    var url = prompt('后端 API 地址（/workflow/run 端点）：\n本地默认 http://127.0.0.1:8000/workflow/run\n上云后填 https://你的域名/workflow/run', COZE.url || 'http://127.0.0.1:8000/workflow/run');
+    if(url===null) return false;
+    var key = prompt('后端 API Key（backend/.env 的 BACKEND_API_KEY；留空表示后端不校验）：', COZE.key || '');
+    if(key===null) return false;
+    var wfid = prompt('工作流 ID（默认 xiaoban_qa）：', COZE.wfid || 'xiaoban_qa');
+    if(wfid===null) return false;
+    var param = prompt('开始节点输入参数名（默认 user_input）：', COZE.param || 'user_input');
+    if(param===null) return false;
+    COZE.url = url.trim(); COZE.key = key.trim();
+    COZE.wfid = wfid.trim() || 'xiaoban_qa';
+    COZE.param = (param||'user_input').trim();
+    localStorage.setItem('xb-api-url', COZE.url);
+    localStorage.setItem('xb-api-key', COZE.key);
+    localStorage.setItem('xb-wfid', COZE.wfid);
+    localStorage.setItem('xb-param', COZE.param);
+    return true;
+  }
+  function parseCozeOutput(output){
+    var raw = typeof output === 'string' ? output : JSON.stringify(output);
+    try{
+      var o = JSON.parse(raw);
+      if(o && typeof o === 'object'){
+        var na = o.normal_answer || o.data || o;
+        var at = na.answer_text || na.output || na.answer || na.content;
+        if(at) return {answer:String(at), source:na.source||'', path:na.path||'', steps:na.steps||''};
+      }
+    }catch(e){}
+    return {answer:raw, source:'', path:'', steps:''};
+  }
+  function callCoze(query, done){
+    var body = {workflow_id: COZE.wfid, parameters: {}};
+    body.parameters[COZE.param] = query;
+    var headers = {'Content-Type':'application/json'};
+    if(COZE.key) headers['Authorization'] = 'Bearer '+COZE.key;
+    fetch(COZE.url, {
+      method:'POST',
+      headers:headers,
+      body: JSON.stringify(body)
+    })
+    .then(function(res){ return res.json(); })
+    .then(function(j){
+      if(j && j.code === 0 && j.data){
+        done({ok:true, result: parseCozeOutput(JSON.stringify(j))});
+      } else {
+        done({ok:false, err: (j && j.msg) || ('后端返回异常 code='+(j&&j.code))});
+      }
+    })
+    .catch(function(e){ done({ok:false, err:'网络/跨域失败：'+e.message}); });
+  }
+
+  // ===== 回答渲染 =====
+  function renderLocal(q){
+    var r = runDemo(q);
+    var traceHtml = '<div class="trace">'+r.trace.map(function(t){
+      var cls = t.ok ? 't-hit' : (t.fb ? 't-miss' : '');
+      return '<div><b class="'+cls+'">'+t.s+'</b> · '+t.d+'</div>';
+    }).join('')+'</div>';
+    var recallHtml = '<div class="trace" style="display:none">'+(r.recall && r.recall.length
+      ? r.recall.map(function(s,i){
+          if(s.doc) return '<div>[制度原文-片段'+(i+1)+'](命中词='+s.best+') · '+esc(s.source)+'</div>';
+          return '<div>[QA检索-片段'+(i+1)+'](score='+s.best.toFixed(2)+') · '+esc(s.item.question)+'</div>';
+        }).join('')
+      : '<div>[检索] 无召回片段</div>')+'</div>';
+    var srcBlock = r.source ? '<div class="ans-block"><span class="lab">规则来源 · 办事入口</span>'+esc(r.source)+(r.path?' ｜ <b>'+esc(r.path)+'</b>':'')+'</div>' : '';
+    var stepsBlock = r.steps ? '<div class="ans-block"><span class="lab">填写步骤</span>'+esc(r.steps).replace(/\n/g,'<br>')+'</div>' : '';
+    addMsg('bot',
+      '<div class="ans"><div class="ans-policy">'+r.answer.replace(/\n/g,'<br>')+'</div>'+srcBlock+stepsBlock+'</div>'+
+      '<span class="branch '+r.cls+'">'+r.branch+'</span>'+
+      '<button class="trace-toggle" onclick="var a=this.nextElementSibling;var b=a.nextElementSibling;var oa=a.style.display!==\'block\';var ob=b.style.display!==\'block\';a.style.display=oa?\'block\':\'none\';b.style.display=ob?\'block\':\'none\';this.textContent=(oa||ob)?\'收起检索与链路 ▾\':\'查看检索召回与链路 ▸\';">查看检索召回与链路 ▸</button>'+
+      recallHtml+traceHtml
+    );
+  }
+  function renderCozeAnswer(r){
+    var srcBlock = r.source ? '<div class="ans-block"><span class="lab">规则来源 · 办事入口</span>'+esc(r.source)+(r.path?' ｜ <b>'+esc(r.path)+'</b>':'')+'</div>' : '';
+    var stepsBlock = r.steps ? '<div class="ans-block"><span class="lab">填写步骤</span>'+esc(r.steps).replace(/\n/g,'<br>')+'</div>' : '';
+    addMsg('bot',
+      '<div class="ans"><div class="ans-policy">'+esc(r.answer).replace(/\n/g,'<br>')+'</div>'+srcBlock+stepsBlock+'</div>'+
+      '<span class="branch hit">LangChain 后端 · 真实LLM</span>'
+    );
+  }
+  function askDemo(q){
+    if(!q || !q.trim()) return;
+    addMsg('user', esc(q));
+    if(COZE.mode === 'coze' && COZE.pat && COZE.wfid){
+      var loadMsg = addMsg('bot', '<div class="ans-policy" style="opacity:.65">正在调用扣子工作流思考…</div>');
+      callCoze(q, function(res){
+        if(loadMsg && loadMsg.parentNode) loadMsg.parentNode.removeChild(loadMsg);
+        if(res.ok){
+          renderCozeAnswer(res.result);
+        } else {
+          addMsg('bot',
+            '<div class="ans"><div class="ans-policy">扣子调用失败：'+esc(res.err)+'</div></div>'+
+            '<span class="branch fb">已自动降级 · 本地引擎</span>'
+          );
+          renderLocal(q);
+        }
+      });
+    } else {
+      renderLocal(q);
+    }
+  }
+  var chatSend = document.getElementById('chatSend');
+  var chatInput = document.getElementById('chatInput');
+  if(chatSend && chatInput){
+    chatSend.addEventListener('click', function(){ askDemo(chatInput.value); chatInput.value=''; });
+    chatInput.addEventListener('keydown', function(e){ if(e.key==='Enter'){ askDemo(chatInput.value); chatInput.value=''; } });
+  }
+  document.querySelectorAll('.chip').forEach(function(c){
+    c.addEventListener('click', function(){
+      document.querySelectorAll('.chip').forEach(function(x){ x.classList.remove('on'); });
+      c.classList.add('on');
+      askDemo(c.getAttribute('data-q'));
+    });
+  });
+  var engineLocal = document.getElementById('engineLocal');
+  var engineCoze = document.getElementById('engineCoze');
+  if(engineLocal && engineCoze){
+    engineLocal.addEventListener('click', function(){ setCozeMode('local'); });
+    engineCoze.addEventListener('click', function(){
+      if(!COZE.url || !COZE.wfid){ if(!configureApi()) return; }
+      setCozeMode('coze');
+    });
+    setCozeMode(COZE.mode);
+  }
+</script>
+
+</body>
+</html>

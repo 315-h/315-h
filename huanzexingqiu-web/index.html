@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>缓择星球 · 拆解每一次纠结</title>
+  <meta name="description" content="基于多智能体的决策辅助工具，理性拆解选择，减少后悔抉择。" />
+  <link rel="stylesheet" href="assets/css/theme.css" />
+</head>
+<body>
+
+  <!-- 视差星轨背景层 -->
+  <div class="parallax-bg" id="parallax-bg"></div>
+
+  <!-- 顶部导航 -->
+  <div id="nav-mount"></div>
+
+  <!-- ========== 首屏 KV ========== -->
+  <main>
+    <section class="container">
+      <div class="hero">
+        <div>
+          <h1 class="hero-title">缓择星球 · 拆解每一次纠结</h1>
+          <p class="hero-sub">基于多智能体的决策辅助工具，理性拆解选择，减少后悔抉择。</p>
+          <div class="hero-points">
+            <div class="hero-point"><span class="dot"></span>结构化需求采集</div>
+            <div class="hero-point"><span class="dot"></span>中立方案对比</div>
+            <div class="hero-point"><span class="dot"></span>反事实代价预演</div>
+          </div>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="workspace.html">开始一次抉择</a>
+            <a class="btn btn-ghost" href="#philosophy">了解设计理念</a>
+          </div>
+        </div>
+
+        <!-- 右侧视觉：中心星球 + 7 场景卡公转 -->
+        <div class="hero-visual">
+          <div class="hero-halo"></div>
+          <div class="planet hero-planet"></div>
+          <div class="orbit-ring" id="orbit-ring"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== 决策四步微导览 ========== -->
+    <section class="container section step-trail-section" id="steps" aria-label="完成一次决策的四个步骤">
+      <div class="sec-title">四步完成一次清醒抉择</div>
+      <div class="sec-sub">跟着四步走，第一次也不慌</div>
+      <div class="step-trail">
+        <div class="step-item">
+          <span class="step-num">①</span>
+          <div class="step-body">
+            <div class="step-name">选场景</div>
+            <div class="step-desc">挑一个正在纠结的抉择类型</div>
+          </div>
+        </div>
+        <span class="step-arrow" aria-hidden="true">→</span>
+        <div class="step-item">
+          <span class="step-num">②</span>
+          <div class="step-body">
+            <div class="step-name">填需求</div>
+            <div class="step-desc">卡片或口述，把模糊变清晰</div>
+          </div>
+        </div>
+        <span class="step-arrow" aria-hidden="true">→</span>
+        <div class="step-item">
+          <span class="step-num">③</span>
+          <div class="step-body">
+            <div class="step-name">看对比</div>
+            <div class="step-desc">中立陈列方案利弊与底线</div>
+          </div>
+        </div>
+        <span class="step-arrow" aria-hidden="true">→</span>
+        <div class="step-item">
+          <span class="step-num">④</span>
+          <div class="step-body">
+            <div class="step-name">预演代价</div>
+            <div class="step-desc">握住与放下的后果先经历</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== 核心能力区 ========== -->
+    <section class="container section" id="capabilities">
+      <div class="sec-title">三大核心能力</div>
+      <div class="sec-sub">不替你决定，只把纠结拆明白</div>
+      <div class="cap-cards">
+        <div class="card">
+          <div class="cap-icon">🧭</div>
+          <h3>结构化需求采集</h3>
+          <p class="hint" style="margin-top:10px;line-height:1.8;">卡片填写或口述对话，7 大场景各有专属采集维度，把模糊的纠结变成清晰的条目。</p>
+        </div>
+        <div class="card">
+          <div class="cap-icon">⚖️</div>
+          <h3>权衡官中立对比</h3>
+          <p class="hint" style="margin-top:10px;line-height:1.8;">多维度客观陈列候选方案的利弊与底线触碰，AI 不替你拍板，只把账算明白。</p>
+        </div>
+        <div class="card">
+          <div class="cap-icon">🌌</div>
+          <h3>反事实代价预演</h3>
+          <p class="hint" style="margin-top:10px;line-height:1.8;">握住会得到什么、放下会失去什么、代价能否承受，选之前先经历一遍后果。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== 七大场景矩阵 ========== -->
+    <section class="container section" id="scenes">
+      <div class="sec-title">七大抉择场景</div>
+      <div class="sec-sub">点击直达对应场景的决策流程</div>
+      <div class="scene-matrix" id="scene-matrix"></div>
+    </section>
+
+    <!-- ========== 设计理念区 ========== -->
+    <section class="container section" id="philosophy">
+      <div class="sec-title">设计理念</div>
+      <div class="sec-sub">场景化决策体系 · 中立与边界</div>
+      <div class="philosophy">
+        <div class="card">
+          <h3>场景化决策体系设计</h3>
+          <p>不同选择看重的维度完全不同：租房看通勤与风险，求职看成长与稳定，健康看坚持与门槛。我们为 7 大场景各配一套专属维度与预演模板，拒绝用"优点/缺点"这类通用套话敷衍你。</p>
+        </div>
+        <div class="card">
+          <h3>不替你决定，是我们的产品边界</h3>
+          <p>AI 的克制比能力更难得。我们专门设计了"权衡官"这个中立角色：只陈列事实与代价，把最终选择权完整交还给你。知道什么不该替用户决定，是产品真正的边界。</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 页脚 -->
+  <footer class="footer">
+    <p class="slogan">理性拆解选择，减少后悔抉择</p>
+    <p>© 2026 缓择星球 · 慢慢选</p>
+  </footer>
+
+  <!-- 移动端底部导航 -->
+  <div id="tabbar-mount"></div>
+
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/theme.js"></script>
+  <script src="assets/js/index.js"></script>
+</body>
+</html>

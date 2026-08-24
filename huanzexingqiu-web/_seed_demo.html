@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>缓择星球 · 演示数据注入</title>
+  <style>
+    body { font-family: system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+           background: #FAF6F0; color: #2B2724; display: flex; align-items: center;
+           justify-content: center; min-height: 100vh; margin: 0; }
+    .box { background: #fff; padding: 32px 40px; border-radius: 18px; box-shadow: 0 12px 40px rgba(0,0,0,.08);
+           text-align: center; max-width: 360px; }
+    .box h1 { font-size: 18px; margin: 0 0 8px; }
+    .box p { color: #6B6A65; font-size: 14px; line-height: 1.6; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>🪐 正在灌入演示数据…</h1>
+    <p>即将自动跳转到「历史星轨」。<br/>演示数据仅存于本地浏览器，清空存储即可还原。</p>
+  </div>
+
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/seed.js"></script>
+  <script>
+    if (window.MMXSeed) MMXSeed.loadDemo();
+    location.href = 'history.html';
+  </script>
+</body>
+</html>
