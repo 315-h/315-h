@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>小办 · 详情 ｜ 韩佳雪</title>
+<meta property="og:title" content="小办 · 企业行政 RAG 问答助手 ｜ 韩佳雪" />
+<meta property="og:description" content="企业级行政制度问答 Agent：RAG 混合检索 + 三级兜底，118 例分层实测整体 91.5%，替代 HR 高频重复答疑。" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://315-h.github.io/315-h/xiaoban.html" />
+<meta property="og:image" content="https://315-h.github.io/315-h/shots/xb-workflow.jpg" />
+<meta name="description" content="小办 · 企业行政 RAG 问答助手详情页：63 条标准 QA、118 条分层评测、RAG 混合检索，在线 Demo 可直接体验。" />
 <style>
   :root{
     --bg:#F8FAFC;        /* 浅灰蓝基底 */
@@ -99,6 +105,27 @@
     border:1px solid var(--divider-strong);background:var(--card);
     padding:6px 11px;border-radius:4px;letter-spacing:.4px;}
   .hero .tags span b{color:var(--c);font-weight:600;}
+  .hero .hero-note{grid-column:1/-1;margin-top:10px;font-size:12.5px;color:var(--text-2);line-height:1.9;
+    border-top:1px dashed var(--divider-strong);padding-top:14px;display:flex;flex-wrap:wrap;gap:6px 24px;}
+  .hero .hero-note b{color:var(--c);font-weight:600;}
+
+  /* ===== (1.5) 项目概览 四栏 ===== */
+  .ovgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  .ovcell{background:var(--card);border:1px solid var(--divider);border-radius:var(--radius);padding:18px 16px;box-shadow:var(--shadow-sm);}
+  .ovcell .t{font-size:12px;font-weight:800;color:var(--c);letter-spacing:.5px;margin-bottom:6px;}
+  .ovcell .d{font-size:13px;color:var(--text);line-height:1.7;}
+  @media (max-width:860px){.ovgrid{grid-template-columns:1fr 1fr;}}
+
+  /* ===== (7.5) 两版实现 · 准确率演进 ===== */
+  .evolve{max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:14px;}
+  .ev-row{display:grid;grid-template-columns:230px 1fr 64px;gap:14px;align-items:center;}
+  .ev-l{font-size:13px;color:var(--text-2);text-align:right;line-height:1.5;}
+  .ev-bar{height:18px;background:var(--card-soft);border:1px solid var(--divider);border-radius:9px;overflow:hidden;}
+  .ev-bar i{display:block;height:100%;background:linear-gradient(90deg,color-mix(in srgb,var(--c) 55%,transparent),var(--c));border-radius:9px;}
+  .ev-row.hot .ev-bar i{background:linear-gradient(90deg,color-mix(in srgb,var(--ok) 55%,transparent),var(--ok));}
+  .ev-n{font-family:var(--mono);font-size:14px;font-weight:800;color:var(--text);}
+  .ev-note{margin-top:16px;text-align:center;font-size:12px;color:var(--text-3);}
+  @media (max-width:760px){.ev-row{grid-template-columns:1fr 70px;}.ev-l{text-align:left;}}}
   /* 按钮（家族统一，颜色随主题） */
   .btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:700;font-size:14.5px;
     padding:13px 27px;border-radius:var(--radius-btn);cursor:pointer;
@@ -246,6 +273,8 @@
   /* ===== 页脚（三页统一） ===== */
   .foot{padding:40px 0 46px;text-align:center;border-top:1px solid var(--divider);margin-top:30px;}
   .foot .copy{color:var(--text-2);font-size:12.5px;letter-spacing:.3px;}
+  .foot .contact-line{margin-top:8px;font-size:12.5px;color:var(--text-2);}
+  .foot .contact-line a{color:var(--text-2);text-decoration:underline;}
 
   /* 滚动淡入（三页统一） */
   .reveal{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s ease;}
@@ -290,6 +319,9 @@
   .chip:hover{border-color:var(--c);color:var(--c);transform:translateX(3px);}
   .chip.on{background:var(--c-tint);border-color:var(--c);color:var(--c);}
   .demo-note{font-size:11.5px;color:var(--text-3);line-height:1.7;border-top:1px dashed var(--divider);padding-top:12px;margin-top:auto;}
+
+  /* ===== (3.5) 工作流实录 ===== */
+  .shot-wide img{display:block;width:100%;border:1px solid var(--divider);border-radius:var(--radius);box-shadow:var(--shadow);background:var(--card);}
   .demo-note b{color:var(--acc);}
   .chat{background:var(--card);border:1px solid var(--divider);border-radius:var(--radius);box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden;min-height:520px;}
   .chat-head{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;border-bottom:1px solid var(--divider);font-size:13.5px;font-weight:800;background:var(--card-soft);}
@@ -392,6 +424,26 @@
           <div class="delta">每周节省 10h+</div>
         </div>
       </div>
+      <div class="hero-note reveal">
+        <span><b>我的角色：</b>项目负责人 &amp; AI 产品设计师（2026.07–2026.08）</span>
+        <span><b>负责：</b>制度 QA 梳理 · 63 条标准库 · 118 条分层评测 · RAG 检索链路 · 迭代修复</span>
+        <span><b>数据口径：</b>首屏「问答准确率 97%」为内部回归口径；118 条分层实测整体 91.5%（L1 100% / L2 93.1%），详见「07 / 质量评测」</span>
+      </div>
+    </section>
+
+    <!-- (1.5) 项目概览 -->
+    <section class="sec">
+      <div class="sec-head reveal">
+        <div class="num">项目概览</div>
+        <h2>四个词看懂它</h2>
+        <div class="rule"></div>
+      </div>
+      <div class="ovgrid reveal">
+        <div class="ovcell"><div class="t">产品定位</div><div class="d">企业行政制度问答 Agent，替代 HR 高频重复答疑，可快速复制迁移到多业务场景。</div></div>
+        <div class="ovcell"><div class="t">核心价值</div><div class="d">统一口径 + 7×24 响应 + 知识沉淀，让 HR 从重复咨询中解放出来。</div></div>
+        <div class="ovcell"><div class="t">我的角色</div><div class="d">项目负责人 &amp; AI 产品设计师，从 0 到 1 完成定义、实现与迭代。</div></div>
+        <div class="ovcell"><div class="t">项目周期</div><div class="d">2026.07 – 2026.08 · Coze 落地 + 自托管后端双版本。</div></div>
+      </div>
     </section>
 
     <!-- (2) 项目背景与业务痛点 -->
@@ -456,6 +508,19 @@
             <div class="ch"><span>行政制度文档</span><span>结构化 QA 库</span><span>更新版本管理</span></div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- (3.5) 工作流实录 -->
+    <section class="sec">
+      <div class="sec-head reveal">
+        <div class="num">工作流实录</div>
+        <h2>Coze 工作流 · 落地实拍</h2>
+        <p>标准 QA 优先命中 → 双路混合检索 → 规则冲突校验 → 三级兜底的节点编排</p>
+        <div class="rule"></div>
+      </div>
+      <div class="shot-wide reveal">
+        <img src="shots/xb-workflow.jpg" alt="小办 · Coze 工作流节点编排">
       </div>
     </section>
 
@@ -763,6 +828,34 @@
       </div>
     </section>
 
+    <!-- (6.5) 两版实现 · 准确率演进 -->
+    <section class="sec">
+      <div class="sec-head reveal">
+        <div class="num">演进对比</div>
+        <h2>两版实现 · 准确率演进</h2>
+        <p>同一个问答任务，从「关键词匹配」到「LLM 检索增强」，实测准确率的变化</p>
+        <div class="rule"></div>
+      </div>
+      <div class="evolve reveal">
+        <div class="ev-row">
+          <div class="ev-l">版本一 · 本地关键词匹配<br><span style="font-size:11px;color:var(--text-3)">逐字比对，换个说法就漏</span></div>
+          <div class="ev-bar"><i style="width:47.5%"></i></div>
+          <div class="ev-n">47.5%</div>
+        </div>
+        <div class="ev-row">
+          <div class="ev-l">优化后 · 检索 + 规则修正<br><span style="font-size:11px;color:var(--text-3)">双路检索兜底，提升召回</span></div>
+          <div class="ev-bar"><i style="width:71.2%"></i></div>
+          <div class="ev-n">71.2%</div>
+        </div>
+        <div class="ev-row hot">
+          <div class="ev-l">版本二 · LLM 工作流<br><span style="font-size:11px;color:var(--text-3)">先理解再查库再回答</span></div>
+          <div class="ev-bar"><i style="width:91.5%"></i></div>
+          <div class="ev-n">91.5%</div>
+        </div>
+      </div>
+      <p class="ev-note">* 118 条分层测试用例实测（L1 100% / L2 93.1% / 整体 91.5%），详见「07 / 质量评测」</p>
+    </section>
+
     <!-- (7) 质量评测 -->
     <section class="sec">
       <div class="sec-head reveal">
@@ -899,6 +992,7 @@
 
     <footer class="foot">
       <div class="copy">韩佳雪 · AI 产品作品集 ｜ 作品数据仅展示于浏览器本地，不上传服务器</div>
+      <div class="contact-line">电话 15693149386 ｜ 邮箱 <a href="mailto:3415703993@qq.com">3415703993@qq.com</a></div>
     </footer>
 
   </div>

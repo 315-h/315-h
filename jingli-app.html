@@ -887,13 +887,20 @@ const state = {
 /* 真实接口模式开关：默认 true → 打开网页即走本地 LangChain 后端（DeepSeek / Qwen）；
    后端未启动或无密钥时，generateReport / rewriteBlock / sendChat 会自动回落至内置演示数据，不会白屏；
    若想纯离线演示，手动关闭右上角「真实接口模式」开关即可 */
-let USE_REAL_API = true;
+/* 线上环境检测：GitHub Pages / 手机端访问（非 localhost、非 file 协议）→ 默认纯离线 mock，
+   不发起任何 fetch，避免「线上打开即连 localhost:8000」的 Failed to fetch / 混合内容拦截；
+   本地开发（localhost / file）仍默认真实接口，可手动开关切换 */
+const IS_ONLINE = !/^(localhost|127\.0\.0\.1)$/.test(location.hostname || '') && location.protocol !== 'file:';
+let USE_REAL_API = !IS_ONLINE;
 /* 页面加载时同步开关 UI（仅视觉，不弹确认）：真实接口模式默认开启 */
 (function syncRealApiUI(){
   const sw = document.getElementById('real-api-switch');
   const lbl = document.querySelector('.real-api-toggle');
   if(sw) sw.checked = USE_REAL_API;
   if(lbl) lbl.classList.toggle('on', USE_REAL_API);
+  /* 线上访问（非本地开发）隐藏「真实接口模式」开关：
+     线上没有 localhost 后端，避免访客误开后又看到「连不上后端」提示 */
+  if(IS_ONLINE && lbl){ lbl.style.display='none'; }
 })();
 function toggleRealApi(on){
   USE_REAL_API = !!on;

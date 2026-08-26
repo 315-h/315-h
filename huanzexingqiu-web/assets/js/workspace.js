@@ -1503,12 +1503,30 @@
     }).catch(function (e) { onError({ message: e.message || '启动失败' }); });
   }
 
+  // ================= 演示模式（线上无本地后端时） =================
+  function enterDemoMode() {
+    var leftBody = els.leftBody;
+    if (leftBody) {
+      leftBody.innerHTML =
+        '<div style="padding:28px 20px;text-align:center;line-height:1.9">' +
+        '<div style="font-size:24px;margin-bottom:10px">🪐 演示模式</div>' +
+        '<p style="color:var(--text-2);font-size:13.5px;margin-bottom:14px">当前为网页演示版：AI 实时决策需要连接本地后端服务（127.0.0.1:8001），线上访问暂不开放实时生成。</p>' +
+        '<a href="_seed_demo.html" style="display:inline-block;padding:10px 20px;border-radius:999px;background:var(--c);color:#fff;font-weight:700;font-size:13.5px;text-decoration:none">查看「历史星轨」演示 →</a>' +
+        '</div>';
+    }
+    if (els.right) els.right.style.display = 'none';
+  }
+
   // ================= 初始化 =================
   function init() {
     els.progress = $('agent-progress');
     els.left = $('left-panel');
     els.leftBody = $('left-body');
     els.right = $('right-panel');
+
+    /* 线上演示模式守卫：无本地后端（MMX_API_BASE 为空）时直接进入演示模式，
+       不创建 SSE 客户端，避免线上访问裸报 Failed to fetch */
+    if (!window.MMX_API_BASE) { enterDemoMode(); return; }
 
     client = ManManXuanWeb.createClient({
       endpoint: (window.MMX_API_BASE || 'http://127.0.0.1:8001') + '/api/chat',

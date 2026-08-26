@@ -14,7 +14,7 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | **经历翻译官** | 单文件 HTML · 求职诊断 | `jingli.html` | [`jingli-app.html`](jingli-app.html) | [PDF](PRD-Experience.pdf) | — | — |
 | **缓择星球** | 微信小程序 + 网页版 · 决策对比工具 | `huanze.html` | [网页版](huanzexingqiu-web/index.html) | [PDF](PRD-HuanZe.pdf) | [测试集 xlsx](HuanZe-TestSet.xlsx) | [复盘 PDF](HuanZe-Review.pdf) |
-| **小办 / 小半** | RAG Agent · 企业事务助手 | `xiaoban.html` | — | [PDF](PRD-XiaoBan.pdf) | [测试集 xlsx](XiaoBan-TestSet.xlsx) | [复盘 PDF](XiaoBan-Retro.pdf) · [工作流源文件 zip](XiaoBan-WorkflowSrc.zip) |
+| **小办** | RAG Agent · 企业事务助手 | `xiaoban.html` | — | [PDF](PRD-XiaoBan.pdf) | [测试集 xlsx](XiaoBan-TestSet.xlsx) | [复盘 PDF](XiaoBan-Retro.pdf) · [工作流源文件 zip](XiaoBan-WorkflowSrc.zip) |
 
 下载简历：[`Resume-HanJiaxue.pdf`](Resume-HanJiaxue.pdf)
 
@@ -30,7 +30,8 @@
 ├── jingli-app.html        # ① 经历翻译官 · 可交互产品前端
 ├── huanze.html            # ② 缓择星球 · 详情页
 ├── huanzexingqiu-web/     # ② 缓择星球 · 网页版（多页静态站点）
-├── xiaoban.html           # ③ 小办 / 小半 · 详情页
+├── xiaoban.html           # ③ 小办 · 详情页
+├── shots/                 # 产品真实截图（详情页截图墙，压缩版 jpg）
 ├── Resume-HanJiaxue.pdf   # 简历
 ├── PRD-*.pdf              # 三个产品 PRD（一份一份）
 ├── *TestSet.xlsx          # 缓择 / 小办测试集
@@ -49,6 +50,12 @@
 1. **Settings → Pages** → Source 选 `Deploy from a branch`，Branch 选 `main` / 根目录 `/`。
 2. 等待 1~2 分钟，访问 `https://<用户名>.github.io/<仓库名>/`。
 3. 根 URL `/` 自动走 `index.html`（即 `portfolio.html` 副本 → 作品集首页）。
+
+## 线上访问说明（演示模式）
+
+- **经历翻译官**：线上默认「离线演示数据」，不请求任何后端（避免访客机器连不上 localhost）；本地开发时打开「真实接口模式」开关可连自托管 LangChain 后端。
+- **缓择星球网页版**：线上自动进入「演示模式」，引导访客查看历史星轨演示数据（`_seed_demo.html` 自动灌入）；AI 实时决策需本地运行后端（127.0.0.1:8001）。
+- 三个详情页含**真实产品截图墙**（`shots/`）、我的角色与贡献、数据口径脚注、大白话技术实现说明。
 
 ---
 

@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>缓择星球 · 详情 ｜ 韩佳雪</title>
+<meta property="og:title" content="缓择星球 · AI 多智能体决策助手 ｜ 韩佳雪" />
+<meta property="og:description" content="四 Agent 协同的决策辅助工具：需求挖掘-方案检索-反向纠偏-代价预演，不替用户做决定，只帮用户理清利弊。" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://315-h.github.io/315-h/huanze.html" />
+<meta property="og:image" content="https://315-h.github.io/315-h/shots/hz-web-home.jpg" />
+<meta name="description" content="缓择星球（慢慢选）· AI 多智能体决策助手详情页：四 Agent 架构、7 大决策场景、反事实代价预演卡，小程序 + 网页双端。" />
 <style>
   :root{
     --bg:#FAF6F0;            /* 暖米白基底 */
@@ -148,9 +154,14 @@
   .phone .scr .b.l{width:85%;}
   .phone .scr .b.m{width:72%;}
   .phone .scr .dot{width:34px;height:34px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,var(--c));box-shadow:0 0 14px color-mix(in srgb,var(--c) 55%,transparent);margin:6px auto 2px;}
+  .phone .scr img{position:relative;z-index:2;width:100%;height:100%;object-fit:cover;border-radius:20px;}
 
   /* ===== (2) 项目概览 四栏 ===== */
   .ov{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
+  .role-bar{margin-top:22px;background:linear-gradient(160deg,color-mix(in srgb,var(--c) 10%,var(--card)),var(--card));
+    border:1px solid var(--divider);border-radius:var(--radius-sm);padding:14px 20px;font-size:13.5px;color:var(--text);
+    line-height:1.8;text-align:center;box-shadow:var(--shadow-sm);}
+  .role-bar b{color:var(--c);}
   .ovc{background:color-mix(in srgb,var(--c) 8%,var(--card));border:1px solid var(--divider);border-radius:var(--radius);
     padding:24px 20px;box-shadow:var(--shadow-sm);text-align:center;backdrop-filter:blur(4px);
     position:relative;overflow:hidden;transition:transform .2s ease,box-shadow .2s ease;}
@@ -219,6 +230,20 @@
 
   /* ===== (6) 全场景 星座标签 ===== */
   .scenes{max-width:880px;margin:0 auto;}
+  /* ===== (5.5) 界面实录 双端 ===== */
+  .sgroup{margin-bottom:36px;}
+  .sgroup .sgt{display:flex;align-items:baseline;gap:10px;margin-bottom:14px;}
+  .sgroup .sgt b{font-size:16px;font-weight:800;}
+  .sgroup .sgt span{font-size:12px;color:var(--text-2);}
+  .sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+  .sgrid figure{margin:0;background:var(--card);border:1px solid var(--divider);border-radius:var(--radius-sm);
+    overflow:hidden;box-shadow:var(--shadow-sm);transition:transform .2s ease,box-shadow .2s ease;}
+  .sgrid figure:hover{transform:translateY(-4px);box-shadow:var(--shadow);}
+  .sgrid figure img{display:block;width:100%;aspect-ratio:9/16;object-fit:cover;background:var(--card-soft);}
+  .sgrid figure.wide img{aspect-ratio:4/3;}
+  .sgrid figure figcaption{padding:9px 12px;font-size:12px;color:var(--text-2);text-align:center;}
+  @media (max-width:860px){.sgrid{grid-template-columns:1fr 1fr;}}
+  @media (max-width:520px){.sgrid{grid-template-columns:1fr;}}
   .tabs{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:26px;}
   .tab{position:relative;display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:var(--text-2);
     background:var(--card);border:1px solid var(--divider);padding:9px 18px;border-radius:999px;cursor:pointer;
@@ -275,6 +300,7 @@
     background:radial-gradient(circle,color-mix(in srgb,var(--purple) 55%,transparent),transparent 70%);}
   .datac .n{position:relative;font-family:var(--serif);font-size:30px;font-weight:800;color:var(--c);}
   .datac .l{position:relative;font-size:13px;color:var(--text-2);margin-top:2px;}
+  .res-note{margin-top:24px;text-align:center;color:var(--text-3);font-size:12px;line-height:1.8;max-width:760px;margin-left:auto;margin-right:auto;}
   .end{text-align:center;}
   .end .btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:18px;}
 
@@ -309,6 +335,8 @@
   /* 页脚（三页统一） */
   .foot{padding:40px 0 46px;text-align:center;border-top:1px solid var(--divider);margin-top:30px;}
   .foot .copy{color:var(--text-2);font-size:12.5px;letter-spacing:.3px;}
+  .foot .contact-line{margin-top:8px;font-size:12.5px;color:var(--text-2);}
+  .foot .contact-line a{color:var(--text-2);text-decoration:underline;}
 
   /* 滚动淡入（三页统一） */
   .reveal{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s ease;}
@@ -350,13 +378,7 @@
         <div class="phone">
           <span class="notch"></span>
           <div class="scr">
-            <span class="dot"></span>
-            <span class="b l"></span>
-            <span class="b m"></span>
-            <span class="b s"></span>
-            <span class="b m"></span>
-            <span class="b l"></span>
-            <span class="b s"></span>
+            <img src="shots/hz-mp-home.jpg" alt="缓择星球小程序首页">
           </div>
         </div>
         <h1>缓择星球</h1>
@@ -372,7 +394,7 @@
               <rect x="3" y="14" width="7" height="7" rx="1.4"/><path d="M14 14h3v3M21 14v7M14 21h7"/>
             </svg>
           </div>
-          <div class="cap">小程序码 · 占位（正式上线后替换）</div>
+          <div class="cap">小程序待发布 · 上线后开放体验</div>
         </div>
       </div>
     </section>
@@ -402,6 +424,7 @@
           <h3>项目周期</h3><p>2026 · 多轮迭代打磨体验。</p>
         </div>
       </div>
+      <div class="role-bar reveal"><b>我的角色：</b>AI 产品设计师（0→1）——需求采集卡 Schema 设计 · 四 Agent 架构定义 · 反事实代价预演卡交互 · 全场景知识库与测试体系搭建</div>
     </section>
 
     <!-- (3) 设计理念 -->
@@ -454,6 +477,41 @@
       <div class="orbit-note reveal">悬停任意星球，查看对应 Agent 的作用</div>
     </section>
 
+    <!-- (4.5) 背后的实现 · 大白话 -->
+    <section class="sec" id="how">
+      <div class="sec-head reveal">
+        <div class="kcap">HOW IT WORKS</div>
+        <h2>背后的实现 · 大白话</h2>
+        <p>不用懂代码，也能看懂它是怎么工作的</p>
+      </div>
+      <div class="fgrid">
+        <div class="fcard reveal"><span class="glow"></span>
+          <div class="mini"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z" stroke-opacity=".5"/></svg></div>
+          <h3>四 Agent = 决策流程的四步</h3>
+          <div class="d">不是「四个机器人开会」，而是把「了解你 → 找方案 → 挑毛病 → 算代价」四个步骤用代码串起来，一步步走完，像一张流程图。</div>
+          <div class="tags"><span>流程编排</span><span>步骤化</span><span>非黑盒</span></div>
+        </div>
+        <div class="fcard reveal"><span class="glow"></span>
+          <div class="mini"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/><circle cx="12" cy="12" r="4"/></svg></div>
+          <h3>国产大模型驱动</h3>
+          <div class="d">决策分析由国产大模型（DeepSeek / 通义千问）完成，可本地部署、数据可控，不依赖外部黑盒服务。</div>
+          <div class="tags"><span>DeepSeek</span><span>通义千问</span><span>本地可控</span></div>
+        </div>
+        <div class="fcard reveal"><span class="glow"></span>
+          <div class="mini"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h10"/><circle cx="19" cy="16" r="2.5"/></svg></div>
+          <h3>先查知识库，再回答</h3>
+          <div class="d">7 大场景的方案与测试集沉淀成知识库，AI 先检索再组织输出——结论有依据，不凭空发挥。</div>
+          <div class="tags"><span>场景知识库</span><span>先查后答</span><span>可追溯</span></div>
+        </div>
+        <div class="fcard reveal"><span class="glow"></span>
+          <div class="mini"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg></div>
+          <h3>双端共用一套逻辑</h3>
+          <div class="d">小程序和网页版共用同一套后端决策流程（LangChain 手写状态机编排），写一次、跑两端，体验一致。</div>
+          <div class="tags"><span>小程序 + 网页</span><span>一套逻辑</span><span>体验一致</span></div>
+        </div>
+      </div>
+    </section>
+
     <!-- (5) 核心功能模块 -->
     <section class="sec" id="features">
       <div class="sec-head reveal">
@@ -503,6 +561,39 @@
         <div class="panel" id="scenePanel">
           <div class="pt" id="sceneTitle">租房</div>
           <div class="pd" id="sceneDesc">从通勤、预算到合租边界，把「租哪儿」拆成可比较的维度，避免被中介话术带着走。</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- (6.5) 界面实录 双端 -->
+    <section class="sec" id="screens">
+      <div class="sec-head reveal">
+        <div class="kcap">SCREENS</div>
+        <h2>界面实录 · 双端</h2>
+        <p>微信小程序 + 网页版，同一套「温柔陪伴、理性决策」体验</p>
+      </div>
+      <div class="sgroup">
+        <div class="sgt reveal"><b>微信小程序端</b><span>7 个核心页面</span></div>
+        <div class="sgrid">
+          <figure class="reveal"><img src="shots/hz-mp-home.jpg" alt="小程序首页"><figcaption>首页 · 场景入口</figcaption></figure>
+          <figure class="reveal"><img src="shots/hz-mp-chat.jpg" alt="小程序聊天"><figcaption>决策对话 · 需求采集</figcaption></figure>
+          <figure class="reveal"><img src="shots/hz-mp-toolbox.jpg" alt="小程序抉择工具箱"><figcaption>抉择工具箱</figcaption></figure>
+          <figure class="reveal"><img src="shots/hz-mp-compare.jpg" alt="小程序对比表格"><figcaption>权衡官 · 中立对比</figcaption></figure>
+          <figure class="reveal"><img src="shots/hz-mp-bottom.jpg" alt="小程序底线"><figcaption>我的底线 · 代价预演</figcaption></figure>
+          <figure class="reveal"><img src="shots/hz-mp-history.jpg" alt="小程序历史"><figcaption>历史决策</figcaption></figure>
+          <figure class="reveal"><img src="shots/hz-mp-mine.jpg" alt="小程序我的"><figcaption>我的 · 偏好设置</figcaption></figure>
+        </div>
+      </div>
+      <div class="sgroup">
+        <div class="sgt reveal"><b>网页版</b><span>决策工具台 / 模版库 / 历史星轨</span></div>
+        <div class="sgrid">
+          <figure class="reveal wide"><img src="shots/hz-web-home.jpg" alt="网页首页"><figcaption>首页 · 场景入口</figcaption></figure>
+          <figure class="reveal wide"><img src="shots/hz-web-workspace.jpg" alt="网页决策工具台"><figcaption>决策工具台 · 四 Agent 协同</figcaption></figure>
+          <figure class="reveal wide"><img src="shots/hz-web-template.jpg" alt="网页决策模版"><figcaption>决策模版</figcaption></figure>
+          <figure class="reveal wide"><img src="shots/hz-web-templates.jpg" alt="网页抉择模版库"><figcaption>抉择模版库</figcaption></figure>
+          <figure class="reveal wide"><img src="shots/hz-web-history.jpg" alt="网页历史星轨"><figcaption>历史星轨 · 决策回放</figcaption></figure>
+          <figure class="reveal wide"><img src="shots/hz-web-bottom.jpg" alt="网页我的底线"><figcaption>我的底线 · 反事实预演</figcaption></figure>
+          <figure class="reveal wide"><img src="shots/hz-web-settings.jpg" alt="网页设置"><figcaption>设置 · 关于</figcaption></figure>
         </div>
       </div>
     </section>
@@ -612,6 +703,7 @@
         <div class="datac reveal"><div class="n">&lt;5%</div><div class="l">交互负面率</div></div>
         <div class="datac reveal"><div class="n">&gt;70%</div><div class="l">纠偏触发率</div></div>
       </div>
+      <div class="res-note reveal">* 指标口径：6 项核心埋点（决策完成率 / 交互负面率 / 纠偏触发率等）；交互负面率 &lt;5% 与纠偏触发率 &gt;70% 基于 V1.5 分层测试集（HuanZe-TestSet.xlsx）回归 + 线上埋点抽样；测试覆盖度 90% 为用例覆盖比例。</div>
       <div class="btns reveal">
         <a class="btn btn-primary" href="huanzexingqiu-web/index.html" target="_blank" rel="noopener">打开网页版 ↗</a>
         <a class="btn btn-doc" href="PRD-HuanZe.pdf" target="_blank" rel="noopener">
@@ -628,7 +720,8 @@
 
   <!-- 页脚 -->
   <footer class="foot">
-    <div class="copy">韩佳雪 · AI 产品作品集</div>
+    <div class="copy">韩佳雪 · AI 产品作品集 ｜ 缓择星球小程序 · 蒙ICP备2026008237号</div>
+    <div class="contact-line">电话 15693149386 ｜ 邮箱 <a href="mailto:3415703993@qq.com">3415703993@qq.com</a></div>
   </footer>
 
 <script>
