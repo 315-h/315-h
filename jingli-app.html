@@ -591,20 +591,32 @@
     .report-bar{display:none!important;}
     .report-bar .report-actions{display:none!important;}
 
-    /* ===== PDF 封面（第一页，之后强制分页） ===== */
+    /* ===== PDF 封面（第一页，之后强制分页）：拟真「档案卡」 ===== */
     #pdf-cover{
-      display:flex!important;flex-direction:column;align-items:center;justify-content:center;
-      text-align:center;color:#222;
+      display:flex!important;align-items:center;justify-content:center;
       min-height:100vh;page-break-after:always;break-after:page;
     }
-    #pdf-cover .cover-brand{font-size:13px;letter-spacing:5px;color:#9a8f86;margin-bottom:22px;}
-    #pdf-cover .cover-title{font-size:40px;font-weight:800;letter-spacing:3px;margin:0 0 22px;color:#2b2b2b;}
-    #pdf-cover .cover-line{width:56px;height:3px;background:#E98B6A;border-radius:2px;margin:0 0 46px;}
-    #pdf-cover .cover-meta{display:flex;flex-direction:column;gap:0;width:min(330px,78%);}
+    #pdf-cover .cover-card{
+      width:min(440px,84%);border:1px solid #e3ddd3;border-radius:14px;
+      padding:42px 50px;text-align:center;color:#222;background:#fff;
+    }
+    #pdf-cover .cover-top{
+      display:flex;justify-content:space-between;align-items:center;
+      font-size:11px;letter-spacing:1px;color:#9a8f86;margin-bottom:32px;
+    }
+    #pdf-cover .cover-no b{font-weight:600;color:#6f665e;letter-spacing:1.5px;}
+    #pdf-cover .cover-seal{
+      border:1px solid #c9a98f;border-radius:999px;color:#b07a52;
+      padding:3px 10px;font-size:10.5px;letter-spacing:1px;
+    }
+    #pdf-cover .cover-brand{font-size:13px;letter-spacing:5px;color:#9a8f86;margin-bottom:18px;}
+    #pdf-cover .cover-title{font-size:34px;font-weight:800;letter-spacing:3px;margin:0 0 20px;color:#2b2b2b;}
+    #pdf-cover .cover-line{width:52px;height:3px;background:#E98B6A;border-radius:2px;margin:0 auto 40px;}
+    #pdf-cover .cover-meta{display:flex;flex-direction:column;gap:0;width:100%;}
     #pdf-cover .cover-row{display:flex;justify-content:space-between;align-items:baseline;gap:20px;font-size:14px;padding:11px 2px;border-bottom:1px solid #ece6e0;}
     #pdf-cover .cover-row span{color:#8a8178;}
     #pdf-cover .cover-row b{font-weight:600;color:#333;}
-    #pdf-cover .cover-date{margin-top:64px;font-size:13px;letter-spacing:1px;color:#9a8f86;}
+    #pdf-cover .cover-date{margin-top:40px;font-size:12.5px;letter-spacing:1px;color:#9a8f86;}
 
     /* 导出 PDF：默认打印时所有模块面板全量输出（即使直接 Ctrl+P 也能打出 6 个模块），每个面板带模块名标题。
        必须同时禁用 rise 动画：.tab-panel 从 display:none 被强制显示时会重新触发动画，
@@ -639,10 +651,28 @@
     .module-title{break-after:avoid;page-break-after:avoid;orphans:2;widows:2;}
     .meta-pill{color:#222!important;border-color:#ddd!important;}
 
-    /* ===== 模块间分隔线（精致简洁） =====
-       第一个 panel 顶部不要分隔线（用 :first-of-type 排除），每个模块起头一条短横线 + 间距，替代粗暴的分页 */
-    #report-panels .tab-panel{padding-top:18px;margin-top:20px;border-top:1px solid #e8e3da;}
+    /* ===== 模块间骑缝线（虚线 + 居中档案标记） =====
+       第一个 panel 顶部不要分隔线（用 :first-of-type 排除）；其余模块起头一条虚线 + 居中菱形标记，
+       像档案装订处的骑缝，替代粗暴的分页 */
+    #report-panels .tab-panel{position:relative;padding-top:20px;margin-top:24px;border-top:1px dashed #d8d0c6;}
     #report-panels .tab-panel:first-of-type{padding-top:0;margin-top:0;border-top:none;}
+    #report-panels .tab-panel + .tab-panel::after{
+      content:'◆';position:absolute;top:-8px;left:50%;transform:translateX(-50%);
+      background:#fff;padding:0 12px;color:#c9bfb0;font-size:10px;line-height:1;
+    }
+
+    /* ===== 整页水印（档案底纹，置于内容之下、不覆盖文字） =====
+       用 #page-report::before fixed 居中大字，z-index:0 在文字之下；封面卡/正文 z-index:1 盖在其上，
+       与之前「fixed 页眉页脚覆盖内容」本质不同——此处是背景纹理，不影响阅读。 */
+    #page-report{position:relative;}
+    #page-report::before{
+      content:'经历档案';position:fixed;top:50%;left:50%;
+      transform:translate(-50%,-50%) rotate(-28deg);
+      font-size:130px;font-weight:800;letter-spacing:34px;
+      color:rgba(120,110,100,0.05);
+      z-index:0;pointer-events:none;white-space:nowrap;
+    }
+    #pdf-cover,#report-panels{position:relative;z-index:1;}
 
     /* ===== 模块标题与首 block 不可分页 =====
        renderReport 把 module-title + 第一个 block-card 包在 .module-head 里；
@@ -825,16 +855,22 @@
 
   <!-- PDF 封面（屏幕隐藏，打印时占据第一页并居中，之后强制分页） -->
   <div id="pdf-cover">
-    <div class="cover-brand">经历翻译官 · JINGLI</div>
-    <div class="cover-title">求职诊断报告</div>
-    <div class="cover-line"></div>
-    <div class="cover-meta">
-      <div class="cover-row"><span>目标岗位</span><b id="cover-job">—</b></div>
-      <div class="cover-row"><span>分析模式</span><b id="cover-mode">—</b></div>
-      <div class="cover-row"><span>求职阶段</span><b id="cover-stage">—</b></div>
-      <div class="cover-row"><span>沟通风格</span><b id="cover-style">—</b></div>
+    <div class="cover-card">
+      <div class="cover-top">
+        <span class="cover-no">档案编号 <b id="cover-no">—</b></span>
+        <span class="cover-seal">仅本地保存</span>
+      </div>
+      <div class="cover-brand">经历翻译官 · JINGLI</div>
+      <div class="cover-title">求职诊断报告</div>
+      <div class="cover-line"></div>
+      <div class="cover-meta">
+        <div class="cover-row"><span>目标岗位</span><b id="cover-job">—</b></div>
+        <div class="cover-row"><span>分析模式</span><b id="cover-mode">—</b></div>
+        <div class="cover-row"><span>求职阶段</span><b id="cover-stage">—</b></div>
+        <div class="cover-row"><span>沟通风格</span><b id="cover-style">—</b></div>
+      </div>
+      <div class="cover-date" id="cover-date">—</div>
     </div>
-    <div class="cover-date" id="cover-date">—</div>
   </div>
 
   <div class="tabs" id="report-tabs"></div>
@@ -1502,6 +1538,9 @@ function renderReport(report, meta){
   const _d=new Date();
   const _ds=_d.getFullYear()+'.'+String(_d.getMonth()+1).padStart(2,'0')+'.'+String(_d.getDate()).padStart(2,'0');
   setCover('cover-date', _d.getFullYear()+'年'+String(_d.getMonth()+1).padStart(2,'0')+'月'+String(_d.getDate()).padStart(2,'0')+'日');
+  /* PDF 封面档案编号（JINGLI-YYYYMMDD-XXXX，每次生成唯一） */
+  const _no = 'JINGLI-' + _ds.replace(/\./g,'') + '-' + Math.random().toString(36).slice(2,6).toUpperCase();
+  setCover('cover-no', _no);
   const ab=document.getElementById('ai-chat-btn'); if(ab) ab.disabled = !state.report;
 
   const tabsBox=document.getElementById('report-tabs');
