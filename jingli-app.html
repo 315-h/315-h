@@ -750,6 +750,17 @@
     .block-content p{margin:0 0 10px!important;}
     .block-content p:last-child{margin-bottom:0!important;}
 
+    /* ===== 报告内容按页边距自然换行：不压缩列宽 =====
+       链条每层去掉可能存在的 max-width 并填满 100% 可打印宽度，让正文按页边距回车；
+       覆盖屏幕端 word-break:break-word（会在中英文长词中任意断行，造成"参差短行"观感），
+       改为只在不可断开处才换行；表格列按内容自适应，不强行等宽压缩。 */
+    #page-report, #report-panels, .tab-panel, .module-head, .block-card, .block-body, .block-content,
+    .md-table, .md-table tr, .md-table th, .md-table td{box-sizing:border-box!important;}
+    #page-report, #report-panels, .tab-panel, .module-head, .block-card, .block-body, .block-content{width:100%!important;max-width:none!important;}
+    .block-content{word-break:normal!important;overflow-wrap:break-word!important;hyphens:auto;}
+    .md-table{width:100%!important;max-width:100%!important;}
+    .md-table th, .md-table td{word-break:break-word!important;overflow-wrap:anywhere!important;hyphens:auto;}
+
     /* 渲染后的 Markdown 元素（来自 minMdToHtml） */
     .md-list{margin:8px 0 12px!important;padding-left:22px!important;list-style:disc!important;}
     .md-list li{margin:3px 0!important;line-height:1.7!important;}
