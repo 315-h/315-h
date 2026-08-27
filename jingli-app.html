@@ -363,6 +363,10 @@
   .module-title{display:none;font-size:18px;font-weight:700;margin:6px 0 14px;color:var(--text,#222);border-left:4px solid var(--primary,#E98B6A);padding-left:12px;line-height:1.4;}
   /* PDF 封面：屏幕隐藏，仅打印时显示 */
   #pdf-cover{display:none;}
+  /* PDF 页眉页脚：屏幕隐藏，仅打印时显示 */
+  .pdf-chrome{display:none;}
+  /* block 序号：屏幕隐藏，PDF 中显示在标题前作为「档案编号」 */
+  .block-idx{display:none;}
   @media print{
     .module-title{display:block;color:#222!important;border-color:#E98B6A!important;break-after:avoid;page-break-after:avoid;}
   }
@@ -638,6 +642,44 @@
 
     .module-title{break-after:avoid;page-break-after:avoid;orphans:2;widows:2;}
     .meta-pill{color:#222!important;border-color:#ddd!important;}
+
+    /* ===== 模块间分隔线（精致简洁） =====
+       第一个 panel 顶部不要分隔线（用 :first-of-type 排除），每个模块起头一条短横线 + 间距，替代粗暴的分页 */
+    #report-panels .tab-panel{padding-top:18px;margin-top:20px;border-top:1px solid #e8e3da;}
+    #report-panels .tab-panel:first-of-type{padding-top:0;margin-top:0;border-top:none;}
+
+    /* ===== 模块标题与首 block 不可分页 =====
+       renderReport 把 module-title + 第一个 block-card 包在 .module-head 里；
+       break-inside:avoid 保证它们要么整组在当前页底部、要么整组推到下一页，绝不分离。 */
+    .module-head{break-inside:avoid;page-break-inside:avoid;}
+
+    /* ===== 文档小设计：block 序号（档案编号） ===== */
+    .block-idx{display:inline-block!important;font-size:10.5px!important;font-weight:500!important;
+      color:#9a8f86!important;letter-spacing:1.5px!important;margin-right:9px!important;padding:1px 6px!important;
+      border:1px solid #e0d9d0!important;border-radius:4px!important;vertical-align:1px!important;}
+
+    /* ===== 置信度色块（关键词高亮） ===== */
+    .conf-high{display:inline-block;background:#5d8a5d!important;color:#fff!important;
+      padding:1px 7px!important;border-radius:3px!important;font-size:12.5px!important;font-weight:600!important;letter-spacing:1px!important;margin:0 2px!important;}
+    .conf-mid{display:inline-block;background:#d49a3a!important;color:#fff!important;
+      padding:1px 7px!important;border-radius:3px!important;font-size:12.5px!important;font-weight:600!important;letter-spacing:1px!important;margin:0 2px!important;}
+    .conf-low{display:inline-block;background:#b85a4a!important;color:#fff!important;
+      padding:1px 7px!important;border-radius:3px!important;font-size:12.5px!important;font-weight:600!important;letter-spacing:1px!important;margin:0 2px!important;}
+
+    /* ===== PDF 每页页眉 / 页脚（fixed 位置，浏览器打印时每页重复显示） ===== */
+    .pdf-chrome{display:flex;justify-content:space-between;align-items:center;
+      padding:5mm 18mm!important;font-size:10.5px!important;letter-spacing:1px!important;
+      color:#9a8f86!important;background:#fff!important;}
+    .pdf-header{position:fixed;top:0;left:0;right:0;border-bottom:1px solid #ece6e0;z-index:5;}
+    .pdf-footer{position:fixed;bottom:0;left:0;right:0;border-top:1px solid #ece6e0;z-index:5;}
+    .pdf-header .ph-l,.pdf-footer .pf-l{font-weight:600;color:#7a716a;}
+    .pdf-header .ph-r,.pdf-footer .pf-r{color:#a89e95;}
+  }
+
+  /* ===== @page 边距：给 fixed 页眉页脚预留位置（A4） ===== */
+  @page{
+    margin: 22mm 16mm 22mm 16mm;
+    size: A4;
   }
 
   /* 返回作品集按钮（topbar 内，与 brand 并列；与详情页 .back 视觉一致） */
@@ -807,6 +849,9 @@
     </div>
   </div>
 
+  <!-- PDF 页眉（屏幕隐藏，每页顶部固定位置；由 renderReport 填充内容） -->
+  <div class="pdf-chrome pdf-header" id="pdf-header"></div>
+
   <!-- PDF 封面（屏幕隐藏，仅打印导出时显示在第一页） -->
   <div id="pdf-cover">
     <div class="cover-brand">经历翻译官 · JINGLI</div>
@@ -823,6 +868,9 @@
 
   <div class="tabs" id="report-tabs"></div>
   <div id="report-panels"></div>
+
+  <!-- PDF 页脚（屏幕隐藏，每页底部固定位置） -->
+  <div class="pdf-chrome pdf-footer" id="pdf-footer"></div>
 </section>
 
 <!-- ===================== 页面 4：我的经历库 ===================== -->
@@ -1484,7 +1532,13 @@ function renderReport(report, meta){
   setCover('cover-stage', meta.stage);
   setCover('cover-style', meta.style);
   const _d=new Date();
+  const _ds=_d.getFullYear()+'.'+String(_d.getMonth()+1).padStart(2,'0')+'.'+String(_d.getDate()).padStart(2,'0');
   setCover('cover-date', _d.getFullYear()+'年'+String(_d.getMonth()+1).padStart(2,'0')+'月'+String(_d.getDate()).padStart(2,'0')+'日');
+  /* PDF 每页页眉 / 页脚（精致「经历档案」风格） */
+  const ph=document.getElementById('pdf-header');
+  if(ph) ph.innerHTML = `<span class="ph-l">经历翻译官 · 求职诊断报告</span><span class="ph-r">${meta.job} · ${meta.style}</span>`;
+  const pf=document.getElementById('pdf-footer');
+  if(pf) pf.innerHTML = `<span class="pf-l">生成日期 ${_ds}</span><span class="pf-r">经历翻译官 · 用户数据仅本地保存</span>`;
   const ab=document.getElementById('ai-chat-btn'); if(ab) ab.disabled = !state.report;
 
   const tabsBox=document.getElementById('report-tabs');
@@ -1518,17 +1572,26 @@ function renderReport(report, meta){
     const h=document.createElement('h2');
     h.className='module-title';
     h.textContent=m;
-    panel.appendChild(h);
     if(blocks.length===0){
+      panel.appendChild(h);
       panel.innerHTML+=`<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 3v5h5"/><path d="M19 8v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7z"/></svg><div>该模块暂无内容</div></div>`;
     } else {
-      blocks.forEach(b=> panel.appendChild(buildBlockCard(b,key)));
+      /* PDF 防跨页：把「模块标题 + 第一个 block」包成 .module-head 视为一组，break-inside:avoid，
+         这样模块标题绝不会和它的首段内容跨页分离；之后其余 block 仍可自由分页（不影响紧凑排版） */
+      const headWrap=document.createElement('div');
+      headWrap.className='module-head';
+      headWrap.appendChild(h);
+      headWrap.appendChild(buildBlockCard(blocks[0], key, 1));
+      panel.appendChild(headWrap);
+      for(let j=1;j<blocks.length;j++){
+        panel.appendChild(buildBlockCard(blocks[j], key, j+1));
+      }
     }
     panelsBox.appendChild(panel);
   });
 }
 
-function buildBlockCard(b, tabKey){
+function buildBlockCard(b, tabKey, idx){
   const card=document.createElement('div');
   card.className='block-card accent-'+({parse:'blue',skills:'blue',match:'green',resume:'coral',interview:'coral',tips:'green'}[tabKey]||'coral');
   card.setAttribute('data-block', b.id);
@@ -1539,7 +1602,7 @@ function buildBlockCard(b, tabKey){
   card.innerHTML = `
     <div class="block-body">
       <span class="block-tag ${tagClass}">${tagText}</span>
-      <div class="block-title">${b.title||''}</div>
+      <div class="block-title">${idx?`<span class="block-idx">${String(idx).padStart(2,'0')}</span>`:''}${b.title||''}</div>
       <div class="block-content">${escapeHtml(b.content||'')}</div>
     </div>
     ${actionsOn?`
@@ -1621,7 +1684,8 @@ function copyFullReport(){
    输入是 escapeHtml 后的纯文本（已转义 < > &），所以输出 innerHTML 安全。 */
 function minMdToHtml(s){
   s = escapeHtml(s||'');
-  s = s.replace(/\*\*([^*\n]+?)\*\*/g, '<b>$1</b>');   /* **粗体** */
+  s = s.replace(/\*\*([^*\n]+?)\*\*/g, '<b>$1</b>');   /* 加粗 */
+  s = s.replace(/(置信度[：:]\s*)(高|中|低)/g, '$1<span class="conf-$2">$2</span>');   /* 置信度色块（高=绿/中=黄/低=红） */
   const lines = s.split('\n');
   const blocks = []; let i = 0;
   const splitRow = (line)=>{
