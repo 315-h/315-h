@@ -467,6 +467,10 @@
     background:transparent;pointer-events:none;
   }
   .chat-backdrop.show{display:flex;}
+  /* 关键修复（2026-08-27）：背景层 pointer-events:none 会被子元素继承，导致整个
+     .chat-modal（输入框/按钮/滚动区）全部不可点击、不可滚动。这里在 show 时
+     仅让对话面板显式恢复 pointer-events:auto，背景层仍穿透（点主体不退出、不吸收）。 */
+  .chat-backdrop.show .chat-modal{pointer-events:auto;}
   /* ===== AI 咨询对话：固定网页右侧侧边栏（不模糊主体、不遮挡核心内容） ===== */
   .chat-modal{
     position:fixed;top:0;right:0;height:100vh;width:min(400px,92vw);
@@ -491,8 +495,16 @@
   .chat-close{position:absolute;right:12px;top:12px;width:38px;height:38px;border:none;background:var(--card-soft);border-radius:50%;font-size:22px;line-height:1;color:var(--text-2);cursor:pointer;transition:all .16s ease;z-index:2;}
   .chat-close:hover{background:rgba(242,169,135,.16);color:var(--text);transform:rotate(90deg);}
   /* 清空对话按钮：放在右上角 × 左侧，灰字小图标，「不显眼但能找到」——需清空时一眼能定位，不抢 × 的主操作位 */
-  .chat-clear{position:absolute;right:60px;top:14px;height:34px;padding:0 12px;border:none;background:transparent;color:var(--text-2);font-size:12.5px;font-weight:500;border-radius:999px;cursor:pointer;transition:all .16s ease;display:inline-flex;align-items:center;gap:4px;z-index:2;}
+  .chat-clear{position:absolute;right:60px;top:14px;height:34px;padding:0 12px;border:none;background:transparent;color:var(--text-2);font-size:12.5px;font-weight:500;border-radius:999px;cursor:pointer;transition:all .16s ease;display:inline-flex;align-items:center;gap:4px;z-index:2;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;}
   .chat-clear:hover{background:var(--card-soft);color:var(--primary-press);}
+  /* 长按 1 秒倒计时中的视觉反馈：变橙 + 轻微收缩，提示用户「保持按住」 */
+  .chat-clear.pressing{background:rgba(242,169,135,.18);color:var(--primary-press);transform:scale(.94);}
+  /* 常用问题快捷菜单（输入框输入 / 或聚焦空值时浮现）：横向可滚 chip 行 */
+  .chat-quick{display:none;flex-direction:row;gap:8px;padding:10px 22px 0;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+  .chat-quick::-webkit-scrollbar{display:none;}
+  .chat-quick.show{display:flex;}
+  .chat-quick-item{flex:0 0 auto;white-space:nowrap;font-size:12.5px;padding:7px 14px;border-radius:999px;background:var(--card-soft);border:1px solid var(--border);color:var(--text-2);cursor:pointer;transition:all .16s ease;}
+  .chat-quick-item:hover{border-color:var(--primary);color:var(--primary-press);background:rgba(242,169,135,.10);}
   /* 连接状态条：绿=真实模型/黄=已回落/灰=内置示例 —— 落第二行左起始 */
   .chat-conn{font-size:11.5px;line-height:1;padding:5px 10px;border-radius:999px;font-weight:600;white-space:nowrap;flex:0 1 auto;}
   .chat-conn.on  {background:rgba(110,193,160,.15);color:#2f7a55;border:1px solid rgba(110,193,160,.45);}
@@ -977,14 +989,17 @@
       <div class="chat-title"><span class="chat-dot"></span>AI 咨询对话 · 经历翻译官</div>
       <div class="chat-conn off" id="chat-conn">● 内置示例回复</div>
       <button class="chat-diag" id="chat-diag" title="点一下测后端连通性（GET /ping）" onclick="pingBackend(this)">🔌 诊断</button>
-      <button class="chat-clear" id="chat-clear" title="清空当前对话历史（仅 UI 与本地记忆，后端无状态）" onclick="clearChat()">⌫ 清空</button>
+      <button class="chat-clear" id="chat-clear" title="长按 1 秒清空对话历史" 
+        onmousedown="chatClearStart(event)" ontouchstart="chatClearStart(event)"
+        onmouseup="chatClearCancel()" ontouchend="chatClearCancel()" onmouseleave="chatClearCancel()">⌫ 清空</button>
       <button class="chat-close" id="chat-close" title="关闭对话（× 是唯一出口）" onclick="closeChat()">×</button>
     </div>
     <div class="chat-sub" id="chat-sub">已基于你的诊断报告初始化会话，可针对简历优化、面试准备、职业转型提问</div>
     <div class="chat-body" id="chat-body"></div>
     <div class="chat-toast" id="chat-toast"></div>
+    <div class="chat-quick" id="chat-quick"></div>
     <div class="chat-input-bar">
-      <textarea id="chat-input" class="chat-input" rows="1" placeholder="输入你的问题，Enter 发送 / Shift+Enter 换行…" onkeydown="onChatKey(event)" oninput="autoGrowChat()"></textarea>
+      <textarea id="chat-input" class="chat-input" rows="1" placeholder="输入你的问题，Enter 发送 / Shift+Enter 换行…" onkeydown="onChatKey(event)" oninput="autoGrowChat();onChatInput()"></textarea>
       <button class="chat-send" id="chat-send" onclick="sendChat()">发送</button>
     </div>
   </div>
@@ -1957,14 +1972,18 @@ function openChat(){
     bd.innerHTML='';
     const w=document.createElement('div');
     w.className='chat-welcome';
-    w.textContent='已基于你的诊断报告初始化会话，可针对简历优化、面试准备、职业转型提问～';
+    w.textContent='按 / 触发常用问题快捷菜单';
     bd.appendChild(w);
   }
   /* 滚到最新消息 */
   setTimeout(()=>{ bd.scrollTop = bd.scrollHeight; }, 0);
   document.getElementById('chat-backdrop').classList.add('show');
   document.body.classList.add('chat-open');   // 桌面端主体右移让出侧边栏，避免遮挡
-  setTimeout(()=>{ const inp=document.getElementById('chat-input'); if(inp){ inp.value=''; inp.style.height='auto'; inp.focus(); } }, 140);
+  setTimeout(()=>{
+    const inp=document.getElementById('chat-input');
+    if(inp){ inp.value=''; inp.style.height='auto'; inp.focus(); }
+    onChatInput();   // 初始聚焦且为空 → 显示常用问题快捷菜单
+  }, 140);
   /* 打开时自动 ping 一次后端：把浏览器实际能不能连上的结果写在 chat-sub 行里，
      用户一眼就能看出是浏览器侧被拦（始终连不上）还是后端真挂了（curl 也不通） */
   setTimeout(()=>probeBackendOnOpen(), 80);
@@ -1999,14 +2018,34 @@ function closeChat(){                // 关闭即「收起」，不再清空历�
      - 关闭唯一入口是 × 按钮（chat-backdrop 已无 onclick）
      - 关闭即收起，DOM 与历史原地保留
      - openChat() 通过 chatHistory.length 判断是否首次，无空白风险
-     - 如需彻底重置，调用 chat-clear 「清空」按钮（独立通道） */
+     - 如需彻底重置，调用 chat-clear 「清空」按钮（独立通道，长按 1 秒触发） */
+}
+/* ===== 清空按钮：长按 1 秒防误触（鼠标/触摸双路，touch 时阻止默认避免重复触发 mousedown） ===== */
+let _clearTimer=null;
+function chatClearStart(e){
+  if(e && e.type==='touchstart' && e.cancelable) e.preventDefault();  // 阻断后续 mousedown，确保只计一次
+  const btn=document.getElementById('chat-clear');
+  if(!btn || _clearTimer) return;
+  btn.classList.add('pressing');
+  btn.textContent='按住清空…';
+  _clearTimer=setTimeout(()=>{
+    btn.classList.remove('pressing');
+    btn.textContent='⌫ 清空';
+    _clearTimer=null;
+    clearChat();
+  }, 1000);
+}
+function chatClearCancel(){
+  if(_clearTimer){ clearTimeout(_clearTimer); _clearTimer=null; }
+  const btn=document.getElementById('chat-clear');
+  if(btn){ btn.classList.remove('pressing'); btn.textContent='⌫ 清空'; }
 }
 function clearChat(){                // 用户主动清空对话历史：清 chatHistory + bd，渲染欢迎语，不动面板显示状态
   if(chatHistory.length === 0){
     const bd=document.getElementById('chat-body'); if(bd && !bd.querySelector('.chat-welcome')){
       const w=document.createElement('div');
       w.className='chat-welcome';
-      w.textContent='已基于你的诊断报告初始化会话，可针对简历优化、面试准备、职业转型提问～';
+      w.textContent='按 / 触发常用问题快捷菜单';
       bd.appendChild(w);
     }
     toast('当前已是空会话');
@@ -2017,9 +2056,45 @@ function clearChat(){                // 用户主动清空对话历史：清 cha
   const bd=document.getElementById('chat-body'); if(bd) bd.innerHTML='';
   const w=document.createElement('div');
   w.className='chat-welcome';
-  w.textContent='已基于你的诊断报告初始化会话，可针对简历优化、面试准备、职业转型提问～';
+  w.textContent='按 / 触发常用问题快捷菜单';
   bd.appendChild(w);
   toast('已清空对话');
+  onChatInput();   // 清空后重新显示快捷菜单
+}
+/* ===== 常用问题快捷菜单：输入框为空 或 以 / 开头时浮现，点 chip 直接填入选中并发送 ===== */
+const QUICK_QUESTIONS=[
+  '如何把这段经历改得更量化？',
+  '面试被问到「你最大的缺点」怎么答？',
+  '围绕目标岗位做能力补强计划',
+  '简历整体还有哪些可优化点？'
+];
+function renderQuickMenu(){
+  const box=document.getElementById('chat-quick'); if(!box) return;
+  if(box.dataset.ready) return;
+  box.innerHTML=QUICK_QUESTIONS.map((q,i)=>`<button class="chat-quick-item" onclick="sendQuick(${i})">${escapeHtml(q)}</button>`).join('');
+  box.dataset.ready='1';
+}
+function onChatInput(){
+  const inp=document.getElementById('chat-input');
+  const box=document.getElementById('chat-quick');
+  if(!inp||!box) return;
+  renderQuickMenu();
+  const v=inp.value;
+  /* 输入框为空（首次聚焦/清空后）或以 / 开头 → 显示菜单；否则隐藏 */
+  if(v==='' || v.indexOf('/')===0){
+    box.classList.add('show');
+    box.style.display='flex';
+  }else{
+    box.classList.remove('show');
+    box.style.display='none';
+  }
+}
+function sendQuick(i){
+  const q=QUICK_QUESTIONS[i];
+  const inp=document.getElementById('chat-input');
+  if(inp){ inp.value=q; autoGrowChat(); }
+  const box=document.getElementById('chat-quick'); if(box){ box.classList.remove('show'); box.style.display='none'; }
+  sendChat();
 }
 
 /* ===== 头部导航：窄屏汉堡菜单（桌面端不显示、不影响原布局） ===== */
