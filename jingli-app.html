@@ -586,7 +586,10 @@
     #page-report{display:block!important;padding:0!important;}
     #report-tabs{display:none!important;}   /* 模块切换 Tab 行不打印 */
     .report-bar .report-actions{display:none!important;}
-    /* 模块范围导出：body.export-part 时只输出勾选模块（.print-sel），否则默认全量输出（原行为） */
+    /* 模块范围导出：
+       ① 默认：打印时所有 panel 全量输出（即使不走弹窗、直接 Ctrl+P 也能打出 6 个模块）
+       ② body.export-part（弹窗勾选流程）：只输出勾选模块（.print-sel），其余隐藏 */
+    #report-panels .tab-panel{display:block!important;}
     body.export-part #report-panels .tab-panel{display:none!important;}
     body.export-part #report-panels .tab-panel.print-sel{display:block!important;}
     .block-actions{display:none!important;}
