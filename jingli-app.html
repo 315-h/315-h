@@ -359,6 +359,12 @@
 
   .tab-panel{display:none;animation:rise .3s ease both;}
   .tab-panel.active{display:block;}
+  /* 模块名标题：屏幕隐藏（tab 行已显示），仅 PDF 打印时显示（tab 行在 @media print 隐藏，多页 PDF 需用此识别） */
+  .module-title{display:none;font-size:18px;font-weight:700;margin:6px 0 14px;color:var(--text,#222);border-left:4px solid var(--primary,#E98B6A);padding-left:12px;line-height:1.4;}
+  @media print{
+    .module-title{display:block;color:#222!important;border-color:#E98B6A!important;break-after:avoid;page-break-after:avoid;}
+  }
+  .tab-panel.active{display:block;}
 
   .block-card{
     background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
@@ -1474,8 +1480,13 @@ function renderReport(report, meta){
     panel.className='tab-panel'+(idx===0?' active':'');
     panel.id='panel-'+key;
     const blocks = (report.tabs && report.tabs[key]) || [];
+    /* 在 panel 顶部加模块名标题（屏幕上看不见因为 tab 行已显示；PDF 多页导出时识别用） */
+    const h=document.createElement('h2');
+    h.className='module-title';
+    h.textContent=m;
+    panel.appendChild(h);
     if(blocks.length===0){
-      panel.innerHTML=`<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 3v5h5"/><path d="M19 8v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7z"/></svg><div>该模块暂无内容</div></div>`;
+      panel.innerHTML+=`<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 3v5h5"/><path d="M19 8v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7z"/></svg><div>该模块暂无内容</div></div>`;
     } else {
       blocks.forEach(b=> panel.appendChild(buildBlockCard(b,key)));
     }
