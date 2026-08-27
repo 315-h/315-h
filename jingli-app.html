@@ -457,14 +457,16 @@
   /* ===================== AI 咨询对话弹窗（独立模块，不影响原 5 页路由） ===================== */
   .btn:disabled{opacity:.45;cursor:not-allowed;filter:grayscale(.15);}
   .btn:disabled:hover{transform:none!important;box-shadow:none!important;}
+  /* 背景层只做「占位 + 让 chat-modal 浮在上面」，完全透明、不拦截点击：
+     ① 关闭唯一入口是右上角 × 按钮（用户硬性要求）
+     ② 点击主体区域不应退出对话、不应触发任何副作用
+     ③ 主体区域不允许被半透明色遮罩覆盖（"不要变色"） */
   .chat-backdrop{
     position:fixed;inset:0;z-index:999;display:none;
     align-items:stretch;justify-content:flex-end;
-    background:rgba(62,56,50,.16);
-    animation:fadeIn .25s ease both;
+    background:transparent;pointer-events:none;
   }
   .chat-backdrop.show{display:flex;}
-  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
   /* ===== AI 咨询对话：固定网页右侧侧边栏（不模糊主体、不遮挡核心内容） ===== */
   .chat-modal{
     position:fixed;top:0;right:0;height:100vh;width:min(400px,92vw);
@@ -488,6 +490,9 @@
   .chat-dot{flex:0 0 auto;width:10px;height:10px;border-radius:50%;background:var(--primary);box-shadow:0 0 0 4px rgba(242,169,135,.2);}
   .chat-close{position:absolute;right:12px;top:12px;width:38px;height:38px;border:none;background:var(--card-soft);border-radius:50%;font-size:22px;line-height:1;color:var(--text-2);cursor:pointer;transition:all .16s ease;z-index:2;}
   .chat-close:hover{background:rgba(242,169,135,.16);color:var(--text);transform:rotate(90deg);}
+  /* 清空对话按钮：放在右上角 × 左侧，灰字小图标，「不显眼但能找到」——需清空时一眼能定位，不抢 × 的主操作位 */
+  .chat-clear{position:absolute;right:60px;top:14px;height:34px;padding:0 12px;border:none;background:transparent;color:var(--text-2);font-size:12.5px;font-weight:500;border-radius:999px;cursor:pointer;transition:all .16s ease;display:inline-flex;align-items:center;gap:4px;z-index:2;}
+  .chat-clear:hover{background:var(--card-soft);color:var(--primary-press);}
   /* 连接状态条：绿=真实模型/黄=已回落/灰=内置示例 —— 落第二行左起始 */
   .chat-conn{font-size:11.5px;line-height:1;padding:5px 10px;border-radius:999px;font-weight:600;white-space:nowrap;flex:0 1 auto;}
   .chat-conn.on  {background:rgba(110,193,160,.15);color:#2f7a55;border:1px solid rgba(110,193,160,.45);}
@@ -582,12 +587,32 @@
     .block-card{flex-direction:column;gap:14px;}
     .block-actions{flex-direction:row;width:100%;flex-wrap:wrap;}
     .block-actions .label{width:100%;}
+
+    /* ==== 移动端 6 大模块 Tab：3 列 × 2 行（紧凑两行，不再 2 列 3 行） ==== */
+    .tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:6px 0 4px;}
+    .tab{padding:0 6px;font-size:13px;min-height:42px;justify-content:center;text-align:center;white-space:normal;line-height:1.25;}
+
+    /* ==== 移动端局部改写 5 按钮：3 列 × 2 行（3+2，紧凑两行） ====
+       改动思路：5 个按钮横排 wrap 后，会按各自内容宽度自然分两行（3+2）。
+       显式设 calc(33.333%-6px) 让两行宽度一致，按钮内文字不会折行，按钮高度降到 40px。 */
+    .block-actions .btn{
+      flex:1 1 calc(33.333% - 6px);
+      min-width:0;
+      max-width:calc(33.333% - 6px);
+      padding:0 6px;
+      font-size:12.5px;
+      min-height:40px;
+      justify-content:center;
+    }
+    /* 「复制」按钮原内联 style="margin-top:4px" 会破坏 3 列对齐，这里强制归零 */
+    .block-actions .btn[style*="margin-top"]{margin-top:0!important;}
   }
   @media (max-width:560px){
     .block-card{flex-direction:column;gap:14px;}
     .block-actions{flex-direction:row;width:100%;flex-wrap:wrap;}
     .block-actions .label{width:100%;}
-    .block-actions .btn{min-width:calc(50% - 4px);}
+    /* 极窄屏：按钮 3 列不变，再缩小字号 + padding，让「更简洁」「更专业」「更量化」4 字不被截断 */
+    .block-actions .btn{font-size:12px;padding:0 4px;}
     .report-bar{flex-direction:column;align-items:flex-start;}
     /* 报告操作按钮：窄屏 2 列网格，整齐不溢出 */
     .report-actions{width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
@@ -595,7 +620,7 @@
     .action-bar .btn{flex:1;justify-content:center;}
     /* 对话侧边栏在手机端全屏，避免窄栏挤压头部与输入区 */
     .chat-modal{width:100vw;}
-    .chat-backdrop{background:rgba(62,56,50,.28);}
+    .chat-clear{right:54px;top:14px;font-size:12px;padding:0 10px;height:34px;}
     .chat-head{flex-wrap:wrap;gap:10px 12px;}
     .chat-title{width:100%;}
     .chat-conn{margin-left:0;}
@@ -940,14 +965,20 @@
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
 </button>
 
-<!-- ===================== AI 咨询对话弹窗（独立模块，z-index:999，浮于所有页面之上） ===================== -->
-<div class="chat-backdrop" id="chat-backdrop" onclick="closeChat()">
+<!-- ===================== AI 咨询对话弹窗（独立模块，z-index:999，浮于所有页面之上） =====================
+     行为契约（用户硬性要求）：
+     - 关闭唯一入口是 chat-close × 按钮（背景层完全透明 + 不拦截点击 + 无 onclick）
+     - 关闭后保留 chatHistory，下次打开直接恢复（不清空 chatHistory/chatContext/bd）
+     - 主体区域不虚化、不变色（background:transparent）
+     - 提供 chat-clear「清空」按钮，位置右上 × 左侧，灰字小图标（不抢 × 视觉位） -->
+<div class="chat-backdrop" id="chat-backdrop">
   <div class="chat-modal" id="chat-modal" role="dialog" aria-modal="true" onclick="event.stopPropagation()">
     <div class="chat-head">
       <div class="chat-title"><span class="chat-dot"></span>AI 咨询对话 · 经历翻译官</div>
       <div class="chat-conn off" id="chat-conn">● 内置示例回复</div>
       <button class="chat-diag" id="chat-diag" title="点一下测后端连通性（GET /ping）" onclick="pingBackend(this)">🔌 诊断</button>
-      <button class="chat-close" id="chat-close" title="关闭对话" onclick="closeChat()">×</button>
+      <button class="chat-clear" id="chat-clear" title="清空当前对话历史（仅 UI 与本地记忆，后端无状态）" onclick="clearChat()">⌫ 清空</button>
+      <button class="chat-close" id="chat-close" title="关闭对话（× 是唯一出口）" onclick="closeChat()">×</button>
     </div>
     <div class="chat-sub" id="chat-sub">已基于你的诊断报告初始化会话，可针对简历优化、面试准备、职业转型提问</div>
     <div class="chat-body" id="chat-body"></div>
@@ -1911,20 +1942,26 @@ function toast(msg, type){
 }
 
 /* ---------- AI 咨询对话（独立智能体 Bot 模块，与工作流完全解耦） ---------- */
-let chatHistory = [];   // 仅保存「用户/AI」问答对，作为多轮上下文；关闭弹窗即清空
+let chatHistory = [];   // 保存「用户/AI」问答对，作为多轮上下文；关闭弹窗不清空，再次打开即续聊（清空入口：聊天面板右上「⌫ 清空」按钮 → clearChat）
 let chatContext = '';   // 当前报告的完整文本，作为智能体「永久背景资料」
 let thinkingEl = null;
 
 function openChat(){
   if(!state.report){ toast('请先生成一份有效报告','warn'); return; }
   chatContext = buildReportText();   // 打开瞬间注入完整诊断报告，作为 AI 长期上下文
-  chatHistory = [];                  // 重建全新会话（不同报告上下文相互隔离）
   const bd=document.getElementById('chat-body');
-  bd.innerHTML='';
-  const w=document.createElement('div');
-  w.className='chat-welcome';
-  w.textContent='已基于你的诊断报告初始化会话，可针对简历优化、面试准备、职业转型提问～';
-  bd.appendChild(w);
+  /* 行为契约（用户硬性要求）：
+     - 关闭后保留对话历史；本次打开如果 chatHistory 为空 → 渲染首次欢迎语；
+       如果已有 chatHistory → bd 中已由 sendChat 渲染过完整气泡，直接展示不重建（避免"空白页"） */
+  if(chatHistory.length === 0){
+    bd.innerHTML='';
+    const w=document.createElement('div');
+    w.className='chat-welcome';
+    w.textContent='已基于你的诊断报告初始化会话，可针对简历优化、面试准备、职业转型提问～';
+    bd.appendChild(w);
+  }
+  /* 滚到最新消息 */
+  setTimeout(()=>{ bd.scrollTop = bd.scrollHeight; }, 0);
   document.getElementById('chat-backdrop').classList.add('show');
   document.body.classList.add('chat-open');   // 桌面端主体右移让出侧边栏，避免遮挡
   setTimeout(()=>{ const inp=document.getElementById('chat-input'); if(inp){ inp.value=''; inp.style.height='auto'; inp.focus(); } }, 140);
@@ -1955,12 +1992,34 @@ async function probeBackendOnOpen(){
     console.warn('[chat] 后端连通失败：', e);
   }
 }
-function closeChat(){                // 关闭即清空本轮全部对话历史，再次打开重建
+function closeChat(){                // 关闭即「收起」，不再清空历史 —— 用户硬性要求保留对话记忆，下次打开直接续聊
   document.getElementById('chat-backdrop').classList.remove('show');
   document.body.classList.remove('chat-open');
+  /* 不再清空 chatHistory / chatContext / chat-body.innerHTML：
+     - 关闭唯一入口是 × 按钮（chat-backdrop 已无 onclick）
+     - 关闭即收起，DOM 与历史原地保留
+     - openChat() 通过 chatHistory.length 判断是否首次，无空白风险
+     - 如需彻底重置，调用 chat-clear 「清空」按钮（独立通道） */
+}
+function clearChat(){                // 用户主动清空对话历史：清 chatHistory + bd，渲染欢迎语，不动面板显示状态
+  if(chatHistory.length === 0){
+    const bd=document.getElementById('chat-body'); if(bd && !bd.querySelector('.chat-welcome')){
+      const w=document.createElement('div');
+      w.className='chat-welcome';
+      w.textContent='已基于你的诊断报告初始化会话，可针对简历优化、面试准备、职业转型提问～';
+      bd.appendChild(w);
+    }
+    toast('当前已是空会话');
+    return;
+  }
+  if(!confirm('清空当前全部对话历史？\n（仅清本地 UI 与记忆，不影响后端）')) return;
   chatHistory = [];
-  chatContext = '';
   const bd=document.getElementById('chat-body'); if(bd) bd.innerHTML='';
+  const w=document.createElement('div');
+  w.className='chat-welcome';
+  w.textContent='已基于你的诊断报告初始化会话，可针对简历优化、面试准备、职业转型提问～';
+  bd.appendChild(w);
+  toast('已清空对话');
 }
 
 /* ===== 头部导航：窄屏汉堡菜单（桌面端不显示、不影响原布局） ===== */
