@@ -64,6 +64,8 @@
   }
 
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  /* 媒体等比缩放防御（本页为纯 SVG，此条为通用兜底，避免未来插入图片/视频时溢出） */
+  img,video{max-width:100%;height:auto;display:block;}
   html{scroll-behavior:smooth;}
   /* 可访问性：键盘焦点环 + 动效降级 */
   :focus-visible{outline:2px solid var(--primary-press);outline-offset:2px;border-radius:6px;}
@@ -115,6 +117,14 @@
     font-size:14px;color:var(--text-2);transition:background .18s ease,color .18s ease,transform .15s ease;
   }
   .nav a:hover{background:rgba(242,169,135,.12);color:var(--text);}
+  /* 汉堡按钮：默认隐藏，≤720px 显示（见响应式媒体查询）；点按热区 44px */
+  .nav-toggle{display:none;flex-direction:column;justify-content:center;gap:5px;width:44px;height:44px;
+    border:none;background:var(--card-soft);border-radius:12px;cursor:pointer;padding:0 11px;transition:background .16s ease;}
+  .nav-toggle:hover{background:rgba(242,169,135,.16);}
+  .nav-toggle span{display:block;height:2px;width:100%;background:var(--text);border-radius:2px;transition:transform .25s ease,opacity .2s ease;}
+  .nav-toggle.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+  .nav-toggle.open span:nth-child(2){opacity:0;}
+  .nav-toggle.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
   .nav a.active{background:var(--primary);color:var(--on-c);font-weight:600;}
   .nav a:active{transform:scale(.97);}
   .theme-toggle{
@@ -449,20 +459,28 @@
   .btn:disabled:hover{transform:none!important;box-shadow:none!important;}
   .chat-backdrop{
     position:fixed;inset:0;z-index:999;display:none;
-    align-items:center;justify-content:center;padding:24px;
-    background:rgba(62,56,50,.30);backdrop-filter:blur(3px);
+    align-items:stretch;justify-content:flex-end;
+    background:rgba(62,56,50,.16);
     animation:fadeIn .25s ease both;
   }
   .chat-backdrop.show{display:flex;}
   @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  /* ===== AI 咨询对话：固定网页右侧侧边栏（不模糊主体、不遮挡核心内容） ===== */
   .chat-modal{
-    width:min(720px,100%);max-height:84vh;display:flex;flex-direction:column;
-    background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);
-    box-shadow:0 24px 70px rgba(62,56,50,.22);overflow:hidden;
-    transform:translateY(14px) scale(.98);opacity:0;animation:chatIn .28s ease .02s both;
+    position:fixed;top:0;right:0;height:100vh;width:min(400px,92vw);
+    display:flex;flex-direction:column;
+    background:var(--card);border-left:1px solid var(--border);border-radius:0;
+    box-shadow:-24px 0 70px rgba(62,56,50,.18);overflow:hidden;
+    transform:translateX(40px);opacity:0;animation:chatIn .28s ease .02s both;
     transition:background .3s ease,border-color .3s ease;
   }
-  @keyframes chatIn{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+  @keyframes chatIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+  /* 桌面端（>880px）打开对话时：主体内容右移让出右侧侧边栏，避免遮挡；移动端聊天全屏不适用 */
+  @media (min-width:881px){
+    body.chat-open .topbar-inner,
+    body.chat-open .page,
+    body.chat-open #proj-note{transition:padding-right .26s ease;padding-right:424px;}
+  }
   .chat-head{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border-soft);}
   .chat-title{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px;color:var(--text);}
   .chat-dot{width:10px;height:10px;border-radius:50%;background:var(--primary);box-shadow:0 0 0 4px rgba(242,169,135,.2);}
@@ -501,6 +519,11 @@
   .thinking .dots i:nth-child(3){animation-delay:.4s;}
   @keyframes blink{0%,100%{opacity:.3}50%{opacity:1}}
   .chat-welcome{font-size:12.5px;color:var(--text-2);align-self:center;background:var(--card-soft);border:1px dashed var(--border);border-radius:999px;padding:6px 16px;text-align:center;line-height:1.6;}
+  /* 对话界面内提示（复制成功等）：绝对定位于面板内，不依赖全局 #toast，避免被置于页面底层 */
+  .chat-toast{position:absolute;left:50%;bottom:84px;transform:translateX(-50%) translateY(8px);
+    background:rgba(40,36,32,.92);color:#fff;font-size:12.5px;line-height:1.4;padding:8px 16px;border-radius:999px;
+    opacity:0;pointer-events:none;transition:opacity .2s ease,transform .2s ease;z-index:8;white-space:nowrap;max-width:88%;text-align:center;}
+  .chat-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
   /* ===================== 同色系线性装饰层（纯视觉，不拦截交互） ===================== */
   .deco-layer{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
@@ -542,6 +565,14 @@
     .brand{font-size:15px;}
   }
   @media (max-width:720px){
+    /* 头部导航 → 汉堡菜单：nav 收为右侧下拉卡片 */
+    .nav-toggle{display:flex;}
+    .nav{display:none;position:absolute;top:100%;right:12px;flex-direction:column;align-items:stretch;gap:6px;
+      background:var(--card);border:1px solid var(--border);border-radius:16px;padding:10px;
+      box-shadow:var(--shadow-lg);min-width:212px;z-index:60;}
+    .nav.open{display:flex;}
+    .nav a,.nav label.real-api-toggle{padding:12px 16px;min-height:44px;width:100%;justify-content:flex-start;}
+    .nav label.real-api-toggle{justify-content:space-between;}
     .block-card{flex-direction:column;gap:14px;}
     .block-actions{flex-direction:row;width:100%;flex-wrap:wrap;}
     .block-actions .label{width:100%;}
@@ -552,9 +583,18 @@
     .block-actions .label{width:100%;}
     .block-actions .btn{min-width:calc(50% - 4px);}
     .report-bar{flex-direction:column;align-items:flex-start;}
-    .report-actions{width:100%;}
-    .report-actions .btn{flex:1;}
-    .action-bar .btn{flex:1;}
+    /* 报告操作按钮：窄屏 2 列网格，整齐不溢出 */
+    .report-actions{width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+    .report-actions .btn{width:100%;flex:auto;justify-content:center;}
+    .action-bar .btn{flex:1;justify-content:center;}
+    /* 对话侧边栏在手机端全屏，避免窄栏挤压头部与输入区 */
+    .chat-modal{width:100vw;}
+    .chat-backdrop{background:rgba(62,56,50,.28);}
+    .chat-head{flex-wrap:wrap;gap:10px 12px;}
+    .chat-title{width:100%;}
+    .chat-conn{margin-left:0;}
+    .chat-input-bar{padding:14px 16px;}
+    .chat-send{padding:0 18px;}
   }
 
   /* ===================== 1024 / 480 中间断点 ===================== */
@@ -705,7 +745,10 @@
       </span>
       经历翻译官
     </div>
-    <nav class="nav">
+    <button class="nav-toggle" id="nav-toggle" onclick="toggleNav()" aria-label="打开菜单" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="nav" id="nav-menu">
       <a href="javascript:void(0)" id="nav-home" class="active" onclick="goHome()">首页</a>
       <a href="javascript:void(0)" id="nav-lib" onclick="openLibrary()">我的经历库</a>
       <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()" aria-label="切换深色模式">
@@ -902,6 +945,7 @@
     </div>
     <div class="chat-sub" id="chat-sub">已基于你的诊断报告初始化会话，可针对简历优化、面试准备、职业转型提问</div>
     <div class="chat-body" id="chat-body"></div>
+    <div class="chat-toast" id="chat-toast"></div>
     <div class="chat-input-bar">
       <textarea id="chat-input" class="chat-input" rows="1" placeholder="输入你的问题，Enter 发送 / Shift+Enter 换行…" onkeydown="onChatKey(event)" oninput="autoGrowChat()"></textarea>
       <button class="chat-send" id="chat-send" onclick="sendChat()">发送</button>
@@ -1876,6 +1920,7 @@ function openChat(){
   w.textContent='已基于你的诊断报告初始化会话，可针对简历优化、面试准备、职业转型提问～';
   bd.appendChild(w);
   document.getElementById('chat-backdrop').classList.add('show');
+  document.body.classList.add('chat-open');   // 桌面端主体右移让出侧边栏，避免遮挡
   setTimeout(()=>{ const inp=document.getElementById('chat-input'); if(inp){ inp.value=''; inp.style.height='auto'; inp.focus(); } }, 140);
   /* 打开时自动 ping 一次后端：把浏览器实际能不能连上的结果写在 chat-sub 行里，
      用户一眼就能看出是浏览器侧被拦（始终连不上）还是后端真挂了（curl 也不通） */
@@ -1906,9 +1951,41 @@ async function probeBackendOnOpen(){
 }
 function closeChat(){                // 关闭即清空本轮全部对话历史，再次打开重建
   document.getElementById('chat-backdrop').classList.remove('show');
+  document.body.classList.remove('chat-open');
   chatHistory = [];
   chatContext = '';
   const bd=document.getElementById('chat-body'); if(bd) bd.innerHTML='';
+}
+
+/* ===== 头部导航：窄屏汉堡菜单（桌面端不显示、不影响原布局） ===== */
+function toggleNav(){
+  const t=document.getElementById('nav-toggle'), m=document.getElementById('nav-menu');
+  if(!t||!m) return;
+  const open=m.classList.toggle('open');
+  t.classList.toggle('open', open);
+  t.setAttribute('aria-expanded', open?'true':'false');
+}
+function closeNav(){
+  const t=document.getElementById('nav-toggle'), m=document.getElementById('nav-menu');
+  if(m) m.classList.remove('open');
+  if(t){ t.classList.remove('open'); t.setAttribute('aria-expanded','false'); }
+}
+/* 点击导航内任意项或页面其他区域时自动收起下拉（汉堡态下） */
+document.addEventListener('click', function(e){
+  const m=document.getElementById('nav-menu'); if(!m) return;
+  const t=document.getElementById('nav-toggle');
+  if(t && t.contains(e.target)) return;          // 汉堡按钮本身由 toggleNav 处理
+  if(m.contains(e.target)){ closeNav(); return; } // 点了菜单内项 → 收起
+  if(m.classList.contains('open')) closeNav();    // 点外部 → 收起
+});
+
+/* ===== 对话界面内提示：复制成功等显示在面板内，不置于页面底层 ===== */
+function chatToast(msg){
+  const el=document.getElementById('chat-toast'); if(!el) return;
+  el.textContent=msg;
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t=setTimeout(()=>el.classList.remove('show'), 1600);
 }
 function appendBubble(role, text, withCopy){
   const body=document.getElementById('chat-body');
@@ -1995,7 +2072,7 @@ function autoGrowChat(){
 function copyChat(btn){
   const b=btn.previousElementSibling;
   const t=b?b.textContent:'';
-  copyText(t).then(()=>toast('已复制 AI 回复'));
+  copyText(t).then(()=>chatToast('已复制 AI 回复'));
 }
 
 /* ---------- 扣子智能体 Bot 请求函数（独立封装，与工作流完全解耦） ----------
