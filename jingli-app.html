@@ -2477,9 +2477,19 @@ function updateChatConnStatus(transport){
     el.textContent='● 内置示例回复';
   }
 }
-/* ===== 导出对话 PDF：仅对话正文 + 元信息卡（用户消息带时间戳，AI 气泡带"真实/模拟/已回落"来源）=====
+/* ===== 导出对话 PDF：仅对话正文 + 元信息卡（"咨询记录"版式，不再用聊天气泡）=====
    实现路径：window.open 新窗口 + document.write 写完整 A4 排版 HTML + window.print()
-   与现有报告 exportPDF() 完全隔离（不污染主页面打印 CSS、不互相影响） */
+   与现有报告 exportPDF() 完全隔离（不污染主页面打印 CSS、不互相影响）
+   v2 改动：去掉气泡框（长文本会跨页丢样式），改为每轮一个 section：标签行（问 N / AI N · 来源 + 时间）+ 正文
+   区分靠左侧 3px 色条 + 标签配色；正文自然分页，标签 page-break-after:avoid 永远跟着正文；轻量 Markdown 处理 */
+function formatChatForExport(txt){
+  if(!txt) return '';
+  let s = escapeHtml(txt);
+  s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');                  /* **粗体** → <strong> */
+  s = s.replace(/(^|\n)###\s*([^\n]+)/g, '$1<div class="h3">$2</div>');       /* ### 段头 → 段头加粗 */
+  s = s.replace(/(^|\n)---(\n|$)/g, '$1<hr class="sep"/>$2');                 /* 单独 --- → 浅分隔条 */
+  return s;
+}
 function exportChatPDF(){
   if(!chatHistory || chatHistory.length===0){
     toast('当前没有对话可导出','warn');
@@ -2492,54 +2502,59 @@ function exportChatPDF(){
     const style= state.meta?.style || '通用平衡';
     const dateStr = new Date().toLocaleString('zh-CN',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
     const no = 'CHAT-' + new Date().toISOString().slice(0,10).replace(/-/g,'') + '-' + Math.random().toString(36).slice(2,6).toUpperCase();
-    /* 把每条对话渲染成左右气泡（用户右、模拟/真实 AI 左；时间戳在气泡下方） */
+    /* 每轮一个 section：标签行 + 正文；不再用聊天气泡的"对话框"样式 */
     let turns = ''; let qIdx=0, aIdx=0;
     chatHistory.forEach(m=>{
+      const body = formatChatForExport(m.text);
       if(m.role==='user'){
         qIdx++;
-        turns += `<div class="turn user">
-          <div class="who">问 ${qIdx}</div>
-          <div class="bubble">${escapeHtml(m.text)}</div>
-          <div class="meta">${escapeHtml(m.time||'')}</div>
-        </div>`;
+        turns += `<section class="turn user">
+          <div class="label"><span class="tag tag-u">问 ${qIdx}</span><span class="time">${escapeHtml(m.time||'')}</span></div>
+          <div class="body user-body">${body}</div>
+        </section>`;
       } else {
         aIdx++;
         const src = sourceLabel(m.source);
-        turns += `<div class="turn ai">
-          <div class="who">AI ${aIdx} <span class="src ${src.cls}">${src.txt}</span></div>
-          <div class="bubble">${escapeHtml(m.text)}</div>
-          <div class="meta">${escapeHtml(m.time||'')}</div>
-        </div>`;
+        turns += `<section class="turn ai">
+          <div class="label"><span class="tag tag-a">AI ${aIdx}</span><span class="src ${src.cls}">${src.txt}</span><span class="time">${escapeHtml(m.time||'')}</span></div>
+          <div class="body ai-body">${body}</div>
+        </section>`;
       }
     });
     const html = `<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"/>
 <title>经历翻译官 · AI 咨询记录 ${no}</title>
 <style>
-@page{size:A4;margin:1.6cm;}
+@page{size:A4;margin:1.8cm 1.6cm;}
 *{box-sizing:border-box;}
-body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#333;line-height:1.7;margin:0;background:#fff;}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#2a2520;line-height:1.78;margin:0;background:#fff;font-size:13px;}
 header{text-align:center;border-bottom:2px solid #E98B6A;padding-bottom:14px;margin-bottom:18px;}
 .brand{font-size:11px;letter-spacing:4px;color:#9a8f86;margin-bottom:4px;}
-.title{font-size:22px;font-weight:800;letter-spacing:1px;margin:0 0 6px;}
+.title{font-size:22px;font-weight:800;letter-spacing:1px;margin:0 0 6px;color:#3a2f25;}
 .no{font-size:11px;color:#9a8f86;letter-spacing:1px;}
-.meta-card{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px 24px;background:#FAF6F0;border:1px solid #ECE6E0;border-radius:10px;padding:10px 16px;margin-bottom:18px;font-size:12.5px;}
+.meta-card{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px 24px;background:#FAF6F0;border:1px solid #ECE6E0;border-radius:8px;padding:10px 16px;margin-bottom:22px;font-size:12px;}
 .meta-card .row{display:flex;gap:6px;align-items:baseline;}
 .meta-card .row b{color:#6f665e;font-weight:500;}
 .meta-card .row span{color:#333;font-weight:600;}
-.turn{margin-bottom:18px;page-break-inside:avoid;}
-.turn.user{text-align:right;}
-.turn .who{font-size:11.5px;color:#9a8f86;margin-bottom:4px;letter-spacing:1px;}
-.turn.user .who{color:#E98B6A;}
-.turn .bubble{display:inline-block;max-width:72%;padding:10px 16px;border-radius:14px;font-size:13px;line-height:1.75;text-align:left;white-space:pre-wrap;word-break:break-word;}
-.turn.user .bubble{background:#FCE7DA;color:#5a3a28;border:1px solid #F2C7AC;border-bottom-right-radius:4px;}
-.turn.ai .bubble{background:#fff;color:#333;border:1px solid #E5DED4;border-bottom-left-radius:4px;}
-.turn .meta{font-size:10.5px;color:#9a8f86;margin-top:4px;letter-spacing:.5px;}
-.turn.user .meta{text-align:right;}
-.turn .src{padding:1px 6px;border-radius:999px;font-size:9.5px;margin-left:6px;font-weight:600;letter-spacing:0;}
-.turn .src.real{background:rgba(110,193,160,.15);color:#2f7a55;border:1px solid rgba(110,193,160,.45);}
-.turn .src.mock{background:#F5EFE7;color:#9a8f86;border:1px solid #E5DED4;}
-.turn .src.fallback{background:rgba(242,180,135,.18);color:#a05a1a;border:1px solid rgba(242,180,135,.5);}
-footer{text-align:center;font-size:10.5px;color:#9a8f86;margin-top:24px;padding-top:10px;border-top:1px solid #ECE6E0;}
+
+.turn{margin-bottom:16px;}
+.label{display:flex;align-items:center;gap:8px;margin-bottom:6px;page-break-after:avoid;}
+.tag{display:inline-block;padding:2px 9px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:.5px;}
+.tag-u{background:#FCE7DA;color:#a05a1a;border:1px solid #F2C7AC;}
+.tag-a{background:#3a2f25;color:#fff;}
+.src{padding:1px 7px;border-radius:999px;font-size:10px;font-weight:600;letter-spacing:0;}
+.src.real{background:rgba(110,193,160,.18);color:#2f7a55;border:1px solid rgba(110,193,160,.5);}
+.src.mock{background:#F5EFE7;color:#9a8f86;border:1px solid #E5DED4;}
+.src.fallback{background:rgba(242,180,135,.2);color:#a05a1a;border:1px solid rgba(242,180,135,.55);}
+.time{font-size:10.5px;color:#9a8f86;letter-spacing:.3px;margin-left:auto;}
+
+.body{padding:2px 0 2px 12px;border-left:3px solid #ECE6E0;page-break-inside:auto;white-space:pre-wrap;word-break:break-word;line-height:1.85;font-size:13px;}
+.user-body{border-left-color:#E98B6A;color:#5a3a28;}
+.ai-body{border-left-color:#9a8f86;color:#2a2520;}
+
+.h3{font-weight:700;color:#3a2f25;margin:10px 0 4px;font-size:13.5px;}
+.sep{border:none;border-top:1px dashed #ECE6E0;margin:8px 0;}
+
+footer{text-align:center;font-size:10.5px;color:#9a8f86;margin-top:20px;padding-top:10px;border-top:1px solid #ECE6E0;}
 </style></head><body>
 <header>
   <div class="brand">JING LI · AI CONSULTATION LOG</div>
