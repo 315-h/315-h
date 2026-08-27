@@ -547,6 +547,16 @@
     background:rgba(40,36,32,.92);color:#fff;font-size:12.5px;line-height:1.4;padding:8px 16px;border-radius:999px;
     opacity:0;pointer-events:none;transition:opacity .2s ease,transform .2s ease;z-index:8;white-space:nowrap;max-width:88%;text-align:center;}
   .chat-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  /* 开场白长文卡片（替代旧 chat-welcome 胶囊，按报告话术语气自动选风格） */
+  .chat-opener{align-self:stretch;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;font-size:13px;line-height:1.7;color:var(--text-2);white-space:pre-wrap;word-break:break-word;}
+  /* 每条 AI 回复后挂的 3 个相关追问 */
+  .chat-followups{align-self:stretch;background:var(--card-soft);border:1px solid var(--border-soft);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;}
+  .ff-label{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--text-2);}
+  .ff-hide{border:none;background:none;color:var(--text-2);font-size:11.5px;cursor:pointer;opacity:.7;padding:0;}
+  .ff-hide:hover{color:var(--primary-press);opacity:1;}
+  .ff-list{display:flex;flex-direction:column;gap:6px;}
+  .ff-item{text-align:left;font-size:13px;line-height:1.5;padding:9px 13px;border-radius:10px;background:var(--card);border:1px solid var(--border);color:var(--text);cursor:pointer;transition:all .16s ease;}
+  .ff-item:hover{border-color:var(--primary);color:var(--primary-press);background:rgba(242,169,135,.08);}
 
   /* ===================== 同色系线性装饰层（纯视觉，不拦截交互） ===================== */
   .deco-layer{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
@@ -668,6 +678,7 @@
     body,body.dark{background:#fff!important;color:#222!important;}
     .topbar,#toast,#loading-overlay,.theme-toggle,.deco-layer{display:none!important;}
     .page{display:none!important;}
+    .chat-backdrop{display:none!important;}   /* 导出 PDF 不携带 AI 对话界面（含右侧侧边栏与透明背景层） */
     #page-report{display:block!important;padding:0!important;animation:none!important;}
     #report-tabs{display:none!important;}   /* 模块切换 Tab 行不打印 */
     /* 报告头部 pill 行（岗位/模式/阶段/风格）和封面信息重复，PDF 不打印 */
@@ -1961,6 +1972,167 @@ let chatHistory = [];   // 保存「用户/AI」问答对，作为多轮上下�
 let chatContext = '';   // 当前报告的完整文本，作为智能体「永久背景资料」
 let thinkingEl = null;
 
+/* ===== 5 种风格开场白：按报告话术语气（state.meta.style）自动选，首次打开 / 清空后渲染 ===== */
+const OPENERS = {
+  '通用平衡':
+`你好！我是你的报告延伸助手 👋
+
+我已经读完刚生成的诊断报告，可以围绕它和你聊后续问题——
+比如：把某一段改得更贴合目标岗位描述，或者模拟面试官
+问你"为什么离开上一家"这种关键问题。
+
+【可以这样问我】
+• 基于「可迁移能力」+「目标岗位」，帮我重写第 2 条
+• 这份报告投 3 类岗位，重点看哪几块？
+• 帮我挑 3 个最可能被追问的细节，演练一下
+• 投出去之前，这块要不要补一段？
+
+【我能做的】
+• 改写文字 · 检查模块间矛盾 · 模拟追问 · 跨岗位适配
+• 给出投递节奏与准备度建议
+
+【面板功能】
+× 收起（不丢历史） | ⌫ 长按 1 秒清空 |
+/ 触发快捷问题（每条回复后也会挂 3 个相关追问）
+
+Enter 发送 / Shift+Enter 换行。下面框打字即可↓`,
+
+  '逻辑严谨型':
+`[报告诊断已完成 · AI 会话初始化]
+
+【能力边界】
+1. 改写：针对 6 大模块的局部文本优化
+2. 校验：交叉检查模块间数据/表述矛盾
+3. 模拟：基于报告内容生成追问话术 + STAR 答题模板
+4. 对比：跨岗位/行业适配改写建议
+5. 节奏：投递节奏、准备度、简历优先级
+
+【提问公式】 【报告模块】 + 【目标岗位】 + 【动作】
+例：可迁移能力 + 目标岗位 + 补强第 2 条证据链
+
+【界面功能】
+× ：收起（不丢历史，下次打开续聊）
+⌫ ：长按 1 秒重置全部会话
+/  ：唤起快捷问题（每条回复后挂 3 个相关追问，可忽略）
+
+【输入约定】
+Enter 发送；Shift+Enter 换行。
+
+>>> 开始提问 ↓`,
+
+  '共情叙事型':
+`你好，我是你刚生成的报告背后那个会读字的角色 🌿
+
+写你的经历时，我想，你大概也还没完全消化完它。
+现在轮到你了——你可以像我陪你过一道桥那样，
+把看报告时冒出来的每一个小想法丢给我。
+
+我能做的是：
+✦ 帮你把某一段改得更"接近你自己的语气"
+✦ 陪你想清楚"为什么这样写"
+✦ 如果要面试，我可以扮那个会把你问倒的面试官
+
+不一定要从头问——你直接说"第 4 块第 2 段太啰嗦"我也能开始。
+也可以问我"对方如果是数据背景，要不要改"这种开放题。
+
+面板上：
+× 收起不丢历史  ·  ⌫ 长按 1 秒全重来  ·  / 偷懒快捷问题
+
+慢慢说。`,
+
+  '务实落地型':
+`[能干什么 · 直给]
+
+✅ 改某段文字（"把第 2 段压到 60 字"）
+✅ 找矛盾（"第 3 块和第 5 块是不是重复了"）
+✅ 模拟面试（"出 5 个高频追问"）
+✅ 换岗位改写（"投 B 端产品怎么调"）
+
+[怎么问 · 公式]
+【模块名】 + 【目标岗位】 + 【动作】
+例：可迁移能力 + 目标岗位 + 补强第 2 条证据
+
+[界面 3 键]
+× 收起 · ⌫ 长按 1 秒重置 · / 快捷问题
+每条回复后挂 3 个追问，不点不响
+
+[键盘]
+Enter 发 · Shift+Enter 换行
+
+>>> 开问 ↓`,
+
+  '灵活探索型':
+`我已经"读完"你的报告了 🤔
+
+不过报告再精准也只是描边——真正关键的那个问号，
+往往长在你心里。所以我更想知道的是：
+
+💡 你现在最大的卡点是哪一个？
+   （面试？简历？还是没想清该投什么？）
+⭐ 你最想从这份报告里多挖出哪一类信息？
+✨ 如果只剩 30 分钟，你希望先解决哪一件事？
+
+我能帮你：改文字 · 找盲区 · 模拟面试 · 岗位匹配 ·
+求职节奏建议——围绕这份报告能铺开的都能聊。
+
+具体能玩成什么样，取决于你怎么丢问题给我。
+
+试一下：随便挑一个抛回来，或者按 / 我先给你起点。
+
+面板还能这样玩：
+× 收起不丢历史  ·  ⌫ 长按 1 秒全重来  ·
+每条回复后挂 3 个追问，不想理就跳过`
+};
+/* 按当前报告话术语气渲染开场白卡片（自动兜底到「通用平衡」） */
+function renderOpener(bd){
+  if(!bd) return;
+  const style = state.meta?.style || state.style || '通用平衡';
+  const key = (typeof STYLES!=='undefined' && STYLES.includes(style)) ? style : '通用平衡';
+  const text = OPENERS[key] || OPENERS['通用平衡'];
+  const w=document.createElement('div');
+  w.className='chat-opener';
+  w.textContent=text;
+  bd.appendChild(w);
+}
+
+/* ===== 每条 AI 回复后挂 3 个相关追问（点击即填入并发送） ===== */
+function appendFollowups(follows){
+  if(!Array.isArray(follows) || !follows.length) return;
+  const body=document.getElementById('chat-body'); if(!body) return;
+  const wrap=document.createElement('div');
+  wrap.className='chat-followups';
+  const label=document.createElement('div'); label.className='ff-label';
+  const t=document.createElement('span'); t.textContent='相关追问';
+  const hide=document.createElement('button'); hide.className='ff-hide'; hide.textContent='收起';
+  hide.onclick=()=>wrap.remove();
+  label.appendChild(t); label.appendChild(hide);
+  const list=document.createElement('div'); list.className='ff-list';
+  follows.forEach(q=>{
+    const b=document.createElement('button'); b.className='ff-item'; b.textContent=q;
+    b.onclick=()=>{ const inp=document.getElementById('chat-input'); if(inp){ inp.value=q; autoGrowChat(); } sendChat(); };
+    list.appendChild(b);
+  });
+  wrap.appendChild(label); wrap.appendChild(list);
+  body.appendChild(wrap);
+  body.scrollTop=body.scrollHeight;
+}
+/* 前端兜底生成 3 个相关追问（真实模式若后端返回 followups 则优先用后端）：
+   规则——①与最后一轮回复紧密相关（按回复关键词分方向）②不重复（pool 内 Set 去重）③每句单问或单指令 ④推荐 AI 能答的改写/模拟/计划类 */
+function genFollowups(reply, userQ){
+  const job = state.meta?.job || '目标岗位';
+  const r = reply || '';
+  const pool = [];
+  if(/面试|回答|话术|STAR|追问|考官|模拟/.test(r)) pool.push('就刚才这段，帮我模拟一个面试官最可能追问的问题并给参考答案');
+  if(/简历|改写|条目|经历|量化|指标/.test(r)) pool.push(`把和「${job}」最相关的这一段，压缩成 2 条更量化的简历条目`);
+  if(/转型|方向|匹配|能力|补强|差距|准备/.test(r)) pool.push(`围绕「${job}」列一份 30 天能力补强微行动计划`);
+  if(/优化|提升|建议|改进|打磨/.test(r)) pool.push('基于这份报告，我还能在哪些模块继续深挖优化？');
+  pool.push(`如果我现在投递「${job}」，最该优先准备哪一块？`);
+  pool.push('把刚才的回答整理成可以直接复制进简历的一句话版本');
+  const seen=new Set(); const out=[];
+  for(const p of pool){ if(!seen.has(p)){ seen.add(p); out.push(p); } if(out.length>=3) break; }
+  return out;
+}
+
 function openChat(){
   if(!state.report){ toast('请先生成一份有效报告','warn'); return; }
   chatContext = buildReportText();   // 打开瞬间注入完整诊断报告，作为 AI 长期上下文
@@ -1970,10 +2142,7 @@ function openChat(){
        如果已有 chatHistory → bd 中已由 sendChat 渲染过完整气泡，直接展示不重建（避免"空白页"） */
   if(chatHistory.length === 0){
     bd.innerHTML='';
-    const w=document.createElement('div');
-    w.className='chat-welcome';
-    w.textContent='按 / 触发常用问题快捷菜单';
-    bd.appendChild(w);
+    renderOpener(bd);
   }
   /* 滚到最新消息 */
   setTimeout(()=>{ bd.scrollTop = bd.scrollHeight; }, 0);
@@ -2042,11 +2211,8 @@ function chatClearCancel(){
 }
 function clearChat(){                // 用户主动清空对话历史：清 chatHistory + bd，渲染欢迎语，不动面板显示状态
   if(chatHistory.length === 0){
-    const bd=document.getElementById('chat-body'); if(bd && !bd.querySelector('.chat-welcome')){
-      const w=document.createElement('div');
-      w.className='chat-welcome';
-      w.textContent='按 / 触发常用问题快捷菜单';
-      bd.appendChild(w);
+    const bd=document.getElementById('chat-body'); if(bd && !bd.querySelector('.chat-opener')){
+      renderOpener(bd);
     }
     toast('当前已是空会话');
     return;
@@ -2054,10 +2220,7 @@ function clearChat(){                // 用户主动清空对话历史：清 cha
   if(!confirm('清空当前全部对话历史？\n（仅清本地 UI 与记忆，不影响后端）')) return;
   chatHistory = [];
   const bd=document.getElementById('chat-body'); if(bd) bd.innerHTML='';
-  const w=document.createElement('div');
-  w.className='chat-welcome';
-  w.textContent='按 / 触发常用问题快捷菜单';
-  bd.appendChild(w);
+  renderOpener(bd);
   toast('已清空对话');
   onChatInput();   // 清空后重新显示快捷菜单
 }
@@ -2080,8 +2243,8 @@ function onChatInput(){
   if(!inp||!box) return;
   renderQuickMenu();
   const v=inp.value;
-  /* 输入框为空（首次聚焦/清空后）或以 / 开头 → 显示菜单；否则隐藏 */
-  if(v==='' || v.indexOf('/')===0){
+  /* 常用问题菜单：仅在输入以 / 开头时显出（隐藏标签，不显眼标出）；空输入不自动弹 */
+  if(v.indexOf('/')===0){
     box.classList.add('show');
     box.style.display='flex';
   }else{
@@ -2181,6 +2344,9 @@ async function sendChat(){
     reply=(r && r.text) ? r.text : '（暂无回复）';
   }
   appendBubble('ai', reply, true);
+  /* 每条 AI 回复后挂 3 个相关追问（后端返回优先，否则前端按当轮回复兜底生成） */
+  const follows = (r && Array.isArray(r.followups) && r.followups.length) ? r.followups.slice(0,3) : genFollowups(reply, text);
+  appendFollowups(follows);
   chatHistory.push({role:'user', text});
   chatHistory.push({role:'ai', text:reply});
   /* 更新头部连接状态条（real=绿，mock=灰，mock-fallback=黄） */
@@ -2220,6 +2386,11 @@ function copyChat(btn){
  * 接口：COZE_BASE_URL + "/chat/completions"
  * Body 携带 bot_id + additional_messages（多轮历史）
  * 返回：{ text: string } | { error: string } | { mock: true } ---------- */
+/* 从后端返回中提取 followups（兼容 chat/completions 与 /v3/chat 两种格式；无则返回 undefined → 前端 genFollowups 兜底） */
+function pickFollowups(data){
+  const arr = data?.followups || data?.choices?.[0]?.message?.followups || data?.data?.followups;
+  return Array.isArray(arr) ? arr.slice(0,3).filter(x=>typeof x==='string' && x.trim()) : undefined;
+}
 async function callCozeBot(userMessage){
   /* Token 占位自动降级：不发起网络请求，直接走内置模拟回复 */
   if(!isTokenValid()){ return {mock:true}; }
@@ -2245,11 +2416,11 @@ async function callCozeBot(userMessage){
      * ① chat/completions 风格：choices[0].message.content
      * ② /v3/chat 风格：data.messages[] / messages[] 取最后一条 assistant */
     const choice = data?.choices?.[0]?.message?.content;
-    if(choice) return { text: typeof choice==='string'?choice:JSON.stringify(choice) };
+    if(choice) return { text: typeof choice==='string'?choice:JSON.stringify(choice), followups: pickFollowups(data) };
     const arr = data?.data?.messages || data?.messages || [];
     const ai = arr.filter(m=>m.role==='assistant' && (m.type==='answer'||!m.type)).pop()
             || arr.filter(m=>m.role==='assistant').pop() || arr[arr.length-1];
-    if(ai && ai.content) return { text: typeof ai.content==='string'?ai.content:JSON.stringify(ai.content) };
+    if(ai && ai.content) return { text: typeof ai.content==='string'?ai.content:JSON.stringify(ai.content), followups: pickFollowups(data) };
     /* 会话可能是异步进行中（in_progress）：给出可理解的提示 */
     if(data?.data?.status && data.data.status!=='completed'){
       return { error:'会话仍在处理中（'+data.data.status+'），请稍后重试' };
