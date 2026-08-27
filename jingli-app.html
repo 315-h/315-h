@@ -1597,21 +1597,32 @@ function exportPDF(){
   document.getElementById('export-modal').style.display='flex';
 }
 function buildExportList(){
+  /* 按实际已渲染的 panel 生成可选列表（不是硬编码 6 个 MODULES）：
+     用户生成报告时只勾了 N 个模块 → panelsBox 里就只有 N 个 panel → 弹窗也只列 N 个，
+     避免"勾了不存在的模块"导致打印时少内容 */
   const box=document.getElementById('export-list');
   box.innerHTML='';
-  MODULES.forEach(m=>{
+  const panels=document.querySelectorAll('#report-panels .tab-panel');
+  if(panels.length===0){
+    box.innerHTML='<div style="font-size:13px;color:var(--text-2);padding:10px 4px;">暂无报告内容</div>';
+    return;
+  }
+  panels.forEach(panel=>{
+    const key=panel.id.replace('panel-','');
+    const m=MODULES.find(x=>MODULE_TAB[x]===key) || key;
     const d=document.createElement('label');
     d.className='export-item';
-    d.innerHTML=`<input type="checkbox" value="${MODULE_TAB[m]}" onchange="updateExportSel()"><span>${m}</span>`;
+    d.innerHTML=`<input type="checkbox" value="${key}" onchange="updateExportSel()"><span>${m}</span>`;
     box.appendChild(d);
   });
 }
 function updateExportSel(){
   const checks=[...document.querySelectorAll('#export-list input:checked')];
   const names=checks.map(c=>{ const k=c.value; return MODULES.find(m=>MODULE_TAB[m]===k)||k; });
+  const total=document.querySelectorAll('#export-list input').length;
   const el=document.getElementById('export-sel');
   el.textContent = names.length
-    ? (names.length===MODULES.length ? '已选择：全部 '+MODULES.length+' 个模块' : '已选择：'+names.join('、'))
+    ? (names.length===total ? '已选择：全部 '+total+' 个模块' : '已选择：'+names.join('、'))
     : '已选择：无';
 }
 function exportSelAll(){ document.querySelectorAll('#export-list input').forEach(c=>{ c.checked=true; }); updateExportSel(); }
