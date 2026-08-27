@@ -1698,8 +1698,8 @@ function exportMarkdown(){
   downloadFile(buildReportText(), '经历翻译官-报告.md', 'text/markdown');
   toast('已导出 Markdown 文件');
 }
-/* 导出 PDF：直接调用浏览器打印。打印前把 .block-content 的 Markdown 源码（**加粗**/列表/表格）
-   渲染成 HTML（用户看到的 MD 符号 → 真粗体/列表/真表格），打印结束后恢复原文本 */
+/* 导出 PDF：直接调用浏览器打印。打印前把 .block-content 的 Markdown 源码
+   （加粗/列表/真表格）渲染成 HTML（用户看到的 MD 符号 → 真粗体/列表/真表格），打印结束后恢复原文本 */
 function exportPDF(){
   if(!state.report){ toast('暂无报告可导出','warn'); return; }
   const contents = document.querySelectorAll('#report-panels .block-content');
