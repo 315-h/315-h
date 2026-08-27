@@ -549,6 +549,8 @@
   .chat-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
   /* 开场白长文卡片（替代旧 chat-welcome 胶囊，按报告话术语气自动选风格） */
   .chat-opener{align-self:stretch;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;font-size:13px;line-height:1.7;color:var(--text-2);white-space:pre-wrap;word-break:break-word;}
+  /* 开场白下方的 3 条常用提问（初始引导，复用 ff-item chip 样式） */
+  .opener-qs{align-self:stretch;display:flex;flex-direction:column;gap:6px;}
   /* 每条 AI 回复后挂的 3 个相关追问 */
   .chat-followups{align-self:stretch;background:var(--card-soft);border:1px solid var(--border-soft);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;}
   .ff-label{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--text-2);}
@@ -2083,7 +2085,35 @@ Enter 发 · Shift+Enter 换行
 × 收起不丢历史  ·  ⌫ 长按 1 秒全重来  ·
 每条回复后挂 3 个追问，不想理就跳过`
 };
-/* 按当前报告话术语气渲染开场白卡片（自动兜底到「通用平衡」） */
+/* 开场白下方 3 条常用提问（按风格差异化；{job} 占位在渲染时替换为目标岗位） */
+const OPENER_QS = {
+  '通用平衡':[
+    '把「可迁移能力」里最硬的一条，改成 2 句可量化描述',
+    '面试被问「为什么离开上一家」，怎么答更稳？',
+    '围绕「{job}」列一份 30 天能力补强计划'
+  ],
+  '逻辑严谨型':[
+    '交叉校验：报告 6 大模块里有没有互相矛盾的数据或表述？',
+    '把和「{job}」最相关的经历，按「动作+数字+结果」重写 2 条',
+    '给出「{job}」投递前 5 项准备清单，按优先级排序'
+  ],
+  '共情叙事型':[
+    '把我写的一段经历，改得更像我自己的语气，少一点模板感',
+    '面试前最慌的问题，帮我提前把答案想清楚',
+    '转型「{job}」的第一步，从哪件小事开始做？'
+  ],
+  '务实落地型':[
+    '把第 2 段经历压到 60 字以内，保留核心数字',
+    '出 5 个「{job}」高频面试追问，并给答题思路',
+    '简历里最值得删的一句废话是哪个？直接告诉我'
+  ],
+  '灵活探索型':[
+    '我现在最大的求职卡点是什么？帮我想清楚',
+    '这份报告里，我最容易忽略的 3 个盲区在哪？',
+    '如果只剩 30 分钟准备面试，先做哪三件事？'
+  ]
+};
+/* 按当前报告话术语气渲染开场白卡片（自动兜底到「通用平衡」），下方挂 3 条可点常用提问 */
 function renderOpener(bd){
   if(!bd) return;
   const style = state.meta?.style || state.style || '通用平衡';
@@ -2093,6 +2123,18 @@ function renderOpener(bd){
   w.className='chat-opener';
   w.textContent=text;
   bd.appendChild(w);
+  /* 3 条常用提问（初始引导，点击直接发送） */
+  const job = state.meta?.job || '目标岗位';
+  const qs = (OPENER_QS[key] || OPENER_QS['通用平衡']).map(s=>s.replace(/\{job\}/g, job));
+  const wrap=document.createElement('div');
+  wrap.className='opener-qs';
+  qs.forEach(q=>{
+    const b=document.createElement('button');
+    b.className='ff-item'; b.textContent=q;
+    b.onclick=()=>{ markAsked(q); const inp=document.getElementById('chat-input'); if(inp){ inp.value=q; autoGrowChat(); } sendChat(); };
+    wrap.appendChild(b);
+  });
+  bd.appendChild(wrap);
 }
 
 /* ===== 每条 AI 回复后挂 3 个相关追问（点击即填入并发送） ===== */
@@ -2109,28 +2151,57 @@ function appendFollowups(follows){
   const list=document.createElement('div'); list.className='ff-list';
   follows.forEach(q=>{
     const b=document.createElement('button'); b.className='ff-item'; b.textContent=q;
-    b.onclick=()=>{ const inp=document.getElementById('chat-input'); if(inp){ inp.value=q; autoGrowChat(); } sendChat(); };
+    b.onclick=()=>{ markAsked(q); const inp=document.getElementById('chat-input'); if(inp){ inp.value=q; autoGrowChat(); } sendChat(); };
     list.appendChild(b);
   });
   wrap.appendChild(label); wrap.appendChild(list);
   body.appendChild(wrap);
   body.scrollTop=body.scrollHeight;
 }
-/* 前端兜底生成 3 个相关追问（真实模式若后端返回 followups 则优先用后端）：
-   规则——①与最后一轮回复紧密相关（按回复关键词分方向）②不重复（pool 内 Set 去重）③每句单问或单指令 ④推荐 AI 能答的改写/模拟/计划类 */
+/* ===== 动态追问：全局去重池（记录用户手打/开场白/追问 chip 出现过的所有问题，
+   保证每轮 3 条追问与当轮提问强相关且不重复；clearChat 时重置） ===== */
+const ASKED = new Set();
+function askedClean(s){ return String(s||'').replace(/\s+/g,' '); }
+function markAsked(q){ if(q) ASKED.add(askedClean(q)); }
+/* 前端兜底生成 3 个相关追问（真实模式若后端返回 followups 则优先用后端，同样过 ASKED 去重）：
+   规则——①与用户当轮提问 + AI 回复强相关（合并判定方向）②不与任何已问/已答内容重复
+           ③每句单问或单指令 ④推荐 AI 能答的改写/模拟/计划类 */
 function genFollowups(reply, userQ){
   const job = state.meta?.job || '目标岗位';
-  const r = reply || '';
-  const pool = [];
-  if(/面试|回答|话术|STAR|追问|考官|模拟/.test(r)) pool.push('就刚才这段，帮我模拟一个面试官最可能追问的问题并给参考答案');
-  if(/简历|改写|条目|经历|量化|指标/.test(r)) pool.push(`把和「${job}」最相关的这一段，压缩成 2 条更量化的简历条目`);
-  if(/转型|方向|匹配|能力|补强|差距|准备/.test(r)) pool.push(`围绕「${job}」列一份 30 天能力补强微行动计划`);
-  if(/优化|提升|建议|改进|打磨/.test(r)) pool.push('基于这份报告，我还能在哪些模块继续深挖优化？');
-  pool.push(`如果我现在投递「${job}」，最该优先准备哪一块？`);
-  pool.push('把刚才的回答整理成可以直接复制进简历的一句话版本');
+  const r = reply || ''; const q = userQ || '';
+  const text = r + ' ' + q;            // 合并当轮上下文做方向判定，不再是固定模板
+  const cands = [];
+  const push=(s)=>{ if(!ASKED.has(askedClean(s))) cands.push(s); };
+  if(/面试|回答|话术|STAR|追问|考官|模拟|缺点|自我介绍|为什么/.test(text)){
+    push(`刚才这个面试问题，换成「${job}」的面试官还会怎么追问？给我参考答案`);
+    push('把这份回答压缩成 60 秒面试口述版，保留最关键的数字');
+    push('基于这段回答，挑 2 个最容易被挑刺的弱点，提前写好补强话术');
+  } else if(/简历|改写|条目|量化|压缩|指标|经历|描述|啰嗦/.test(text)){
+    push(`把和「${job}」相关的这段经历，压成 2 条量化简历条目（动作+数字+结果）`);
+    push('这份改写里还有哪句是"形容词堆砌"？帮我去掉并换成可验证的证据');
+    push('把这条简历条目按 STAR 结构展开成面试讲稿');
+  } else if(/转型|转行|方向|匹配|能力|补强|差距|准备|计划|30 ?天|卡点|第一步/.test(text)){
+    push(`围绕「${job}」把刚才的建议落成一张 7 天行动表（每天 1 个动作）`);
+    push('这份计划里哪个补强项优先级最高？为什么？');
+    push(`先盘一下：我现有经历里，最能支撑「${job}」的 3 个证据点是什么？`);
+  } else if(/优化|提升|建议|改进|打磨|报告|模块|盲区|深挖/.test(text)){
+    push('这份报告 6 大模块里，还有哪一块值得继续深挖？给 3 个切入点');
+    push('把刚才的建议整合成一段可直接复制进简历的终稿');
+    push(`按「${job}」的岗位描述，报告里哪些点会被挑刺？逐一给补救方案`);
+  }
+  /* 兜底：当轮无强方向时，围绕用户问题本身做 3 个延伸（引用原问法） */
+  if(cands.length===0){
+    push(`换个角度想「${q.slice(0,22)}…」——如果面试官反问你，怎么答？`);
+    push('刚才这个思路，套到我另一段经历上，会得出什么结论？');
+    push('结合报告，给一个更具体的落地动作来回应我刚才的问题');
+  }
   const seen=new Set(); const out=[];
-  for(const p of pool){ if(!seen.has(p)){ seen.add(p); out.push(p); } if(out.length>=3) break; }
-  return out;
+  for(const c of cands){ if(!seen.has(c)){ seen.add(c); out.push(c); } if(out.length>=3) break; }
+  /* 极长会话兜底：若去重后不足 3 条，从原始候选补足（保证 UI 永远有 3 条可点） */
+  if(out.length<3){
+    for(const c of cands){ if(!seen.has(c)){ seen.add(c); out.push(c); } if(out.length>=3) break; }
+  }
+  return out.slice(0,3);
 }
 
 function openChat(){
@@ -2219,6 +2290,7 @@ function clearChat(){                // 用户主动清空对话历史：清 cha
   }
   if(!confirm('清空当前全部对话历史？\n（仅清本地 UI 与记忆，不影响后端）')) return;
   chatHistory = [];
+  ASKED.clear();                        // 清空会话 = 全新会话，去重池同步重置
   const bd=document.getElementById('chat-body'); if(bd) bd.innerHTML='';
   renderOpener(bd);
   toast('已清空对话');
@@ -2317,6 +2389,7 @@ async function sendChat(){
   const text=inp.value.trim();
   if(!text || thinkingEl) return;
   appendBubble('user', text, false);
+  markAsked(text);                     // 用户本次提问记入去重池，后续追问不再重复
   inp.value=''; autoGrowChat();
   thinkingEl=showThinking();
   /* 默认走内置模拟回复；仅「真实接口模式」开启时调用本地 LangChain 后端 */
@@ -2344,8 +2417,13 @@ async function sendChat(){
     reply=(r && r.text) ? r.text : '（暂无回复）';
   }
   appendBubble('ai', reply, true);
-  /* 每条 AI 回复后挂 3 个相关追问（后端返回优先，否则前端按当轮回复兜底生成） */
-  const follows = (r && Array.isArray(r.followups) && r.followups.length) ? r.followups.slice(0,3) : genFollowups(reply, text);
+  /* 每条 AI 回复后挂 3 个相关追问（后端返回优先，否则前端按当轮回复+提问动态兜底生成；均过 ASKED 去重） */
+  let follows = (r && Array.isArray(r.followups) && r.followups.length) ? r.followups.slice(0,3) : genFollowups(reply, text);
+  if(Array.isArray(follows)){
+    follows = follows.filter(f=>!ASKED.has(askedClean(f)));
+    if(!follows.length) follows = genFollowups(reply, text);   // 全撞已问过 → 重新生成一轮
+    follows = follows.slice(0,3);
+  }
   appendFollowups(follows);
   chatHistory.push({role:'user', text});
   chatHistory.push({role:'ai', text:reply});
