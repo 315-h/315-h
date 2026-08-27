@@ -601,8 +601,8 @@
     .cover-page-wrap{
       display:flex!important;align-items:center;justify-content:center;
       position:relative;z-index:10;background:#fff;
-      margin:-2.5cm -2.5cm -2.5cm -3cm;
-      padding:2.5cm 2.5cm 2.5cm 3cm;
+      margin:-1.4cm -1.4cm -1.4cm -1.4cm;
+      padding:1.4cm;
       min-height:100vh;
       page-break-after:always;break-after:page;
     }
@@ -663,19 +663,19 @@
     .module-head{break-inside:avoid;page-break-inside:avoid;}
 
     /* ===== PDF 每页页眉 / 页脚（fixed 位置，浏览器打印时每页重复显示）
-       页眉距纸张顶端 1.5cm、页脚距纸张底端 1.5cm（用户指定）；封面页由 .cover-page-wrap 白底遮挡。 ===== */
+       页眉距纸张顶端 0.5cm、页脚距纸张底端 0.5cm（用户指定）；封面页由 .cover-page-wrap 白底遮挡。 ===== */
     .pdf-chrome{display:flex;justify-content:space-between;align-items:center;
-      padding:0 16mm!important;font-size:10.5px!important;letter-spacing:1px!important;
-      color:#9a8f86!important;background:#fff!important;height:1cm!important;}
-    .pdf-header{position:fixed;top:1.5cm;left:0;right:0;border-bottom:1px solid #ece6e0;z-index:5;}
-    .pdf-footer{position:fixed;bottom:1.5cm;left:0;right:0;border-top:1px solid #ece6e0;z-index:5;}
+      padding:0 18mm!important;font-size:10.5px!important;letter-spacing:1px!important;
+      color:#9a8f86!important;background:#fff!important;height:0.9cm!important;line-height:0.9cm!important;}
+    .pdf-header{position:fixed;top:0.5cm;left:0;right:0;border-bottom:1px solid #ece6e0;z-index:5;}
+    .pdf-footer{position:fixed;bottom:0.5cm;left:0;right:0;border-top:1px solid #ece6e0;z-index:5;}
     .pdf-header .ph-l,.pdf-footer .pf-l{font-weight:600;color:#7a716a;}
     .pdf-header .ph-r,.pdf-footer .pf-r{color:#a89e95;}
   }
 
-  /* ===== @page 页边距：上/下/右 2.5cm，左 3.0cm（用户指定；内容区避开 fixed 页眉页脚） ===== */
+  /* ===== @page 页边距：上下 1.4cm（容纳 0.5cm + 页眉高 + 缓冲），左右 1.4cm（让表格不再被挤占） ===== */
   @page{
-    margin: 2.5cm 2.5cm 2.5cm 3cm;
+    margin: 1.4cm 1.4cm 1.4cm 1.4cm;
     size: A4;
   }
 
