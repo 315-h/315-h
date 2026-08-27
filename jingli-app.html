@@ -489,7 +489,7 @@
   }
   /* 头部：标题独占首行，连接状态 + 诊断按钮落到第二行，关闭按钮 absolute 浮在右上，永远好按 */
   .chat-head{display:flex;align-items:center;justify-content:flex-start;padding:18px 22px 14px;border-bottom:1px solid var(--border-soft);gap:10px 12px;flex-wrap:wrap;position:relative;}
-  .chat-title{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px;color:var(--text);flex:1 1 100%;min-width:0;line-height:1.4;}
+  .chat-title{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px;color:var(--text);flex:1 1 100%;min-width:0;line-height:1.4;white-space:nowrap;}
   .chat-title-text{display:inline-block;min-width:0;flex:1 1 auto;overflow-wrap:break-word;word-break:break-word;}
   .chat-dot{flex:0 0 auto;width:10px;height:10px;border-radius:50%;background:var(--primary);box-shadow:0 0 0 4px rgba(242,169,135,.2);}
   .chat-close{position:absolute;right:12px;top:12px;width:38px;height:38px;border:none;background:var(--card-soft);border-radius:50%;font-size:22px;line-height:1;color:var(--text-2);cursor:pointer;transition:all .16s ease;z-index:2;}
@@ -514,12 +514,23 @@
   .chat-diag{font-size:11.5px;line-height:1;padding:5px 10px;border-radius:999px;font-weight:600;white-space:nowrap;flex:0 1 auto;background:var(--card-soft);color:var(--text-2);border:1px solid var(--border-soft);cursor:pointer;transition:all .16s ease;}
   .chat-diag:hover{border-color:var(--primary);color:var(--primary-press);}
   .chat-diag.ok{background:rgba(110,193,160,.15);color:#2f7a55;border-color:rgba(110,193,160,.45);}
-  .chat-sub{font-size:12.5px;color:var(--text-2);padding:8px 22px 0;}
-  /* 超窄屏（≤420px，比如 iPhone SE / 360 设备宽度开侧边栏接近全屏）：两个 pill 上下堆叠，绝不挤 */
-  @media (max-width:420px){
-    .chat-conn,.chat-diag{flex:1 1 100%;text-align:center;justify-content:center;}
-    .chat-diag{margin-top:4px;}
-  }
+  .chat-sub{font-size:12.5px;color:var(--text-2);padding:8px 22px 0;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  /* 「导出对话」按钮：放在 chat-sub 状态行右侧，灰字小图标，不抢主操作位 */
+  .chat-export{font-size:12px;line-height:1;padding:5px 12px;border-radius:999px;font-weight:500;
+    background:transparent;color:var(--text-2);border:1px solid var(--border-soft);cursor:pointer;
+    transition:all .16s ease;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;margin-left:auto;}
+  .chat-export:hover{border-color:var(--primary);color:var(--primary-press);background:rgba(242,169,135,.08);}
+  .chat-export:disabled{opacity:.5;cursor:not-allowed;}
+  /* 气泡底部元信息：左侧时间戳（HH:MM），右侧来源标签（用户消息无来源，AI 消息有"真实/模拟/已回落"） */
+  .chat-msg-meta{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:4px;padding:0 4px;font-size:11px;color:var(--text-2);opacity:.85;width:100%;}
+  .chat-msg-meta .time{font-variant-numeric:tabular-nums;}
+  .chat-source{padding:1.5px 7px;border-radius:999px;font-size:10.5px;font-weight:600;line-height:1.4;}
+  .chat-source.real{background:rgba(110,193,160,.15);color:#2f7a55;border:1px solid rgba(110,193,160,.45);}
+  .chat-source.mock{background:var(--card-soft);color:var(--text-2);border:1px solid var(--border-soft);}
+  .chat-source.fallback{background:rgba(242,180,135,.18);color:#a05a1a;border:1px solid rgba(242,180,135,.5);}
+  /* 用户硬性要求：标题独占首行 + 连接状态/诊断同一行（不再 ≤420 堆叠，
+     mobile 上两个 pill 也保持并排，超窄屏允许容器内换行到第二行而非挤压标题） */
+  .chat-conn,.chat-diag{flex:0 1 auto;}
   .chat-body{flex:1;overflow-y:auto;padding:18px 22px;display:flex;flex-direction:column;gap:14px;min-height:200px;}
   .chat-msg{display:flex;flex-direction:column;max-width:84%;animation:rise .25s ease both;}
   .chat-msg.user{align-self:flex-end;align-items:flex-end;}
@@ -598,6 +609,8 @@
     .topbar-inner{padding:10px 16px;}
     .nav a{padding:0 12px;font-size:13px;}
     .brand{font-size:15px;}
+    /* 用户硬性要求：报告页顶紧贴 topbar，无大缝隙；其他页保留 28px 呼吸 */
+    #page-report{padding-top:8px;}
   }
   @media (max-width:720px){
     /* 头部导航 → 汉堡菜单：nav 收为右侧下拉卡片 */
@@ -637,6 +650,8 @@
     .block-actions .label{width:100%;}
     /* 极窄屏：按钮 3 列不变，再缩小字号 + padding，让「更简洁」「更专业」「更量化」4 字不被截断 */
     .block-actions .btn{font-size:12px;padding:0 4px;}
+    /* 极窄屏报告页继续压缩顶间距 */
+    #page-report{padding-top:4px;}
     .report-bar{flex-direction:column;align-items:flex-start;}
     /* 报告操作按钮：窄屏 2 列网格，整齐不溢出 */
     .report-actions{width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
@@ -1007,7 +1022,7 @@
         onmouseup="chatClearCancel()" ontouchend="chatClearCancel()" onmouseleave="chatClearCancel()">⌫ 清空</button>
       <button class="chat-close" id="chat-close" title="关闭对话（× 是唯一出口）" onclick="closeChat()">×</button>
     </div>
-    <div class="chat-sub" id="chat-sub">已基于你的诊断报告初始化会话，可针对简历优化、面试准备、职业转型提问</div>
+    <div class="chat-sub" id="chat-sub">已基于你的诊断报告初始化会话，可针对简历优化、面试准备、职业转型提问<button class="chat-export" id="chat-export" title="导出当前对话为 PDF（仅正文，不含界面）" onclick="exportChatPDF()">⬇ 导出对话</button></div>
     <div class="chat-body" id="chat-body"></div>
     <div class="chat-toast" id="chat-toast"></div>
     <div class="chat-quick" id="chat-quick"></div>
@@ -2362,11 +2377,26 @@ function chatToast(msg){
   clearTimeout(el._t);
   el._t=setTimeout(()=>el.classList.remove('show'), 1600);
 }
-function appendBubble(role, text, withCopy){
+function nowTime(){
+  const d=new Date();
+  return d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0');
+}
+function sourceLabel(s){
+  if(s==='real') return {txt:'真实', cls:'real'};
+  if(s==='mock-fallback') return {txt:'已回落', cls:'fallback'};
+  return {txt:'模拟', cls:'mock'};
+}
+function appendBubble(role, text, withCopy, meta){
   const body=document.getElementById('chat-body');
   const el=document.createElement('div');
   el.className='chat-msg '+(role==='user'?'user':'ai');
   let html=`<div class="bubble">${escapeHtml(text)}</div>`;
+  /* 气泡底部元信息：左侧时间戳 + 右侧来源标签（用户消息无来源；AI 消息有"真实/模拟/已回落"） */
+  const m = meta || {};
+  const time = m.time || nowTime();
+  const src = (role==='ai' && m.source) ? sourceLabel(m.source) : null;
+  const metaHtml = `<div class="chat-msg-meta"><span class="time">${escapeHtml(time)}</span>${src?`<span class="chat-source ${src.cls}">${src.txt}</span>`:''}</div>`;
+  html += metaHtml;
   if(role==='ai' && withCopy){
     html+=`<button class="chat-copy" onclick="copyChat(this)">复制</button>`;
   }
@@ -2388,7 +2418,8 @@ async function sendChat(){
   const inp=document.getElementById('chat-input');
   const text=inp.value.trim();
   if(!text || thinkingEl) return;
-  appendBubble('user', text, false);
+  const userTime = nowTime();
+  appendBubble('user', text, false, {time: userTime});
   markAsked(text);                     // 用户本次提问记入去重池，后续追问不再重复
   inp.value=''; autoGrowChat();
   thinkingEl=showThinking();
@@ -2416,7 +2447,8 @@ async function sendChat(){
   } else {
     reply=(r && r.text) ? r.text : '（暂无回复）';
   }
-  appendBubble('ai', reply, true);
+  const aiTime = nowTime();
+  appendBubble('ai', reply, true, {time: aiTime, source: transport});
   /* 每条 AI 回复后挂 3 个相关追问（后端返回优先，否则前端按当轮回复+提问动态兜底生成；均过 ASKED 去重） */
   let follows = (r && Array.isArray(r.followups) && r.followups.length) ? r.followups.slice(0,3) : genFollowups(reply, text);
   if(Array.isArray(follows)){
@@ -2425,8 +2457,8 @@ async function sendChat(){
     follows = follows.slice(0,3);
   }
   appendFollowups(follows);
-  chatHistory.push({role:'user', text});
-  chatHistory.push({role:'ai', text:reply});
+  chatHistory.push({role:'user', text, time: userTime});
+  chatHistory.push({role:'ai', text: reply, time: aiTime, source: transport});
   /* 更新头部连接状态条（real=绿，mock=灰，mock-fallback=黄） */
   updateChatConnStatus(transport);
 }
@@ -2442,6 +2474,101 @@ function updateChatConnStatus(transport){
   } else {
     el.className='chat-conn off';
     el.textContent='● 内置示例回复';
+  }
+}
+/* ===== 导出对话 PDF：仅对话正文 + 元信息卡（用户消息带时间戳，AI 气泡带"真实/模拟/已回落"来源）=====
+   实现路径：window.open 新窗口 + document.write 写完整 A4 排版 HTML + window.print()
+   与现有报告 exportPDF() 完全隔离（不污染主页面打印 CSS、不互相影响） */
+function exportChatPDF(){
+  if(!chatHistory || chatHistory.length===0){
+    toast('当前没有对话可导出','warn');
+    return;
+  }
+  const btn=document.getElementById('chat-export');
+  if(btn) btn.disabled=true;
+  try{
+    const job  = state.meta?.job || '目标岗位';
+    const style= state.meta?.style || '通用平衡';
+    const dateStr = new Date().toLocaleString('zh-CN',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
+    const no = 'CHAT-' + new Date().toISOString().slice(0,10).replace(/-/g,'') + '-' + Math.random().toString(36).slice(2,6).toUpperCase();
+    /* 把每条对话渲染成左右气泡（用户右、模拟/真实 AI 左；时间戳在气泡下方） */
+    let turns = ''; let qIdx=0, aIdx=0;
+    chatHistory.forEach(m=>{
+      if(m.role==='user'){
+        qIdx++;
+        turns += `<div class="turn user">
+          <div class="who">问 ${qIdx}</div>
+          <div class="bubble">${escapeHtml(m.text)}</div>
+          <div class="meta">${escapeHtml(m.time||'')}</div>
+        </div>`;
+      } else {
+        aIdx++;
+        const src = sourceLabel(m.source);
+        turns += `<div class="turn ai">
+          <div class="who">AI ${aIdx} <span class="src ${src.cls}">${src.txt}</span></div>
+          <div class="bubble">${escapeHtml(m.text)}</div>
+          <div class="meta">${escapeHtml(m.time||'')}</div>
+        </div>`;
+      }
+    });
+    const html = `<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"/>
+<title>经历翻译官 · AI 咨询记录 ${no}</title>
+<style>
+@page{size:A4;margin:1.6cm;}
+*{box-sizing:border-box;}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#333;line-height:1.7;margin:0;background:#fff;}
+header{text-align:center;border-bottom:2px solid #E98B6A;padding-bottom:14px;margin-bottom:18px;}
+.brand{font-size:11px;letter-spacing:4px;color:#9a8f86;margin-bottom:4px;}
+.title{font-size:22px;font-weight:800;letter-spacing:1px;margin:0 0 6px;}
+.no{font-size:11px;color:#9a8f86;letter-spacing:1px;}
+.meta-card{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px 24px;background:#FAF6F0;border:1px solid #ECE6E0;border-radius:10px;padding:10px 16px;margin-bottom:18px;font-size:12.5px;}
+.meta-card .row{display:flex;gap:6px;align-items:baseline;}
+.meta-card .row b{color:#6f665e;font-weight:500;}
+.meta-card .row span{color:#333;font-weight:600;}
+.turn{margin-bottom:18px;page-break-inside:avoid;}
+.turn.user{text-align:right;}
+.turn .who{font-size:11.5px;color:#9a8f86;margin-bottom:4px;letter-spacing:1px;}
+.turn.user .who{color:#E98B6A;}
+.turn .bubble{display:inline-block;max-width:72%;padding:10px 16px;border-radius:14px;font-size:13px;line-height:1.75;text-align:left;white-space:pre-wrap;word-break:break-word;}
+.turn.user .bubble{background:#FCE7DA;color:#5a3a28;border:1px solid #F2C7AC;border-bottom-right-radius:4px;}
+.turn.ai .bubble{background:#fff;color:#333;border:1px solid #E5DED4;border-bottom-left-radius:4px;}
+.turn .meta{font-size:10.5px;color:#9a8f86;margin-top:4px;letter-spacing:.5px;}
+.turn.user .meta{text-align:right;}
+.turn .src{padding:1px 6px;border-radius:999px;font-size:9.5px;margin-left:6px;font-weight:600;letter-spacing:0;}
+.turn .src.real{background:rgba(110,193,160,.15);color:#2f7a55;border:1px solid rgba(110,193,160,.45);}
+.turn .src.mock{background:#F5EFE7;color:#9a8f86;border:1px solid #E5DED4;}
+.turn .src.fallback{background:rgba(242,180,135,.18);color:#a05a1a;border:1px solid rgba(242,180,135,.5);}
+footer{text-align:center;font-size:10.5px;color:#9a8f86;margin-top:24px;padding-top:10px;border-top:1px solid #ECE6E0;}
+</style></head><body>
+<header>
+  <div class="brand">JING LI · AI CONSULTATION LOG</div>
+  <h1 class="title">经历翻译官 · AI 咨询记录</h1>
+  <div class="no">档案编号 ${no} · ${dateStr}</div>
+</header>
+<div class="meta-card">
+  <div class="row"><b>目标岗位</b><span>${escapeHtml(job)}</span></div>
+  <div class="row"><b>沟通风格</b><span>${escapeHtml(style)}</span></div>
+  <div class="row"><b>对话轮数</b><span>${qIdx} 问 / ${aIdx} 答</span></div>
+  <div class="row"><b>生成时间</b><span>${dateStr}</span></div>
+</div>
+${turns}
+<footer>经历翻译官 · 让职业经历被看见 · 共 ${qIdx+aIdx} 条对话</footer>
+</body></html>`;
+    const w = window.open('','_blank','width=820,height=900');
+    if(!w){ toast('浏览器拦截了新窗口，请允许弹窗后重试','warn'); return; }
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+    let closed=false;
+    const closeWin=()=>{ if(!closed && !w.closed){ try{ w.close(); }catch(_){ } closed=true; } };
+    w.addEventListener('load', ()=>{ setTimeout(()=>{ try{ w.focus(); w.print(); }catch(_){} }, 300); });
+    w.addEventListener('afterprint', closeWin);
+    setTimeout(closeWin, 60000);
+  }catch(e){
+    console.warn('[exportChatPDF]',e);
+    toast('导出失败：'+(e.message||e),'warn');
+  }finally{
+    if(btn) setTimeout(()=>{ btn.disabled=false; }, 1500);
   }
 }
 function onChatKey(e){
