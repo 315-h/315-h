@@ -575,15 +575,33 @@
   /* ===================== 打印（导出 PDF 用，只输出报告正文） ===================== */
   @media print{
     body,body.dark{background:#fff!important;color:#222!important;}
-    .topbar,#toast,#loading-overlay,.theme-toggle,.deco-layer{display:none!important;}
+    .topbar,#toast,#loading-overlay,.theme-toggle,.deco-layer,.export-modal{display:none!important;}
     .page{display:none!important;}
     #page-report{display:block!important;padding:0!important;}
+    #report-tabs{display:none!important;}   /* 模块切换 Tab 行不打印 */
     .report-bar .report-actions{display:none!important;}
+    /* 模块范围导出：body.export-part 时只输出勾选模块（.print-sel），否则默认全量输出（原行为） */
+    body.export-part #report-panels .tab-panel{display:none!important;}
+    body.export-part #report-panels .tab-panel.print-sel{display:block!important;}
     .block-actions{display:none!important;}
     .block-card{box-shadow:none!important;border:1px solid #ddd!important;break-inside:avoid;page-break-inside:avoid;margin-bottom:14px!important;}
     .block-content{color:#222!important;}
     .meta-pill{color:#222!important;border-color:#ddd!important;}
   }
+
+  /* ===================== 导出 PDF 模块选择弹窗 ===================== */
+  .export-modal{position:fixed;inset:0;z-index:999;display:none;align-items:center;justify-content:center;background:rgba(20,20,25,.45);backdrop-filter:blur(3px);}
+  .export-box{width:min(440px,92vw);background:var(--card,#fff);border-radius:18px;padding:22px;box-shadow:0 18px 50px rgba(0,0,0,.22);}
+  .export-head{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:16px;margin-bottom:6px;}
+  .export-x{background:none;border:none;font-size:20px;line-height:1;cursor:pointer;color:var(--text-2,#888);padding:2px 6px;border-radius:8px;}
+  .export-x:hover{color:var(--text,#333);background:var(--card-soft,#f5f2ec);}
+  .export-sub{font-size:12.5px;color:var(--text-2,#888);margin-bottom:14px;line-height:1.7;}
+  .export-list{max-height:270px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;border:1px solid var(--divider,#eee);border-radius:12px;padding:10px 12px;}
+  .export-item{display:flex;align-items:center;gap:9px;font-size:14px;padding:6px 4px;border-radius:8px;cursor:pointer;}
+  .export-item:hover{background:var(--card-soft,#f7f5f1);}
+  .export-item input{width:16px;height:16px;accent-color:var(--primary,#E98B6A);cursor:pointer;}
+  .export-sel{margin:10px 2px 0;font-size:12.5px;color:var(--text-2,#888);line-height:1.7;min-height:20px;word-break:break-all;}
+  .export-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px;flex-wrap:wrap;}
 
   /* 返回作品集按钮（topbar 内，与 brand 并列；与详情页 .back 视觉一致） */
   .back-portfolio{
@@ -797,6 +815,25 @@
     <div class="chat-input-bar">
       <textarea id="chat-input" class="chat-input" rows="1" placeholder="输入你的问题，Enter 发送 / Shift+Enter 换行…" onkeydown="onChatKey(event)" oninput="autoGrowChat()"></textarea>
       <button class="chat-send" id="chat-send" onclick="sendChat()">发送</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 导出 PDF：模块选择弹窗 ===================== -->
+<div class="export-modal" id="export-modal">
+  <div class="export-box">
+    <div class="export-head">
+      <span>导出 PDF</span>
+      <button class="export-x" onclick="closeExportModal()" title="关闭">×</button>
+    </div>
+    <p class="export-sub">勾选要导出的模块：勾 1 个 = 只导出该模块；勾多个 = 合并为一个 PDF。</p>
+    <div class="export-list" id="export-list"></div>
+    <div class="export-sel" id="export-sel">已选择：无</div>
+    <div class="export-actions">
+      <button class="btn btn-mini btn-line" onclick="exportSelAll()">全选</button>
+      <button class="btn btn-mini btn-line" onclick="exportSelNone()">清空</button>
+      <button class="btn btn-mini btn-ghost" onclick="closeExportModal()">取消</button>
+      <button class="btn btn-mini btn-blue" onclick="doExportPDF()">导出所选</button>
     </div>
   </div>
 </div>
@@ -1549,10 +1586,52 @@ function exportMarkdown(){
   downloadFile(buildReportText(), '经历翻译官-报告.md', 'text/markdown');
   toast('已导出 Markdown 文件');
 }
+/* 导出 PDF（可选择模块范围）：打开选择弹窗 → 勾选模块 → 打印时仅输出选中模块 */
+let exportListBuilt = false;
 function exportPDF(){
   if(!state.report){ toast('暂无报告可导出','warn'); return; }
+  if(!exportListBuilt){ buildExportList(); exportListBuilt = true; }
+  /* 每次打开默认全选（等效"导出全部"，用户可按需取消勾选） */
+  document.querySelectorAll('#export-list input').forEach(c=>{ c.checked=true; });
+  updateExportSel();
+  document.getElementById('export-modal').style.display='flex';
+}
+function buildExportList(){
+  const box=document.getElementById('export-list');
+  box.innerHTML='';
+  MODULES.forEach(m=>{
+    const d=document.createElement('label');
+    d.className='export-item';
+    d.innerHTML=`<input type="checkbox" value="${MODULE_TAB[m]}" onchange="updateExportSel()"><span>${m}</span>`;
+    box.appendChild(d);
+  });
+}
+function updateExportSel(){
+  const checks=[...document.querySelectorAll('#export-list input:checked')];
+  const names=checks.map(c=>{ const k=c.value; return MODULES.find(m=>MODULE_TAB[m]===k)||k; });
+  const el=document.getElementById('export-sel');
+  el.textContent = names.length
+    ? (names.length===MODULES.length ? '已选择：全部 '+MODULES.length+' 个模块' : '已选择：'+names.join('、'))
+    : '已选择：无';
+}
+function exportSelAll(){ document.querySelectorAll('#export-list input').forEach(c=>{ c.checked=true; }); updateExportSel(); }
+function exportSelNone(){ document.querySelectorAll('#export-list input').forEach(c=>{ c.checked=false; }); updateExportSel(); }
+function closeExportModal(){ document.getElementById('export-modal').style.display='none'; }
+function doExportPDF(){
+  const keys=[...document.querySelectorAll('#export-list input:checked')].map(c=>c.value);
+  if(!keys.length){ toast('请至少选择一个模块','warn'); return; }
+  closeExportModal();
+  /* 标记选中模块：打印样式（body.export-part）只输出它们，其余隐藏 */
+  document.body.classList.add('export-part');
+  document.querySelectorAll('#report-panels .tab-panel').forEach(p=>p.classList.remove('print-sel'));
+  keys.forEach(k=>{ const el=document.getElementById('panel-'+k); if(el) el.classList.add('print-sel'); });
   window.print();
 }
+/* 打印结束（或取消）后恢复页面显示 */
+window.addEventListener('afterprint', ()=>{
+  document.body.classList.remove('export-part');
+  document.querySelectorAll('#report-panels .tab-panel').forEach(p=>p.classList.remove('print-sel'));
+});
 function downloadFile(content,name,type){
   const blob=new Blob([content],{type:type+';charset=utf-8'});
   const url=URL.createObjectURL(blob);
