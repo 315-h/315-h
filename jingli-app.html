@@ -859,8 +859,11 @@ const COZE_BOT_ID = "7666786397797744649";
 //   · COZE_BASE_URL 指向后端地址；后端完整模拟扣子 /workflow/run 与 /chat/completions 两个接口
 //   · COZE_API_TOKEN 用作后端鉴权（与后端 BACKEND_API_KEY 一致即可；后端未设则该值任意）
 // 切回真实扣子：把 COZE_BASE_URL 改回扣子/代理域名，并把 COZE_API_TOKEN 换成真实 PAT（pat_ 开头）。
-const COZE_BASE_URL = "http://localhost:8000";
-const COZE_API_TOKEN = "LOCAL_BACKEND";
+/* 公网后端（CloudBase 云托管，https）：配置后本地与线上都走真实 AI；
+   置空则回退原行为——本地连 localhost 后端、线上纯离线 mock（避免连不存在的后端报错） */
+const PUBLIC_API_BASE = "https://jingli-backend-300788-11-1459218742.sh.run.tcloudbase.com";
+const COZE_BASE_URL = PUBLIC_API_BASE || "http://localhost:8000";
+const COZE_API_TOKEN = "f604a706685fb71bfcb7db661fd39d05";
 // ===============================================
 /* ---------- 静态选项 ---------- */
 const JOBS = ["AI产品经理","数据分析师","用户研究员","产品经理","运营"];
@@ -887,11 +890,11 @@ const state = {
 /* 真实接口模式开关：默认 true → 打开网页即走本地 LangChain 后端（DeepSeek / Qwen）；
    后端未启动或无密钥时，generateReport / rewriteBlock / sendChat 会自动回落至内置演示数据，不会白屏；
    若想纯离线演示，手动关闭右上角「真实接口模式」开关即可 */
-/* 线上环境检测：GitHub Pages / 手机端访问（非 localhost、非 file 协议）→ 默认纯离线 mock，
-   不发起任何 fetch，避免「线上打开即连 localhost:8000」的 Failed to fetch / 混合内容拦截；
-   本地开发（localhost / file）仍默认真实接口，可手动开关切换 */
+/* 线上环境检测：GitHub Pages / 手机端访问（非 localhost、非 file 协议）。
+   配置了 PUBLIC_API_BASE（公网 https 后端）时，线上也默认真实接口——https→https 无混合内容拦截；
+   未配置时，线上保持纯离线 mock（不发起 fetch），避免「线上打开即连 localhost:8000」报错 */
 const IS_ONLINE = !/^(localhost|127\.0\.0\.1)$/.test(location.hostname || '') && location.protocol !== 'file:';
-let USE_REAL_API = !IS_ONLINE;
+let USE_REAL_API = PUBLIC_API_BASE ? true : !IS_ONLINE;
 /* 页面加载时同步开关 UI（仅视觉，不弹确认）：真实接口模式默认开启 */
 (function syncRealApiUI(){
   const sw = document.getElementById('real-api-switch');
