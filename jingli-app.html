@@ -1428,6 +1428,8 @@ function renderReport(report, meta){
       tab.classList.add('active');
       panelsBox.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
       document.getElementById('panel-'+key).classList.add('active');
+      /* 点 Tab 后回到页面顶部，方便看到新模块标题与完整内容（避免内容过长时要手动滚回顶） */
+      window.scrollTo({top:0, behavior:'smooth'});
     };
     tabsBox.appendChild(tab);
 
