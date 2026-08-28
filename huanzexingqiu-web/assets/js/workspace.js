@@ -745,6 +745,133 @@
       alert('导出失败：' + (e && e.message ? e.message : '未知错误'));
     }
   }
+  // P14.2：导出抉择为 PDF（默认优先）。普通用户不必懂 JSON，也能直接拿到一份
+  // 清晰可读、可查看可分享的决策档案。复用当前决策内容，生成 A4 打印版自包含
+  // HTML，经浏览器打印「另存为 PDF」。原始 JSON 备份仍保留（exportDecisionAsJson）。
+  function exportDecisionAsPdf() {
+    try {
+      var scene = SCENES.find(function (s) { return s.key === currentScene; });
+      var sceneText = scene ? (scene.emoji + '  ' + scene.name) : '一次抉择';
+      var choiceTitle = (lastPicked && lastPicked.name) || finalChoiceName || '一次抉择';
+      var headline = lastPicked ? ('我决定 · ' + choiceTitle) : ('抉择摘要 · ' + choiceTitle);
+      var optN = (lastOptions || []).length;
+      var dateText = fmtDate(new Date());
+
+      // 候选方案对比
+      var optHtml = '';
+      if (lastOptions && lastOptions.length) {
+        optHtml = lastOptions.map(function (o, i) {
+          var picked = o === lastPicked;
+          var pros = (o.pros || []).map(function (p) { return '<li>' + esc(p) + '</li>'; }).join('');
+          var cons = (o.cons || []).map(function (c) { return '<li>' + esc(c) + '</li>'; }).join('');
+          var match = o.match_score != null ? '<span class="match">匹配 ' + fmtMatch(o.match_score) + '%</span>' : '';
+          var pickedTag = picked ? '<span class="picked-tag">✓ 最终选择</span>' : '';
+          return '<div class="opt-card' + (picked ? ' picked' : '') + '">' +
+            '<div class="opt-head"><span class="opt-name">' + esc(o.name || ('方案' + (i + 1))) + '</span>' + match + pickedTag + '</div>' +
+            '<div class="cols"><div class="pros"><div class="blk">核心优点</div><ul>' + (pros || '<li>—</li>') + '</ul></div>' +
+            '<div class="cons"><div class="blk">潜在弊端</div><ul>' + (cons || '<li>—</li>') + '</ul></div></div>' +
+            '</div>';
+        }).join('');
+      }
+
+      // 反事实代价预演
+      var rhHtml = '';
+      if (lastRehearsal) {
+        rhHtml = '<section class="sec"><h2>反事实代价预演</h2>' +
+          '<div class="rh-grid">' +
+          '<div class="rh-col hold"><div class="rh-tag hold-tag">握住 · 你会得到</div><p>' + esc(lastRehearsal.chosen_gain || '—') + '</p></div>' +
+          '<div class="rh-col release"><div class="rh-tag release-tag">放下 · 你会失去</div><p>' + esc(lastRehearsal.let_go_cost || '—') + '</p></div>' +
+          '</div>' +
+          (lastRehearsal.counterfactual ? '<div class="rh-close"><strong>代价收束 · 妥协与遗憾</strong><p>' + esc(lastRehearsal.counterfactual) + '</p></div>' : '') +
+          '</section>';
+      }
+
+      // 底线校验
+      var blHtml = '';
+      if (lastPicked) {
+        var blList = MMXStore.getBottomLines().filter(function (x) { return x.enabled !== false; });
+        var ctxTxt = [(lastPicked.pros || []).join(' '), (lastPicked.cons || []).join(' ')].join('\n');
+        var hits = MMXStore.matchBottomLinesDetail([ctxTxt], blList) || [];
+        if (hits.length) {
+          blHtml = '<section class="sec"><h2>底线校验</h2>' +
+            hits.slice(0, 4).map(function (h) { return '<div class="bl-hit">触碰底线 · ' + esc(h.text) + '</div>'; }).join('') +
+            '</section>';
+        }
+      }
+
+      // 对话回放（简短，便于复盘）
+      var convHtml = '';
+      if (conversation && conversation.length) {
+        convHtml = '<section class="sec"><h2>对话回放</h2>' +
+          conversation.map(function (m) {
+            var role = m.role === 'user' ? '我' : '缓择星球';
+            return '<div class="convo"><span class="who ' + (m.role === 'user' ? 'u' : 'a') + '">' + role + '</span>' +
+              '<span class="txt">' + esc(m.text) + '</span></div>';
+          }).join('') + '</section>';
+      }
+
+      var docTitle = '缓择星球-抉择-' + (finalChoiceName || '一次抉择') + '-' + fmtDateForName(new Date());
+
+      // A4 打印版样式：浅暖底、易读字号、合理分页
+      var css = '*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}' +
+        'html,body{background:#fff}' +
+        'body{color:#2C2926;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif;' +
+        'font-size:14px;line-height:1.7;padding:0}' +
+        '@page{size:A4;margin:16mm 15mm}' +
+        '.hd{display:flex;align-items:center;gap:12px;padding-bottom:14px;border-bottom:2px solid #F0E6DC;margin-bottom:18px}' +
+        '.logo{width:40px;height:40px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#FFD9C0,#E98A68);flex:none;position:relative;overflow:hidden}' +
+        '.logo::after{content:"";position:absolute;left:9px;top:10px;width:13px;height:5px;border-radius:99px;background:rgba(255,255,255,.45);transform:rotate(-15deg)}' +
+        '.brand .t1{font-size:17px;font-weight:700}' +
+        '.brand .t2{font-size:12px;color:#9A8B7C}' +
+        '.date{margin-left:auto;font-size:12px;color:#A08872;white-space:nowrap}' +
+        '.scene-tag{display:inline-block;font-size:12px;padding:5px 14px;border-radius:99px;background:#EDE4F7;color:#3A3450;margin-bottom:12px}' +
+        'h1.hl{font-size:24px;line-height:1.45;margin-bottom:22px;font-weight:700}' +
+        '.sec{margin-bottom:22px;break-inside:avoid}' +
+        '.sec h2{font-size:15px;color:#E0764F;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #F0E6DC}' +
+        '.opt-card{border:1px solid rgba(0,0,0,.08);border-radius:14px;padding:14px 16px;margin-bottom:12px;break-inside:avoid}' +
+        '.opt-card.picked{border:1.5px solid #E98A68;background:rgba(233,138,104,.05)}' +
+        '.opt-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}' +
+        '.opt-name{font-size:15px;font-weight:700}' +
+        '.match{font-size:12px;color:#D9774F;font-weight:600}' +
+        '.picked-tag{margin-left:auto;font-size:11px;background:#E98A68;color:#fff;padding:3px 10px;border-radius:99px}' +
+        '.cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}' +
+        '.blk{font-size:12px;font-weight:700;margin-bottom:4px;opacity:.8}' +
+        '.pros,.cons{border-radius:10px;padding:10px 12px;font-size:13px}' +
+        '.pros{background:rgba(216,228,237,.5)}.cons{background:rgba(242,215,213,.5)}' +
+        'ul{list-style:none;padding-left:0}.pros ul li,.cons ul li{line-height:1.7;padding-left:15px;position:relative}' +
+        '.pros ul li::before{content:"+";position:absolute;left:0;color:#5B86A8;font-weight:700}' +
+        '.cons ul li::before{content:"–";position:absolute;left:0;color:#C96A53;font-weight:700}' +
+        '.rh-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}' +
+        '.rh-col{border-radius:12px;padding:14px;font-size:13px;line-height:1.85}' +
+        '.rh-col.hold{background:rgba(233,138,104,.12)}.rh-col.release{background:rgba(216,228,237,.55)}' +
+        '.rh-tag{display:inline-block;font-size:12px;font-weight:700;padding:3px 12px;border-radius:99px;margin-bottom:8px}' +
+        '.rh-tag.hold-tag{background:#E98A68;color:#fff}.rh-tag.release-tag{background:#D8E4ED;color:#2C2926}' +
+        '.rh-close{background:rgba(242,215,213,.5);border-radius:12px;padding:14px;font-size:13px;line-height:1.85}' +
+        '.rh-close strong{display:block;margin-bottom:6px;color:#C96A53}' +
+        '.bl-hit{background:rgba(233,138,104,.08);border-left:3px solid #E98A68;border-radius:8px;padding:10px 12px;font-size:13px;color:#B85C3C;margin-bottom:8px}' +
+        '.convo{margin-bottom:10px;font-size:13px;line-height:1.7}' +
+        '.convo .who{display:inline-block;font-weight:700;margin-right:8px}' +
+        '.convo .who.u{color:#2C2926}.convo .who.a{color:#E0764F}' +
+        '.convo .txt{color:#4A443E}' +
+        '.ft{margin-top:26px;padding-top:14px;border-top:1px solid #EEE;display:flex;align-items:center;gap:8px;font-size:11px;color:#9A8B7C}' +
+        '.ft .url{margin-left:auto}' +
+        '@media print{body{padding:0}.opt-card,.rh-col,.rh-close,.bl-hit,.convo,.sec{page-break-inside:avoid}}';
+
+      var html = '<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><title>' + esc(docTitle) + '</title><style>' + css + '</style></head><body>' +
+        '<header class="hd"><div class="logo"></div><div class="brand"><div class="t1">缓择星球 · 决策档案</div><div class="t2">理性拆解选择 · 减少后悔抉择</div></div><div class="date">' + esc(dateText) + '</div></header>' +
+        '<div class="scene-tag">' + esc(sceneText) + ' · 共 ' + optN + ' 个候选</div>' +
+        '<h1 class="hl">' + esc(headline) + '</h1>' +
+        (optHtml ? '<section class="sec"><h2>候选方案对比</h2>' + optHtml + '</section>' : '') +
+        rhHtml + blHtml + convHtml +
+        '<footer class="ft"><span>缓择星球 · 慢慢选 © 2026</span><span class="url">mmx.manmanxuan.space</span></footer>' +
+        '</body></html>';
+
+      if (window.MMXUI && window.MMXUI.exportHtmlToPdf) window.MMXUI.exportHtmlToPdf(html);
+      toast('正在生成 PDF，请在打印窗口选择「另存为 PDF」');
+    } catch (e) {
+      alert('PDF 导出失败：' + (e && e.message ? e.message : '未知错误'));
+    }
+  }
   // P2-12 模态可访问性：焦点陷阱 + Esc + 关闭后归还焦点
   var saveTrapRelease = null, saveTrigger = null;
   var doneTrapRelease = null, doneTrigger = null;
@@ -775,7 +902,7 @@
       toast('还没有对话内容可保存'); return;
     }
     persistDecision(mode);
-    exportDecisionAsJson();   // 一并下载带 BOM 的 UTF-8 JSON 备份（避免 Windows 记事本乱码）
+    exportDecisionAsPdf();    // 默认优先导出 PDF（清晰易读、可直接查看/分享）；JSON 备份入口保留在保存弹窗内
     closeSaveModal();
     toast('已存档并导出');
     if (mode === 'both' || mode === 'decision') {
@@ -1592,6 +1719,7 @@
     var saveDec = $('save-decision'); if (saveDec) saveDec.addEventListener('click', function () { handleSaveChoice('decision'); });
     var saveConv = $('save-conversation'); if (saveConv) saveConv.addEventListener('click', function () { handleSaveChoice('conversation'); });
     var saveCancel = $('save-cancel'); if (saveCancel) saveCancel.addEventListener('click', closeSaveModal);
+    var saveJsonBackup = $('save-json-backup'); if (saveJsonBackup) saveJsonBackup.addEventListener('click', function () { exportDecisionAsJson(); closeSaveModal(); });
     var saveMask = $('save-mask'); if (saveMask) saveMask.addEventListener('click', function (e) { if (e.target === saveMask) closeSaveModal(); });
     var saveBarOpen = $('save-bar-open'); if (saveBarOpen) saveBarOpen.addEventListener('click', openSaveModal);
     var saveBarCancel = $('save-bar-cancel'); if (saveBarCancel) saveBarCancel.addEventListener('click', hideSaveBar);

@@ -454,6 +454,86 @@
     setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
   }
 
+  // 导出全部历史星轨为 PDF（默认优先）：汇总概览 + 每条决策完整过程，A4 打印版。
+  // 普通用户可直接另存为 PDF 查看 / 分享；原始 JSON 导出保留（exportHistory）。
+  function exportHistoryAsPdf() {
+    var list = MMXStore.getDecisions();
+    if (!list.length) {
+      if (window.MMXUI && window.MMXUI.toast) window.MMXUI.toast('还没有可导出的决策记录');
+      return;
+    }
+    var d = new Date();
+    function p(n) { return n < 10 ? '0' + n : '' + n; }
+    var dateText = d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+    var docTitle = '缓择星球-历史星轨-' + d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate());
+
+    var recordsHtml = list.map(function (rec, idx) {
+      var sceneT = sceneShort(rec.scenario_type);
+      var titleT = esc(rec.title || '一次抉择');
+      var timeT = fmtTime(rec.ts);
+      var favT = rec.favorite ? ' <span class="rec-fav">★ 已收藏</span>' : '';
+      return '<article class="rec">' +
+        '<div class="rec-head"><span class="rec-idx">#' + (idx + 1) + '</span>' +
+        '<span class="tag-scene">' + esc(sceneT) + '</span>' +
+        '<span class="rec-title">' + titleT + '</span>' + favT +
+        '<span class="rec-time">' + timeT + '</span></div>' +
+        processSectionsHtml(rec) +
+        '</article>';
+    }).join('');
+
+    // A4 打印版样式（含 processSectionsHtml 产出的 detail / tf-table / rh / convo 类）
+    var css = '*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}' +
+      'html,body{background:#fff}' +
+      'body{color:#2C2926;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif;font-size:13px;line-height:1.7;padding:0}' +
+      '@page{size:A4;margin:16mm 15mm}' +
+      '.hd{display:flex;align-items:center;gap:12px;padding-bottom:14px;border-bottom:2px solid #F0E6DC;margin-bottom:14px}' +
+      '.logo{width:40px;height:40px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#FFD9C0,#E98A68);flex:none;position:relative;overflow:hidden}' +
+      '.logo::after{content:"";position:absolute;left:9px;top:10px;width:13px;height:5px;border-radius:99px;background:rgba(255,255,255,.45);transform:rotate(-15deg)}' +
+      '.brand .t1{font-size:17px;font-weight:700}.brand .t2{font-size:12px;color:#9A8B7C}' +
+      '.date{margin-left:auto;font-size:12px;color:#A08872;white-space:nowrap}' +
+      '.summary{font-size:13px;color:#6B6157;margin-bottom:18px;padding:10px 14px;background:#FAF4EC;border-radius:10px}' +
+      '.rec{border:1px solid rgba(0,0,0,.08);border-radius:14px;padding:16px 18px;margin-bottom:18px;break-inside:avoid}' +
+      '.rec-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}' +
+      '.rec-idx{font-size:12px;font-weight:700;color:#E0764F}' +
+      '.tag-scene{font-size:12px;padding:3px 10px;border-radius:99px;background:#EDE4F7;color:#3A3450}' +
+      '.rec-title{font-size:16px;font-weight:700}' +
+      '.rec-fav{font-size:11px;color:#E0A23A}' +
+      '.rec-time{margin-left:auto;font-size:11px;color:#A08872;white-space:nowrap}' +
+      '.detail-section{margin:14px 0;break-inside:avoid}' +
+      '.detail-section>h4{font-size:14px;color:#E0764F;font-weight:700;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #F0E6DC}' +
+      '.detail-timeline{position:relative;padding-left:18px}' +
+      '.tl-item{position:relative;margin-bottom:8px}' +
+      '.tl-dot{position:absolute;left:-14px;top:6px;width:8px;height:8px;border-radius:50%;background:#E98A68}' +
+      '.tl-stage{font-size:13px;font-weight:600}.tl-sum{font-size:12px;color:#6B6157}' +
+      '.tf-table{width:100%;border-collapse:collapse;font-size:12px}' +
+      '.tf-table th,.tf-table td{border:1px solid #EDE3D8;padding:7px 9px;text-align:left;vertical-align:top}' +
+      '.tf-table thead th{background:#FAF4EC;font-weight:700}' +
+      '.tf-scheme{color:#8A7C6C;font-weight:600;white-space:nowrap}' +
+      '.tf-pros{color:#3E6B52}.tf-cons{color:#B0503C}' +
+      '.rh-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0}' +
+      '.rh-col{border-radius:10px;padding:10px 12px;font-size:12px;line-height:1.8}' +
+      '.rh-col.hold{background:rgba(233,138,104,.12)}.rh-col.release{background:rgba(216,228,237,.55)}' +
+      '.rh-title{font-weight:700;margin-bottom:4px}' +
+      '.rh-counterfactual{background:rgba(242,215,213,.5);border-radius:10px;padding:10px 12px;font-size:12px;line-height:1.8;margin-top:8px}' +
+      '.detail-convo .convo-msg{margin-bottom:6px;font-size:12px}' +
+      '.convo-role{display:inline-block;font-weight:700;margin-right:6px}' +
+      '.convo-msg.user .convo-role{color:#2C2926}.convo-msg.ai .convo-role{color:#E0764F}' +
+      '.convo-text{color:#4A443E}' +
+      '.ft{margin-top:24px;padding-top:14px;border-top:1px solid #EEE;display:flex;align-items:center;gap:8px;font-size:11px;color:#9A8B7C}' +
+      '.ft .url{margin-left:auto}' +
+      '@media print{body{padding:0}.rec,.detail-section,.rh-col,.tf-table{page-break-inside:avoid}}';
+
+    var html = '<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><title>' + esc(docTitle) + '</title><style>' + css + '</style></head><body>' +
+      '<header class="hd"><div class="logo"></div><div class="brand"><div class="t1">缓择星球 · 历史星轨</div><div class="t2">理性拆解选择 · 减少后悔抉择</div></div><div class="date">' + esc(dateText) + '</div></header>' +
+      '<div class="summary">共导出 <b>' + list.length + '</b> 条决策记录</div>' +
+      recordsHtml +
+      '<footer class="ft"><span>缓择星球 · 慢慢选 © 2026</span><span class="url">mmx.manmanxuan.space</span></footer>' +
+      '</body></html>';
+
+    if (window.MMXUI && window.MMXUI.exportHtmlToPdf) window.MMXUI.exportHtmlToPdf(html);
+    if (window.MMXUI && window.MMXUI.toast) window.MMXUI.toast('正在生成 PDF，请在打印窗口选择「另存为 PDF」');
+  }
+
   // ================= 初始化 =================
   function init() {
     els.orbit = document.getElementById('orbit-body');
@@ -464,13 +544,15 @@
     els.panel = document.getElementById('detail-panel');
     els.detailBody = document.getElementById('detail-body');
     els.exportBtn = document.getElementById('hist-export');
+    els.exportJsonBtn = document.getElementById('hist-export-json');
     els.filterClear = document.getElementById('filter-clear');
     els.count = document.getElementById('record-count');
     els.detailBack = document.getElementById('detail-back');
 
     document.getElementById('detail-close').addEventListener('click', closeDetail);
     els.mask.addEventListener('click', closeDetail);
-    if (els.exportBtn) els.exportBtn.addEventListener('click', exportHistory);
+    if (els.exportBtn) els.exportBtn.addEventListener('click', exportHistoryAsPdf);
+    if (els.exportJsonBtn) els.exportJsonBtn.addEventListener('click', exportHistory);
     if (els.detailBack) els.detailBack.addEventListener('click', closeDetail);
     if (els.filterClear) els.filterClear.addEventListener('click', function () {
       currentFilter = 'all';

@@ -270,11 +270,53 @@
     return function release() { container.removeEventListener('keydown', onKey); };
   }
 
+  // ================= 导出 PDF（HTML → 浏览器打印 → 另存为 PDF） =================
+  // 零依赖、离线可用（file:// 也能跑）：把排版好的自包含 HTML 放进隐藏 iframe，
+  // 调用浏览器打印，用户在打印对话框选择「另存为 PDF」即可得到清晰可读、可直接
+  // 查看与分享的 PDF。生成的 HTML 须自带 <title>（作为保存时的默认文件名）与
+  // @media print 样式。普通用户无需懂 JSON，也能直接拿到一份美观的决策档案。
+  function exportHtmlToPdf(htmlDoc) {
+    try {
+      var iframe = document.createElement('iframe');
+      iframe.setAttribute('aria-hidden', 'true');
+      iframe.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden;';
+      document.body.appendChild(iframe);
+      var idoc = iframe.contentDocument || (iframe.contentWindow && iframe.contentWindow.document);
+      if (!idoc) { if (iframe.parentNode) iframe.parentNode.removeChild(iframe); return false; }
+      idoc.open();
+      idoc.write(htmlDoc);
+      idoc.close();
+      var done = false;
+      var cleanup = function () {
+        setTimeout(function () { if (iframe.parentNode) iframe.parentNode.removeChild(iframe); }, 1500);
+      };
+      var trigger = function () {
+        if (done) return; done = true;
+        try {
+          if (iframe.contentWindow) iframe.contentWindow.focus();
+          iframe.contentWindow.print();
+        } catch (e) {
+          if (window.MMXUI && window.MMXUI.toast) window.MMXUI.toast('PDF 导出失败，请用 Chrome / Edge 重试');
+        }
+        cleanup();
+      };
+      if (idoc.readyState === 'complete') trigger();
+      else iframe.onload = trigger;
+      // 兜底：若 onload 未触发，1.2s 后强制尝试一次
+      setTimeout(function () { if (!done) trigger(); }, 1200);
+      return true;
+    } catch (e) {
+      if (window.MMXUI && window.MMXUI.toast) window.MMXUI.toast('PDF 导出失败：' + (e && e.message ? e.message : '未知错误'));
+      return false;
+    }
+  }
+
   window.MMXUI = {
     toast: toast,
     renderEmptyState: renderEmptyState,
     loadDemo: loadDemo,
-    trapFocus: trapFocus
+    trapFocus: trapFocus,
+    exportHtmlToPdf: exportHtmlToPdf
   };
 
   if (document.readyState === 'loading') {
