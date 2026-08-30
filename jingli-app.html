@@ -505,7 +505,7 @@
   .chat-quick.show{display:flex;}
   .chat-quick-item{flex:0 0 auto;white-space:nowrap;font-size:12.5px;padding:7px 14px;border-radius:999px;background:var(--card-soft);border:1px solid var(--border);color:var(--text-2);cursor:pointer;transition:all .16s ease;}
   .chat-quick-item:hover{border-color:var(--primary);color:var(--primary-press);background:rgba(242,169,135,.10);}
-  .chat-quick-refresh{flex:0 0 auto;position:sticky;left:0;z-index:1;white-space:nowrap;font-size:12.5px;padding:7px 12px;border-radius:999px;background:var(--card-soft);border:1px dashed var(--border-soft);color:var(--text-2);cursor:pointer;}
+  .chat-quick-refresh{flex:0 0 auto;position:sticky;left:0;z-index:1;display:inline-flex;align-items:center;justify-content:center;line-height:0;width:30px;height:30px;padding:0;border-radius:8px;background:var(--card-soft);border:1px solid var(--border-soft);color:var(--text-2);cursor:pointer;transition:all .16s ease;}
   .chat-quick-refresh:hover{border-color:var(--primary);color:var(--primary-press);background:rgba(242,169,135,.10);}
   /* 连接状态条：绿=真实模型/黄=已回落/灰=内置示例 —— 落第二行左起始 */
   .chat-conn{font-size:11.5px;line-height:1;padding:5px 10px;border-radius:999px;font-weight:600;white-space:nowrap;flex:0 1 auto;}
@@ -571,9 +571,9 @@
   .ff-acts{display:flex;align-items:center;gap:12px;margin-left:auto;}
   .ff-hide{border:none;background:none;color:var(--text-2);font-size:11.5px;cursor:pointer;opacity:.7;padding:0;}
   .ff-hide:hover{color:var(--primary-press);opacity:1;}
-  .ff-refresh{border:none;background:none;color:var(--text-2);font-size:11.5px;cursor:pointer;opacity:.7;padding:0;display:inline-flex;align-items:center;gap:4px;}
-  .ff-refresh:hover{color:var(--primary-press);opacity:1;}
-  .ff-refresh:disabled{opacity:.35;cursor:default;}
+  .ff-refresh{border:none;background:none;color:var(--text-2);cursor:pointer;opacity:.7;padding:3px;display:inline-flex;align-items:center;justify-content:center;line-height:0;border-radius:6px;transition:all .16s ease;}
+  .ff-refresh:hover{color:var(--primary-press);opacity:1;background:rgba(242,169,135,.12);}
+  .ff-refresh:disabled{opacity:.3;cursor:default;background:none;}
   .ff-list{display:flex;flex-direction:column;gap:6px;}
   .ff-item{text-align:left;font-size:13px;line-height:1.5;padding:9px 13px;border-radius:10px;background:var(--card);border:1px solid var(--border);color:var(--text);cursor:pointer;transition:all .16s ease;}
   .ff-item:hover{border-color:var(--primary);color:var(--primary-press);background:rgba(242,169,135,.08);}
@@ -2377,11 +2377,11 @@ function renderOpener(bd){
   }
   const box=document.createElement('div');
   box.className='opener-qs-box';
-  /* 标签行 + 「↻ 刷新」：与追问区一致，刷新会换题并轮换推荐种类 */
+  /* 标签行 + 「刷新图标」：与追问区一致，刷新会换题并轮换推荐种类 */
   const label=document.createElement('div'); label.className='ff-label';
   const lt=document.createElement('span'); lt.textContent='可以这样问';
   const acts=document.createElement('div'); acts.className='ff-acts';
-  const refresh=document.createElement('button'); refresh.className='ff-refresh'; refresh.textContent='↻ 刷新';
+  const refresh=document.createElement('button'); refresh.className='ff-refresh'; refresh.innerHTML=refreshIconSVG(); refresh.title='刷新推荐问题';
   refresh.onclick=()=>{ refreshOpenerQs(wrap, refresh, key); };
   acts.appendChild(refresh);
   label.appendChild(lt); label.appendChild(acts);
@@ -2403,7 +2403,11 @@ function renderOpenerQs(wrap, qs){
     wrap.appendChild(b);
   });
 }
-/* 开场提问「↻ 刷新」：排除已展示 + 已展示分类降权 → 换题且轮换种类，比重仍随提问动态调整 */
+/* 刷新图标（统一三处刷新按钮：纯旋转箭头，压缩占位） */
+function refreshIconSVG(){
+  return '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/></svg>';
+}
+/* 开场提问「刷新图标」：排除已展示 + 已展示分类降权 → 换题且轮换种类，比重仍随提问动态调整 */
 function refreshOpenerQs(wrap, btn, styleKey){
   if(!wrap) return;
   const job = state.meta?.job || '目标岗位';
@@ -2437,7 +2441,7 @@ function renderFollowupList(list, qs){
   });
 }
 /* ===== 每条 AI 回复后挂 3 个相关追问（点击即填入并发送） =====
-   新增「↻ 刷新」：按当前最新的分类比重重挑 3 条，并排除本轮已展示过的 ——
+   新增「刷新图标」：按当前最新的分类比重重挑 3 条，并排除本轮已展示过的 ——
    既换题也换推荐种类，聊得多的方向比重已随提问上调，刷新结果会实时反映出来。 */
 function appendFollowups(follows, ctxText){
   if(!Array.isArray(follows) || !follows.length) return;
@@ -2450,7 +2454,7 @@ function appendFollowups(follows, ctxText){
   const label=document.createElement('div'); label.className='ff-label';
   const t=document.createElement('span'); t.textContent='相关追问';
   const acts=document.createElement('div'); acts.className='ff-acts';
-  const refresh=document.createElement('button'); refresh.className='ff-refresh'; refresh.textContent='↻ 刷新';
+  const refresh=document.createElement('button'); refresh.className='ff-refresh'; refresh.innerHTML=refreshIconSVG(); refresh.title='刷新推荐问题';
   const hide=document.createElement('button'); hide.className='ff-hide'; hide.textContent='收起';
   hide.onclick=()=>wrap.remove();
   refresh.onclick=()=>{
@@ -2659,10 +2663,10 @@ function renderQuickMenu(force){
 /* 渲染快捷菜单（刷新按钮固定在最前，sticky 保证横向滚动时始终可见） */
 function renderQuickList(box){
   if(!box) return;
-  box.innerHTML='<button class="chat-quick-refresh" onclick="refreshQuickMenu()">↻ 刷新</button>' +
+  box.innerHTML='<button class="chat-quick-refresh" onclick="refreshQuickMenu()" title="刷新推荐问题" aria-label="刷新推荐问题">'+refreshIconSVG()+'</button>' +
     QUICK_LIST.map((q,i)=>`<button class="chat-quick-item" onclick="sendQuick(${i})">${escapeHtml(q)}</button>`).join('');
 }
-/* 快捷菜单「↻ 刷新」：排除已展示 + 已展示分类降权 → 换题且轮换种类 */
+/* 快捷菜单「刷新图标」：排除已展示 + 已展示分类降权 → 换题且轮换种类 */
 function refreshQuickMenu(){
   const box=document.getElementById('chat-quick'); if(!box) return;
   const job = state.meta?.job || '目标岗位';
@@ -2819,7 +2823,7 @@ async function sendChat(){
     if(!follows.length) follows = genFollowups(reply, text);   // 全撞已问过 → 重新生成一轮
     follows = follows.slice(0,3);
   }
-  appendFollowups(follows, reply + ' ' + text);   // 传入当轮上下文，供「↻ 刷新」按同语境重挑
+  appendFollowups(follows, reply + ' ' + text);   // 传入当轮上下文，供「刷新图标」按同语境重挑
   chatHistory.push({role:'user', text, time: userTime});
   chatHistory.push({role:'ai', text: reply, time: aiTime, source: transport});
   /* 更新头部连接状态条（real=绿，mock=灰，mock-fallback=黄） */
