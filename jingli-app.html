@@ -2111,6 +2111,148 @@ Enter 发 · Shift+Enter 换行
 × 收起不丢历史  ·  ⌫ 长按 1 秒全重来  ·
 每条回复后挂 3 个追问，不想理就跳过`
 };
+/* ===================== 建议问题库（来源：建议问题.txt · 6 大类 65 题） =====================
+   作为「开场 3 条常用提问」与「每条回复后 3 条追问」的唯一来源，不再写死固定模板。
+   字段：c=分类 | q=问题（{job} 渲染时替换为目标岗位）| t=匹配关键词（空格分隔，用于当轮上下文打分）
+        j=适用岗位（数组，可选）| s=适用阶段（STAGES 索引，可选） */
+const SUGGEST_QS = [
+  /* 一、快速诊断·通用入门类 */
+  {c:'诊断入门', q:'帮我快速扫一遍简历，有什么明显硬伤？', t:'简历 硬伤 诊断 扫一遍 毛病 检查 问题'},
+  {c:'诊断入门', q:'我想投这个岗位，帮我看看匹配度有多少？', t:'匹配度 岗位 投递 差距 评估 适合'},
+  {c:'诊断入门', q:'帮我做一次完整的求职竞争力诊断', t:'诊断 竞争力 完整 全链路 整体 水平'},
+  {c:'诊断入门', q:'把这段经历改得更专业、更像大厂风格', t:'专业 大厂 风格 学生气 口语 职业 改写'},
+  {c:'诊断入门', q:'我这些经历，最适合投哪类岗位？', t:'岗位 方向 适合 投 哪类 职业 模糊 定位'},
+
+  /* 二、简历优化·精修去模板类 */
+  {c:'简历优化', q:'把这段项目描述改得再量化一点', t:'量化 数字 项目 描述 数据 冲击力 改写'},
+  {c:'简历优化', q:'这段经历太长了，帮我压缩成简历一行能放下的长度', t:'压缩 太长 精简 一行 长度 篇幅'},
+  {c:'简历优化', q:'改得更像大厂专业简历风格', t:'大厂 专业 风格 简历 学生气 术语'},
+  {c:'简历优化', q:'把这段经历改得更像我自己的语气，少一点模板感', t:'模板感 语气 自己 原文 个人 生硬 违和'},
+  {c:'简历优化', q:'简历写得太像AI生成的了，怎么改得更像真人写的？', t:'AI感 AI生成 模板 真人 真诚 识别 痕迹 去AI'},
+  {c:'简历优化', q:'我口语化写的经历，帮我润色但别改丢我原本的意思', t:'口语 润色 原意 散 保留 轻度'},
+  {c:'简历优化', q:'投中小公司，简历不用太高大上，帮我改成接地气的版本', t:'中小公司 接地气 务实 悬浮 落地 创业'},
+  {c:'简历优化', q:'简历写得像流水账，怎么改才能突出亮点？', t:'流水账 亮点 平铺 突出 结构化 记不住'},
+  {c:'简历优化', q:'没什么量化数据，怎么把经历写得有说服力？', t:'量化 数据 说服力 空 造假 挖掘'},
+  {c:'简历优化', q:'跨专业求职，简历怎么写才不会被秒筛？', t:'跨专业 不对口 秒筛 过滤 转行 跨岗'},
+  {c:'简历优化', q:'实习经历太少，怎么写满一页简历？', t:'实习 应届 太少 单薄 写满 空 经历少', s:0},
+  {c:'简历优化', q:'个人简介帮我再改一版，适合1分钟自我介绍', t:'个人简介 自我介绍 一分钟 压缩 口述'},
+  {c:'简历优化', q:'我刚补充了一段实习，帮我加到简历里并统一风格', t:'补充 新增 实习 加入 统一 风格 整合'},
+
+  /* 三、面试备战·全场景应答类 */
+  {c:'面试备战', q:'明天面试，帮我押5道高频必考题', t:'面试 押题 高频 必考 明天 准备 题目'},
+  {c:'面试备战', q:'转行面试，"为什么转这个方向"怎么答？', t:'转行 转方向 为什么 理由 面试 动机'},
+  {c:'面试备战', q:'项目经历讲不清楚，帮我梳成面试话术', t:'项目 讲不清 话术 逻辑 叙述 STAR 梳理'},
+  {c:'面试备战', q:'被问"你有什么缺点"怎么答不踩坑？', t:'缺点 踩坑 回答 安全 模板'},
+  {c:'面试备战', q:'初面、群面、终面分别要重点准备什么？', t:'初面 群面 终面 轮次 重点 准备'},
+  {c:'面试备战', q:'面试前最慌的问题，帮我提前把答案想清楚', t:'慌 焦虑 冷门 救场 心态 压力'},
+  {c:'面试备战', q:'明天就面试，现在最该背哪几句话？', t:'背 明天 临时 抱佛脚 金句 几句话'},
+  {c:'面试备战', q:'面试容易紧张忘词，帮我把答案做成关键词提示提纲', t:'紧张 忘词 提纲 关键词 提示 大脑空白'},
+  {c:'面试备战', q:'群面插不上话怎么办？帮我想几个自然插话的时机', t:'群面 插话 内向 透明人 时机 leader'},
+  {c:'面试备战', q:'面试官突然问住我了，怎么圆场不扣分？', t:'问住 圆场 不会 冷场 救场 扣分'},
+  {c:'面试备战', q:'再出两道目标岗位的压力面题目', t:'压力面 压力 难度 更高 题目'},
+  {c:'面试备战', q:'面试官让我反问问题，问什么比较加分？', t:'反问 提问 加分 面试官 避坑'},
+  {c:'面试备战', q:'谈薪的时候，我这个情况要多少合适？', t:'谈薪 薪资 报价 行情 offer 工资'},
+  {c:'面试备战', q:'终面前最后一遍提醒，有什么一定要注意的？', t:'终面 提醒 注意 最后 价值观 稳定性'},
+  {c:'面试备战', q:'面试完感觉不好，怎么发感谢信挽回？', t:'感谢信 挽回 跟进 面试完 补救'},
+
+  /* 四、能力匹配·深度评估类 */
+  {c:'能力匹配', q:'想转AI产品经理，我现在能力差多少？', t:'能力 差距 入行 补 模型 评分', j:['AI产品经理']},
+  {c:'能力匹配', q:'运营转数据分析师，哪些能力能复用？', t:'复用 迁移 转岗 技能 盘点', j:['数据分析师','运营']},
+  {c:'能力匹配', q:'我和大厂同岗位的要求差在哪？', t:'大厂 同岗位 要求 差距 够格 对比'},
+  {c:'能力匹配', q:'我求职的核心竞争力到底是什么？', t:'核心竞争力 差异化 优势 特色 同质化'},
+  {c:'能力匹配', q:'做用户研究员，我现在的经历够吗？', t:'用研 经历 定性 定量 研究方法 洞察', j:['用户研究员']},
+  {c:'能力匹配', q:'投了几十份没回音，问题真的在简历上吗？', t:'海投 没回音 投递 石沉大海 渠道 原因'},
+  {c:'能力匹配', q:'和其他应届生比，我的核心差异化优势是什么？', t:'应届生 差异化 优势 同质化 独有', s:0},
+  {c:'能力匹配', q:'我想冲中级岗，还差哪些核心能力？', t:'中级岗 冲 更高 层级 差距 进阶'},
+
+  /* 五、转型成长·落地规划类 */
+  {c:'转型成长', q:'还有1个月秋招，我该重点补什么？', t:'秋招 一个月 冲刺 重点 补 时间紧', s:0},
+  {c:'转型成长', q:'零基础转行，半年内怎么规划才能上岸？', t:'零基础 转行 半年 规划 上岸 路径'},
+  {c:'转型成长', q:'想提升岗位核心能力，有什么具体落地路径？', t:'提升 核心能力 路径 学什么 练 阶梯'},
+  {c:'转型成长', q:'入职前这段时间，做什么能快速跟上团队节奏？', t:'入职 团队 节奏 跟上 offer 准备', s:0},
+  {c:'转型成长', q:'工作2年想转岗，怎么规划不降级？', t:'转岗 降级 薪资 职级 跳槽 不降级'},
+  {c:'转型成长', q:'转型「AI产品经理」的第一步，从哪件小事开始做？', t:'转型 第一步 小事 启动 拆解 门槛', j:['AI产品经理']},
+  {c:'转型成长', q:'零基础想转运营，第一天上班前先搞懂什么？', t:'运营 零基础 第一天 入职 概念 露怯', j:['运营']},
+  {c:'转型成长', q:'30岁转AI产品还来得及吗？会不会太晚了？', t:'30岁 大龄 年龄 焦虑 来得及 晚', j:['AI产品经理']},
+  {c:'转型成长', q:'没技术背景，做AI产品会不会很吃力？', t:'技术背景 非技术 吃力 理工科 技术边界', j:['AI产品经理']},
+  {c:'转型成长', q:'想转行但不敢裸辞，业余时间怎么一步步准备？', t:'裸辞 业余 在职 准备 经济压力 时间'},
+  {c:'转型成长', q:'30天冲刺计划能不能拆成每周具体任务？', t:'30天 冲刺 每周 任务 拆解 执行'},
+  {c:'转型成长', q:'想学对应岗位的核心技能，有没有具体的课程和资料推荐？', t:'课程 资料 推荐 学习 资源 自学'},
+  {c:'转型成长', q:'没有真实项目，怎么练对应岗位的核心能力？', t:'真实项目 练手 自学 练习 虚拟项目'},
+  {c:'转型成长', q:'帮我制定一个简历投递的节奏和优先级计划', t:'投递 节奏 优先级 海投 计划 策略'},
+  {c:'转型成长', q:'说我某方面能力弱，有没有一周就能练手的小方法？', t:'能力弱 短板 一周 练手 快速 迷你'},
+  {c:'转型成长', q:'不会做竞品分析，有没有套进去就能用的框架？', t:'竞品分析 框架 模板 分析 方法'},
+
+  /* 六、报告调整·场景适配类 */
+  {c:'报告调整', q:'我刚加了一段实习，帮我重新算一下匹配度', t:'加实习 重新 匹配度 更新 补充 新经历'},
+  {c:'报告调整', q:'我补充了项目具体数据，帮我把简历全部更新一遍', t:'补充 数据 更新 全量 简历 量化'},
+  {c:'报告调整', q:'目标岗位换成用户研究员了，帮我重新生成一份报告', t:'换岗位 重新生成 报告 目标 重定向', j:['用户研究员']},
+  {c:'报告调整', q:'我现在工作2年了，帮我调成社招版的报告', t:'社招 工作2年 阶段 调整 跳槽 报告'},
+  {c:'报告调整', q:'这份报告，帮我挑3个最该先改的地方', t:'报告 挑 先改 优先级 最该 Top'},
+  {c:'报告调整', q:'我要投大厂，这份报告重点突出哪部分比较好？', t:'大厂 重点 突出 定向 优化 偏好'},
+  {c:'报告调整', q:'我是内向性格，面试话术帮我调成少说话但精准的版本', t:'内向 话少 精准 精简 性格 话术'},
+  {c:'报告调整', q:'我想海投，帮我出一个通用版的简历，什么岗位都能投', t:'海投 通用版 简历 适配 多岗位'}
+];
+/* 6 大分类（供跨分类挑题做多样性轮转） */
+const SUGGEST_CATS = ['诊断入门','简历优化','面试备战','能力匹配','转型成长','报告调整'];
+/* 沟通风格 → 开场时偏好的分类（同一风格下开场 3 条会从这些分类里优先出） */
+const STYLE_CATS = {
+  '通用平衡':  ['诊断入门','简历优化','面试备战'],
+  '逻辑严谨型':['能力匹配','报告调整','简历优化'],
+  '共情叙事型':['面试备战','简历优化','转型成长'],
+  '务实落地型':['简历优化','转型成长','面试备战'],
+  '灵活探索型':['诊断入门','能力匹配','转型成长']
+};
+function stageIndexOf(s){ const i = STAGES.indexOf(s); return i >= 0 ? i : null; }
+
+/* ===== 从问题库智能挑 3 条（全局 ASKED 去重 + 上下文 / 报告情况适配） =====
+   ctxText : 当轮上下文（用户提问 + AI 回复合并）；开场无上下文时传空串
+   opts    : { job, stageIdx, cats, n }  cats = 偏好分类（风格倾向）、n = 需要条数（默认 3）
+   打分    : 关键词命中 +3/词 · 岗位契合 +4 · 阶段契合 +3 · 分类偏好 +2
+   取法    : 按分类轮转 —— 先每类取 1 条（保证 n 条跨类不撞车），不足再按高分补 */
+function pickFromLibrary(ctxText, opts){
+  opts = opts || {};
+  const n = opts.n || 3;
+  const job = opts.job || '目标岗位';
+  const text = String(ctxText || '');
+  const prefer = Array.isArray(opts.cats) ? opts.cats : [];
+  const scored = [];
+  SUGGEST_QS.forEach((it, idx)=>{
+    const q = it.q.replace(/\{job\}/g, job);
+    if(ASKED.has(askedClean(q))) return;                 /* ① 已问过 → 直接排除，永不重复 */
+    let sc = 0;
+    String(it.t || '').split(/\s+/).filter(Boolean).forEach(t=>{
+      if(text.indexOf(t) >= 0) sc += 3;                  /* 当轮上下文关键词命中 */
+    });
+    /* 岗位专属题（如「想转AI产品经理」「做用户研究员经历够吗」）：契合则加权，
+       不契合则降权 —— 避免给非该目标岗位的用户推荐错方向的题目 */
+    if(Array.isArray(it.j) && it.j.length){
+      if(it.j.some(x => job === x)) sc += 4;
+      else sc -= 2;
+    }
+    if(it.s != null && opts.stageIdx != null && it.s === opts.stageIdx) sc += 3;
+    if(prefer.indexOf(it.c) >= 0) sc += 2;
+    scored.push({ q, cat: it.c, sc, idx });
+  });
+  if(!scored.length) return [];
+  /* 按分类归堆，堆内按分降序 */
+  const byCat = {};
+  scored.forEach(x=>{ (byCat[x.cat] = byCat[x.cat] || []).push(x); });
+  Object.keys(byCat).forEach(k=> byCat[k].sort((a,b)=> b.sc - a.sc || a.idx - b.idx));
+  /* 分类轮转顺序：该分类最高分越高越优先（当轮相关度最高的方向先出） */
+  const catOrder = Object.keys(byCat).sort((a,b)=> byCat[b][0].sc - byCat[a][0].sc);
+  const out = [];
+  let added = true;
+  while(out.length < n && added){
+    added = false;
+    for(const k of catOrder){
+      if(out.length >= n) break;
+      if(byCat[k].length){ out.push(byCat[k].shift()); added = true; }
+    }
+  }
+  return out.map(x=> x.q);
+}
+
 /* 开场白下方 3 条常用提问（按风格差异化；{job} 占位在渲染时替换为目标岗位） */
 const OPENER_QS = {
   '通用平衡':[
@@ -2149,9 +2291,19 @@ function renderOpener(bd){
   w.className='chat-opener';
   w.textContent=text;
   bd.appendChild(w);
-  /* 3 条常用提问（初始引导，点击直接发送） */
+  /* 3 条常用提问（初始引导，点击直接发送）
+     优先从建议问题库按「报告情况」挑：目标岗位 + 职业阶段 + 沟通风格倾向的分类；
+     库内可用不足 3 条时回落原 OPENER_QS 固定集（已问过全部命中时的兜底） */
   const job = state.meta?.job || '目标岗位';
-  const qs = (OPENER_QS[key] || OPENER_QS['通用平衡']).map(s=>s.replace(/\{job\}/g, job));
+  let qs = pickFromLibrary('', {
+    job,
+    stageIdx: stageIndexOf(state.meta?.stage),
+    cats: STYLE_CATS[key] || STYLE_CATS['通用平衡']
+  });
+  if(qs.length < 3){
+    const fallback = (OPENER_QS[key] || OPENER_QS['通用平衡']).map(s=>s.replace(/\{job\}/g, job));
+    fallback.forEach(s=>{ if(qs.length < 3 && !qs.includes(s) && !ASKED.has(askedClean(s))) qs.push(s); });
+  }
   const wrap=document.createElement('div');
   wrap.className='opener-qs';
   qs.forEach(q=>{
@@ -2196,8 +2348,13 @@ function genFollowups(reply, userQ){
   const job = state.meta?.job || '目标岗位';
   const r = reply || ''; const q = userQ || '';
   const text = r + ' ' + q;            // 合并当轮上下文做方向判定，不再是固定模板
+  /* ① 优先从建议问题库挑：按当轮「提问 + 回复」关键词命中 + 岗位/阶段契合打分，
+        并过 ASKED 全局去重池 —— 保证每条追问与当轮强相关且永不重复 */
+  const out = pickFromLibrary(text, { job, stageIdx: stageIndexOf(state.meta?.stage) });
+  if(out.length >= 3) return out;
+  /* ② 库内可用不足 3 条（多轮后大量已问过）→ 用原有按方向生成的候选补足 */
   const cands = [];
-  const push=(s)=>{ if(!ASKED.has(askedClean(s))) cands.push(s); };
+  const push=(s)=>{ if(!ASKED.has(askedClean(s)) && out.indexOf(s) < 0) cands.push(s); };
   if(/面试|回答|话术|STAR|追问|考官|模拟|缺点|自我介绍|为什么/.test(text)){
     push(`刚才这个面试问题，换成「${job}」的面试官还会怎么追问？给我参考答案`);
     push('把这份回答压缩成 60 秒面试口述版，保留最关键的数字');
@@ -2221,7 +2378,8 @@ function genFollowups(reply, userQ){
     push('刚才这个思路，套到我另一段经历上，会得出什么结论？');
     push('结合报告，给一个更具体的落地动作来回应我刚才的问题');
   }
-  const seen=new Set(); const out=[];
+  /* 合并：库内挑出的在前，按方向生成的候选补足到 3 条（seen 已含 out，天然不重复） */
+  const seen=new Set(out);
   for(const c of cands){ if(!seen.has(c)){ seen.add(c); out.push(c); } if(out.length>=3) break; }
   /* 极长会话兜底：若去重后不足 3 条，从原始候选补足（保证 UI 永远有 3 条可点） */
   if(out.length<3){
@@ -2330,20 +2488,36 @@ const QUICK_QUESTIONS=[
   '围绕目标岗位做能力补强计划',
   '简历整体还有哪些可优化点？'
 ];
-function renderQuickMenu(){
+let QUICK_LIST=[];              // 当前快捷菜单实际渲染的问题（来自问题库，随会话刷新）
+function renderQuickMenu(force){
   const box=document.getElementById('chat-quick'); if(!box) return;
-  if(box.dataset.ready) return;
-  box.innerHTML=QUICK_QUESTIONS.map((q,i)=>`<button class="chat-quick-item" onclick="sendQuick(${i})">${escapeHtml(q)}</button>`).join('');
+  if(box.dataset.ready && !force) return;
+  /* 优先从建议问题库挑 4 条（按目标岗位 + 职业阶段 + 风格倾向，过 ASKED 去重），
+     库内可用不足时用固定集兜底 —— 与开场 3 条 / 回复追问共用同一来源，口径一致 */
+  const job = state.meta?.job || '目标岗位';
+  const style = state.meta?.style || '通用平衡';
+  let list = pickFromLibrary('', {
+    job, n:4,
+    stageIdx: stageIndexOf(state.meta?.stage),
+    cats: STYLE_CATS[style] || STYLE_CATS['通用平衡']
+  });
+  if(list.length < 4){
+    QUICK_QUESTIONS.forEach(s=>{
+      if(list.length < 4 && list.indexOf(s) < 0 && !ASKED.has(askedClean(s))) list.push(s);
+    });
+  }
+  QUICK_LIST = list.length ? list : QUICK_QUESTIONS.slice();
+  box.innerHTML=QUICK_LIST.map((q,i)=>`<button class="chat-quick-item" onclick="sendQuick(${i})">${escapeHtml(q)}</button>`).join('');
   box.dataset.ready='1';
 }
 function onChatInput(){
   const inp=document.getElementById('chat-input');
   const box=document.getElementById('chat-quick');
   if(!inp||!box) return;
-  renderQuickMenu();
   const v=inp.value;
   /* 常用问题菜单：仅在输入以 / 开头时显出（隐藏标签，不显眼标出）；空输入不自动弹 */
   if(v.indexOf('/')===0){
+    renderQuickMenu(true);        // 每次唤出都按最新去重状态刷新，保证推荐不重复
     box.classList.add('show');
     box.style.display='flex';
   }else{
@@ -2352,7 +2526,8 @@ function onChatInput(){
   }
 }
 function sendQuick(i){
-  const q=QUICK_QUESTIONS[i];
+  const q=QUICK_LIST[i] || QUICK_QUESTIONS[i];
+  markAsked(q);                    // 记入去重池，后续开场/追问/快捷菜单不再推荐同一条
   const inp=document.getElementById('chat-input');
   if(inp){ inp.value=q; autoGrowChat(); }
   const box=document.getElementById('chat-quick'); if(box){ box.classList.remove('show'); box.style.display='none'; }
