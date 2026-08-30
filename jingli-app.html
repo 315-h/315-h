@@ -565,8 +565,12 @@
   /* 每条 AI 回复后挂的 3 个相关追问 */
   .chat-followups{align-self:stretch;background:var(--card-soft);border:1px solid var(--border-soft);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;}
   .ff-label{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--text-2);}
+  .ff-acts{display:flex;align-items:center;gap:12px;margin-left:auto;}
   .ff-hide{border:none;background:none;color:var(--text-2);font-size:11.5px;cursor:pointer;opacity:.7;padding:0;}
   .ff-hide:hover{color:var(--primary-press);opacity:1;}
+  .ff-refresh{border:none;background:none;color:var(--text-2);font-size:11.5px;cursor:pointer;opacity:.7;padding:0;display:inline-flex;align-items:center;gap:4px;}
+  .ff-refresh:hover{color:var(--primary-press);opacity:1;}
+  .ff-refresh:disabled{opacity:.35;cursor:default;}
   .ff-list{display:flex;flex-direction:column;gap:6px;}
   .ff-item{text-align:left;font-size:13px;line-height:1.5;padding:9px 13px;border-radius:10px;background:var(--card);border:1px solid var(--border);color:var(--text);cursor:pointer;transition:all .16s ease;}
   .ff-item:hover{border-color:var(--primary);color:var(--primary-press);background:rgba(242,169,135,.08);}
@@ -2195,6 +2199,33 @@ const SUGGEST_QS = [
 ];
 /* 6 大分类（供跨分类挑题做多样性轮转） */
 const SUGGEST_CATS = ['诊断入门','简历优化','面试备战','能力匹配','转型成长','报告调整'];
+/* ===== 分类权重：决定各类问题在推荐里的「比重」 =====
+   CAT_BASE（静态基线）：简历相关优先，其次职业、面试，其余两类初始均等为 0 ——
+     即「优先推荐简历相关，后来推荐职业、面试等；多种问题初始均等」。
+   CAT_DYN（动态累积）：每轮用户提问 + AI 回复后统计各分类关键词命中，该分类比重 +1，
+     推荐时按 ×2 放大计入 —— 用户越常聊的方向，后续推荐占比越高（视提问实时调整比重）。 */
+const CAT_BASE = {'诊断入门':0.8, '简历优化':3, '面试备战':1.2, '能力匹配':1.6, '转型成长':1.6, '报告调整':0.8};
+const CAT_DYN  = {'诊断入门':0, '简历优化':0, '面试备战':0, '能力匹配':0, '转型成长':0, '报告调整':0};
+const CAT_DYN_GAIN = 2;               // 动态权重的放大系数（越大，随提问调整的幅度越明显）
+function resetCatWeight(){ SUGGEST_CATS.forEach(c=>{ CAT_DYN[c] = 0; }); }
+/* 每轮对话后喂入「用户提问 + AI 回复」，累积各分类比重（每个分类每轮最多 +1，避免长文本刷爆权重） */
+function noteUserTurn(text){
+  const s = String(text || '');
+  if(!s) return;
+  SUGGEST_CATS.forEach(cat=>{
+    const hit = SUGGEST_QS.some(it => it.c === cat &&
+      String(it.t || '').split(/\s+/).filter(Boolean).some(t => s.indexOf(t) >= 0));
+    if(hit) CAT_DYN[cat] += 1;
+  });
+}
+/* 当前各类比重快照（基线 + 动态累积） */
+function catWeightOf(cat){ return (CAT_BASE[cat] || 0) + (CAT_DYN[cat] || 0) * CAT_DYN_GAIN; }
+/* 有效比重 = 分类比重 − 刷新降权（penalty 为 {分类: 已展示次数}）。
+   刷新时用它排序，已展示过多次的分类会被压到后面，从而轮换出不同种类的题。 */
+function catEffWeight(cat, penalty){
+  const p = (penalty && penalty[cat]) ? penalty[cat] * 2.5 : 0;
+  return catWeightOf(cat) - p;
+}
 /* 沟通风格 → 开场时偏好的分类（同一风格下开场 3 条会从这些分类里优先出） */
 const STYLE_CATS = {
   '通用平衡':  ['诊断入门','简历优化','面试备战'],
@@ -2207,8 +2238,13 @@ function stageIndexOf(s){ const i = STAGES.indexOf(s); return i >= 0 ? i : null;
 
 /* ===== 从问题库智能挑 3 条（全局 ASKED 去重 + 上下文 / 报告情况适配） =====
    ctxText : 当轮上下文（用户提问 + AI 回复合并）；开场无上下文时传空串
-   opts    : { job, stageIdx, cats, n }  cats = 偏好分类（风格倾向）、n = 需要条数（默认 3）
-   打分    : 关键词命中 +3/词 · 岗位契合 +4 · 阶段契合 +3 · 分类偏好 +2
+   opts    : { job, stageIdx, cats, n, exclude, catPenalty }
+             cats = 偏好分类（风格倾向）| n = 需要条数（默认 3）
+             exclude = 额外排除的问题集合（刷新时用，保证换出一批新题，不写入 ASKED）
+             catPenalty = {分类: 已展示次数}（刷新时用）—— 某分类展示过越多条，临时降权越狠，
+                          让连续刷新能轮换到不同种类，而不只是在同一类里换题
+   打分    : 关键词命中 +3/词 · 岗位契合 +4（不契合 -2）· 阶段契合 +3 · 风格分类偏好 +2
+             + 分类比重（静态基线 CAT_BASE：简历优先；动态 CAT_DYN：随提问累积 ×2）
    取法    : 按分类轮转 —— 先每类取 1 条（保证 n 条跨类不撞车），不足再按高分补 */
 function pickFromLibrary(ctxText, opts){
   opts = opts || {};
@@ -2216,10 +2252,12 @@ function pickFromLibrary(ctxText, opts){
   const job = opts.job || '目标岗位';
   const text = String(ctxText || '');
   const prefer = Array.isArray(opts.cats) ? opts.cats : [];
+  const exclude = opts.exclude || null;                  /* 刷新时临时排除（不影响全局去重池） */
   const scored = [];
   SUGGEST_QS.forEach((it, idx)=>{
     const q = it.q.replace(/\{job\}/g, job);
     if(ASKED.has(askedClean(q))) return;                 /* ① 已问过 → 直接排除，永不重复 */
+    if(exclude && exclude.has(askedClean(q))) return;    /* ② 本轮已展示过 → 刷新时跳过，保证换题 */
     let sc = 0;
     String(it.t || '').split(/\s+/).filter(Boolean).forEach(t=>{
       if(text.indexOf(t) >= 0) sc += 3;                  /* 当轮上下文关键词命中 */
@@ -2232,6 +2270,9 @@ function pickFromLibrary(ctxText, opts){
     }
     if(it.s != null && opts.stageIdx != null && it.s === opts.stageIdx) sc += 3;
     if(prefer.indexOf(it.c) >= 0) sc += 2;
+    sc += catWeightOf(it.c);          /* 分类比重：简历优先（基线）+ 随提问累积（动态） */
+    /* 刷新时的种类轮换：该分类本轮已展示过越多条，临时降权越狠（见 catEffWeight） */
+    sc += catEffWeight(it.c, opts.catPenalty) - catWeightOf(it.c);
     scored.push({ q, cat: it.c, sc, idx });
   });
   if(!scored.length) return [];
@@ -2239,18 +2280,43 @@ function pickFromLibrary(ctxText, opts){
   const byCat = {};
   scored.forEach(x=>{ (byCat[x.cat] = byCat[x.cat] || []).push(x); });
   Object.keys(byCat).forEach(k=> byCat[k].sort((a,b)=> b.sc - a.sc || a.idx - b.idx));
-  /* 分类轮转顺序：该分类最高分越高越优先（当轮相关度最高的方向先出） */
-  const catOrder = Object.keys(byCat).sort((a,b)=> byCat[b][0].sc - byCat[a][0].sc);
-  const out = [];
-  let added = true;
-  while(out.length < n && added){
-    added = false;
-    for(const k of catOrder){
-      if(out.length >= n) break;
-      if(byCat[k].length){ out.push(byCat[k].shift()); added = true; }
+  /* 分类出场顺序 = 分类比重降序（简历优先 → 职业 → 面试 → 其余），
+     只看 catWeightOf 而不看单题得分：避免个别题的岗位降权把整个分类拖到后面。
+     单题得分只决定「同一分类内推哪条」，分类间次序完全由比重决定。 */
+  /* 出场权重 = 有效比重 + 风格偏好加成：简历优先的大顺序由比重保证，
+     同一档里再让当前沟通风格偏好的分类靠前，兼顾「风格差异化」与「简历优先」。
+     加成取 1.2（小于简历 3.0 与职业 1.6 的 1.4 差值），保证简历在任何风格下都排第一。 */
+  const orderW = (c)=> catEffWeight(c, opts.catPenalty) + (prefer.indexOf(c) >= 0 ? 1.2 : 0);
+  const catOrder = Object.keys(byCat).sort((a,b)=> orderW(b) - orderW(a));
+  /* 名额分配：先每个分类 1 个（保证跨类、多种问题均等参与）；
+     某个分类比重显著领先（≥ 总比重 35%）时追加 1 个 —— 聊得越多的方向推荐越多；
+     仍有余量则按比重降序继续补，直到凑满 n 条。 */
+  const quota = {}; catOrder.forEach(c=>{ quota[c] = 0; });
+  let left = n;
+  for(const c of catOrder){ if(left <= 0) break; quota[c] = 1; left--; }
+  if(left > 0){
+    const total = catOrder.reduce((s,c)=> s + Math.max(catEffWeight(c, opts.catPenalty), 0), 0) || 1;
+    const top = catOrder[0];
+    if(Math.max(catEffWeight(top, opts.catPenalty), 0) / total >= 0.35 && byCat[top].length > 1){ quota[top]++; left--; }
+  }
+  while(left > 0){
+    let added = false;
+    for(const c of catOrder){
+      if(left <= 0) break;
+      if(byCat[c].length > quota[c]){ quota[c]++; left--; added = true; }
+    }
+    if(!added) break;
+  }
+  /* 取题：每个分类的 top1 先出（跨类多样性排前面），追加的名额排在其后 */
+  const first = [], rest = [];
+  for(const c of catOrder){
+    let cnt = 0;
+    while(byCat[c].length && cnt < quota[c]){
+      (cnt === 0 ? first : rest).push(byCat[c].shift());
+      cnt++;
     }
   }
-  return out.map(x=> x.q);
+  return first.concat(rest).slice(0, n).map(x=> x.q);
 }
 
 /* 开场白下方 3 条常用提问（按风格差异化；{job} 占位在渲染时替换为目标岗位） */
@@ -2316,22 +2382,52 @@ function renderOpener(bd){
 }
 
 /* ===== 每条 AI 回复后挂 3 个相关追问（点击即填入并发送） ===== */
-function appendFollowups(follows){
-  if(!Array.isArray(follows) || !follows.length) return;
-  const body=document.getElementById('chat-body'); if(!body) return;
-  const wrap=document.createElement('div');
-  wrap.className='chat-followups';
-  const label=document.createElement('div'); label.className='ff-label';
-  const t=document.createElement('span'); t.textContent='相关追问';
-  const hide=document.createElement('button'); hide.className='ff-hide'; hide.textContent='收起';
-  hide.onclick=()=>wrap.remove();
-  label.appendChild(t); label.appendChild(hide);
-  const list=document.createElement('div'); list.className='ff-list';
-  follows.forEach(q=>{
+/* 本轮已展示过的追问（刷新时累积排除，保证每次刷新都换出一批新题；新回复后重置） */
+let SHOWN_FOLLOWUPS = new Set();
+function renderFollowupList(list, qs){
+  if(!list) return;
+  list.innerHTML='';
+  qs.forEach(q=>{
     const b=document.createElement('button'); b.className='ff-item'; b.textContent=q;
     b.onclick=()=>{ markAsked(q); const inp=document.getElementById('chat-input'); if(inp){ inp.value=q; autoGrowChat(); } sendChat(); };
     list.appendChild(b);
   });
+}
+/* ===== 每条 AI 回复后挂 3 个相关追问（点击即填入并发送） =====
+   新增「↻ 刷新」：按当前最新的分类比重重挑 3 条，并排除本轮已展示过的 ——
+   既换题也换推荐种类，聊得多的方向比重已随提问上调，刷新结果会实时反映出来。 */
+function appendFollowups(follows, ctxText){
+  if(!Array.isArray(follows) || !follows.length) return;
+  const body=document.getElementById('chat-body'); if(!body) return;
+  const job = state.meta?.job || '目标岗位';
+  const stageIdx = stageIndexOf(state.meta?.stage);
+  SHOWN_FOLLOWUPS = new Set(follows.map(askedClean));   // 新一轮 → 重置已展示集合
+  const wrap=document.createElement('div');
+  wrap.className='chat-followups';
+  const label=document.createElement('div'); label.className='ff-label';
+  const t=document.createElement('span'); t.textContent='相关追问';
+  const acts=document.createElement('div'); acts.className='ff-acts';
+  const refresh=document.createElement('button'); refresh.className='ff-refresh'; refresh.textContent='↻ 刷新';
+  const hide=document.createElement('button'); hide.className='ff-hide'; hide.textContent='收起';
+  hide.onclick=()=>wrap.remove();
+  refresh.onclick=()=>{
+    /* 统计各分类本轮已展示过几条 → 交给 catPenalty 降权，
+       让连续刷新轮换出不同种类（不只在同类里换题），同时比重仍随提问动态调整 */
+    const catPenalty = {};
+    SHOWN_FOLLOWUPS.forEach(q=>{
+      const it = SUGGEST_QS.find(x => askedClean(x.q.replace(/\{job\}/g, job)) === q);
+      if(it) catPenalty[it.c] = (catPenalty[it.c] || 0) + 1;
+    });
+    const next = pickFromLibrary(ctxText, { job, stageIdx, n:3, exclude: SHOWN_FOLLOWUPS, catPenalty });
+    if(!next.length){ toast('暂时没有更多可推荐的新问题了','warn'); refresh.disabled=true; return; }
+    next.forEach(q=> SHOWN_FOLLOWUPS.add(askedClean(q)));   // 记入已展示，下次刷新继续换新
+    renderFollowupList(list, next);
+    body.scrollTop=body.scrollHeight;
+  };
+  acts.appendChild(refresh); acts.appendChild(hide);
+  label.appendChild(t); label.appendChild(acts);
+  const list=document.createElement('div'); list.className='ff-list';
+  renderFollowupList(list, follows);
   wrap.appendChild(label); wrap.appendChild(list);
   body.appendChild(wrap);
   body.scrollTop=body.scrollHeight;
@@ -2476,6 +2572,8 @@ function clearChat(){                // 用户主动清空对话历史：清 cha
   if(!confirm('清空当前全部对话历史？\n（仅清本地 UI 与记忆，不影响后端）')) return;
   chatHistory = [];
   ASKED.clear();                        // 清空会话 = 全新会话，去重池同步重置
+  resetCatWeight();                     // 分类动态比重同步归零，回到「简历优先、其余均等」的初始配比
+  SHOWN_FOLLOWUPS = new Set();          // 已展示追问集合清空
   const bd=document.getElementById('chat-body'); if(bd) bd.innerHTML='';
   renderOpener(bd);
   toast('已清空对话');
@@ -2636,14 +2734,16 @@ async function sendChat(){
   }
   const aiTime = nowTime();
   appendBubble('ai', reply, true, {time: aiTime, source: transport});
-  /* 每条 AI 回复后挂 3 个相关追问（后端返回优先，否则前端按当轮回复+提问动态兜底生成；均过 ASKED 去重） */
+  /* 每条 AI 回复后挂 3 个相关追问（后端返回优先，否则前端按当轮回复+提问动态兜底生成；均过 ASKED 去重）
+     先喂入当轮上下文累积各分类比重，再据此生成 —— 用户越常聊的方向，后续推荐占比越高 */
+  noteUserTurn(text + ' ' + reply);
   let follows = (r && Array.isArray(r.followups) && r.followups.length) ? r.followups.slice(0,3) : genFollowups(reply, text);
   if(Array.isArray(follows)){
     follows = follows.filter(f=>!ASKED.has(askedClean(f)));
     if(!follows.length) follows = genFollowups(reply, text);   // 全撞已问过 → 重新生成一轮
     follows = follows.slice(0,3);
   }
-  appendFollowups(follows);
+  appendFollowups(follows, reply + ' ' + text);   // 传入当轮上下文，供「↻ 刷新」按同语境重挑
   chatHistory.push({role:'user', text, time: userTime});
   chatHistory.push({role:'ai', text: reply, time: aiTime, source: transport});
   /* 更新头部连接状态条（real=绿，mock=灰，mock-fallback=黄） */
