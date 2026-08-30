@@ -505,6 +505,8 @@
   .chat-quick.show{display:flex;}
   .chat-quick-item{flex:0 0 auto;white-space:nowrap;font-size:12.5px;padding:7px 14px;border-radius:999px;background:var(--card-soft);border:1px solid var(--border);color:var(--text-2);cursor:pointer;transition:all .16s ease;}
   .chat-quick-item:hover{border-color:var(--primary);color:var(--primary-press);background:rgba(242,169,135,.10);}
+  .chat-quick-refresh{flex:0 0 auto;position:sticky;left:0;z-index:1;white-space:nowrap;font-size:12.5px;padding:7px 12px;border-radius:999px;background:var(--card-soft);border:1px dashed var(--border-soft);color:var(--text-2);cursor:pointer;}
+  .chat-quick-refresh:hover{border-color:var(--primary);color:var(--primary-press);background:rgba(242,169,135,.10);}
   /* 连接状态条：绿=真实模型/黄=已回落/灰=内置示例 —— 落第二行左起始 */
   .chat-conn{font-size:11.5px;line-height:1;padding:5px 10px;border-radius:999px;font-weight:600;white-space:nowrap;flex:0 1 auto;}
   .chat-conn.on  {background:rgba(110,193,160,.15);color:#2f7a55;border:1px solid rgba(110,193,160,.45);}
@@ -562,6 +564,7 @@
   .chat-opener{align-self:stretch;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;font-size:13px;line-height:1.7;color:var(--text-2);white-space:pre-wrap;word-break:break-word;}
   /* 开场白下方的 3 条常用提问（初始引导，复用 ff-item chip 样式） */
   .opener-qs{align-self:stretch;display:flex;flex-direction:column;gap:6px;}
+  .opener-qs-box{align-self:stretch;display:flex;flex-direction:column;gap:8px;margin-top:14px;}
   /* 每条 AI 回复后挂的 3 个相关追问 */
   .chat-followups{align-self:stretch;background:var(--card-soft);border:1px solid var(--border-soft);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;}
   .ff-label{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--text-2);}
@@ -2347,6 +2350,8 @@ const OPENER_QS = {
     '如果只剩 30 分钟准备面试，先做哪三件事？'
   ]
 };
+/* 开场提问已展示集合（刷新时排除，重置对话时清空） */
+let OPENER_SHOWN = new Set();
 /* 按当前报告话术语气渲染开场白卡片（自动兜底到「通用平衡」），下方挂 3 条可点常用提问 */
 function renderOpener(bd){
   if(!bd) return;
@@ -2370,15 +2375,53 @@ function renderOpener(bd){
     const fallback = (OPENER_QS[key] || OPENER_QS['通用平衡']).map(s=>s.replace(/\{job\}/g, job));
     fallback.forEach(s=>{ if(qs.length < 3 && !qs.includes(s) && !ASKED.has(askedClean(s))) qs.push(s); });
   }
+  const box=document.createElement('div');
+  box.className='opener-qs-box';
+  /* 标签行 + 「↻ 刷新」：与追问区一致，刷新会换题并轮换推荐种类 */
+  const label=document.createElement('div'); label.className='ff-label';
+  const lt=document.createElement('span'); lt.textContent='可以这样问';
+  const acts=document.createElement('div'); acts.className='ff-acts';
+  const refresh=document.createElement('button'); refresh.className='ff-refresh'; refresh.textContent='↻ 刷新';
+  refresh.onclick=()=>{ refreshOpenerQs(wrap, refresh, key); };
+  acts.appendChild(refresh);
+  label.appendChild(lt); label.appendChild(acts);
   const wrap=document.createElement('div');
   wrap.className='opener-qs';
+  renderOpenerQs(wrap, qs);
+  OPENER_SHOWN = new Set(qs.map(askedClean));   // 新一轮开场 → 重置已展示集合
+  box.appendChild(label); box.appendChild(wrap);
+  bd.appendChild(box);
+}
+/* 渲染开场提问列表（供初次渲染与刷新复用） */
+function renderOpenerQs(wrap, qs){
+  if(!wrap) return;
+  wrap.innerHTML='';
   qs.forEach(q=>{
     const b=document.createElement('button');
     b.className='ff-item'; b.textContent=q;
     b.onclick=()=>{ markAsked(q); const inp=document.getElementById('chat-input'); if(inp){ inp.value=q; autoGrowChat(); } sendChat(); };
     wrap.appendChild(b);
   });
-  bd.appendChild(wrap);
+}
+/* 开场提问「↻ 刷新」：排除已展示 + 已展示分类降权 → 换题且轮换种类，比重仍随提问动态调整 */
+function refreshOpenerQs(wrap, btn, styleKey){
+  if(!wrap) return;
+  const job = state.meta?.job || '目标岗位';
+  const key = styleKey || '通用平衡';
+  const catPenalty = {};
+  OPENER_SHOWN.forEach(q=>{
+    const it = SUGGEST_QS.find(x => askedClean(x.q.replace(/\{job\}/g, job)) === q);
+    if(it) catPenalty[it.c] = (catPenalty[it.c] || 0) + 1;
+  });
+  const next = pickFromLibrary('', {
+    job, n:3,
+    stageIdx: stageIndexOf(state.meta?.stage),
+    cats: STYLE_CATS[key] || STYLE_CATS['通用平衡'],
+    exclude: OPENER_SHOWN, catPenalty
+  });
+  if(!next.length){ if(btn) btn.disabled=true; toast('暂时没有更多可推荐的新问题了','warn'); return; }
+  next.forEach(q=> OPENER_SHOWN.add(askedClean(q)));
+  renderOpenerQs(wrap, next);
 }
 
 /* ===== 每条 AI 回复后挂 3 个相关追问（点击即填入并发送） ===== */
@@ -2574,6 +2617,8 @@ function clearChat(){                // 用户主动清空对话历史：清 cha
   ASKED.clear();                        // 清空会话 = 全新会话，去重池同步重置
   resetCatWeight();                     // 分类动态比重同步归零，回到「简历优先、其余均等」的初始配比
   SHOWN_FOLLOWUPS = new Set();          // 已展示追问集合清空
+  OPENER_SHOWN = new Set();             // 已展示开场提问集合清空
+  QUICK_SHOWN = new Set();              // 已展示快捷菜单集合清空
   const bd=document.getElementById('chat-body'); if(bd) bd.innerHTML='';
   renderOpener(bd);
   toast('已清空对话');
@@ -2587,6 +2632,7 @@ const QUICK_QUESTIONS=[
   '简历整体还有哪些可优化点？'
 ];
 let QUICK_LIST=[];              // 当前快捷菜单实际渲染的问题（来自问题库，随会话刷新）
+let QUICK_SHOWN=new Set();      // 快捷菜单已展示过的问题（刷新时排除，清空对话时重置）
 function renderQuickMenu(force){
   const box=document.getElementById('chat-quick'); if(!box) return;
   if(box.dataset.ready && !force) return;
@@ -2597,7 +2643,8 @@ function renderQuickMenu(force){
   let list = pickFromLibrary('', {
     job, n:4,
     stageIdx: stageIndexOf(state.meta?.stage),
-    cats: STYLE_CATS[style] || STYLE_CATS['通用平衡']
+    cats: STYLE_CATS[style] || STYLE_CATS['通用平衡'],
+    exclude: QUICK_SHOWN          // 重生成时避开已展示过的，保证每次唤出都是新题
   });
   if(list.length < 4){
     QUICK_QUESTIONS.forEach(s=>{
@@ -2605,8 +2652,36 @@ function renderQuickMenu(force){
     });
   }
   QUICK_LIST = list.length ? list : QUICK_QUESTIONS.slice();
-  box.innerHTML=QUICK_LIST.map((q,i)=>`<button class="chat-quick-item" onclick="sendQuick(${i})">${escapeHtml(q)}</button>`).join('');
+  QUICK_LIST.forEach(q=> QUICK_SHOWN.add(askedClean(q)));   // 记入已展示，刷新时排除
+  renderQuickList(box);
   box.dataset.ready='1';
+}
+/* 渲染快捷菜单（刷新按钮固定在最前，sticky 保证横向滚动时始终可见） */
+function renderQuickList(box){
+  if(!box) return;
+  box.innerHTML='<button class="chat-quick-refresh" onclick="refreshQuickMenu()">↻ 刷新</button>' +
+    QUICK_LIST.map((q,i)=>`<button class="chat-quick-item" onclick="sendQuick(${i})">${escapeHtml(q)}</button>`).join('');
+}
+/* 快捷菜单「↻ 刷新」：排除已展示 + 已展示分类降权 → 换题且轮换种类 */
+function refreshQuickMenu(){
+  const box=document.getElementById('chat-quick'); if(!box) return;
+  const job = state.meta?.job || '目标岗位';
+  const style = state.meta?.style || '通用平衡';
+  const catPenalty = {};
+  QUICK_SHOWN.forEach(q=>{
+    const it = SUGGEST_QS.find(x => askedClean(x.q.replace(/\{job\}/g, job)) === q);
+    if(it) catPenalty[it.c] = (catPenalty[it.c] || 0) + 1;
+  });
+  const next = pickFromLibrary('', {
+    job, n:4,
+    stageIdx: stageIndexOf(state.meta?.stage),
+    cats: STYLE_CATS[style] || STYLE_CATS['通用平衡'],
+    exclude: QUICK_SHOWN, catPenalty
+  });
+  if(!next.length){ toast('暂时没有更多可推荐的新问题了','warn'); return; }
+  next.forEach(q=> QUICK_SHOWN.add(askedClean(q)));
+  QUICK_LIST = next;
+  renderQuickList(box);
 }
 function onChatInput(){
   const inp=document.getElementById('chat-input');
@@ -2615,7 +2690,8 @@ function onChatInput(){
   const v=inp.value;
   /* 常用问题菜单：仅在输入以 / 开头时显出（隐藏标签，不显眼标出）；空输入不自动弹 */
   if(v.indexOf('/')===0){
-    renderQuickMenu(true);        // 每次唤出都按最新去重状态刷新，保证推荐不重复
+    /* 仅初次渲染或菜单里已有题被问过时才重新生成，避免每次唤出都无谓换一批 */
+    renderQuickMenu(QUICK_LIST.some(q=>ASKED.has(askedClean(q))));
     box.classList.add('show');
     box.style.display='flex';
   }else{
