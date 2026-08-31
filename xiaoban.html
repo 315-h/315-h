@@ -31,6 +31,7 @@
     --on-c:#ffffff;       /* 主按钮文字 */
     --shadow:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
     --shadow-lg:0 8px 28px rgba(15,23,42,.10);
+    --shadow-sm:0 1px 2px rgba(15,23,42,.05),0 2px 8px rgba(15,23,42,.06);
     --radius:8px;          /* 全程小圆角（个性） */
     --radius-sm:6px;
     --radius-btn:8px;      /* 方正按钮（个性） */
@@ -58,6 +59,7 @@
     --on-c:#fff;
     --shadow:0 1px 2px rgba(0,0,0,.40), 0 4px 16px rgba(0,0,0,.45);
     --shadow-lg:0 8px 28px rgba(0,0,0,.55);
+    --shadow-sm:0 1px 2px rgba(0,0,0,.35),0 2px 8px rgba(0,0,0,.40);
   }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
   html{scroll-behavior:smooth;}
@@ -79,7 +81,7 @@
 
   /* ===== 顶栏（三页统一） ===== */
   .topbar{position:sticky;top:0;z-index:60;backdrop-filter:saturate(140%) blur(10px);
-    background:color-mix(in srgb,var(--bg) 82%,transparent);border-bottom:1px solid var(--divider);
+    background:var(--bg);border-bottom:1px solid var(--divider);
     transition:background .4s ease,border-color .4s ease;}
   .topbar .row{max-width:var(--maxw);margin:0 auto;padding:13px 24px;display:flex;align-items:center;justify-content:space-between;}
   .back{text-decoration:none;color:var(--text);font-size:14px;font-weight:600;display:inline-flex;align-items:center;gap:7px;
@@ -374,7 +376,152 @@
     .sec-head h2{font-size:24px;}
     .loop{width:220px;height:220px;}
   }
-  </style>
+  
+  :root{--hover-soft:rgba(30,58,138,.07);}
+  /* ===== 侧边固定面板 Dock（可收缩 · 四页通用）===== */
+  .dock{
+    --d-card:var(--card,#FFFFFF);
+    --d-text:var(--text,#33302E);
+    --d-text2:var(--text-2,#6B635C);
+    --d-divider:var(--divider,#E5E2DE);
+    --d-shadow:var(--shadow,0 2px 6px rgba(51,48,46,.06),0 16px 40px rgba(51,48,46,.10));
+    --d-radius:var(--radius,16px);
+    --d-accent:var(--primary-strong,var(--c,#C9664A));
+    --d-hover:var(--hover-soft,rgba(245,169,138,.14));
+    position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:70;
+    width:var(--dock-w,230px);max-height:calc(100vh - 44px);display:none;flex-direction:column;
+    background:var(--d-card);border:1px solid var(--d-divider);border-radius:var(--d-radius);
+    box-shadow:var(--d-shadow);overflow:hidden;
+    transition:width .3s cubic-bezier(.4,0,.2,1),background .4s ease,border-color .4s ease;}
+  @supports ((backdrop-filter:blur(4px)) or (-webkit-backdrop-filter:blur(4px))){
+    @supports (background:color-mix(in srgb,red 50%,transparent)){
+      .dock{background:color-mix(in srgb,var(--d-card) 90%,transparent);
+        backdrop-filter:blur(16px) saturate(150%);-webkit-backdrop-filter:blur(16px) saturate(150%);}
+    }
+  }
+  .dock-hd{display:flex;align-items:center;justify-content:space-between;gap:8px;
+    padding:11px 12px 10px 16px;border-bottom:1px solid var(--d-divider);transition:border-color .4s ease;}
+  .dock-title{font-size:11px;font-weight:800;letter-spacing:1.2px;color:var(--d-text2);}
+  .dock-btn{border:none;background:none;color:var(--d-text2);cursor:pointer;padding:5px;border-radius:8px;
+    display:inline-flex;align-items:center;justify-content:center;transition:background .18s ease,color .18s ease;}
+  .dock-btn:hover{background:var(--d-hover);color:var(--d-accent);}
+  .dock-btn svg{width:16px;height:16px;display:block;transition:transform .28s cubic-bezier(.4,0,.2,1);}
+  .dock.collapsed .dock-btn svg{transform:rotate(180deg);}
+  .dock-inner{overflow-y:auto;overscroll-behavior:contain;padding:15px 15px 13px;
+    display:flex;flex-direction:column;gap:13px;}
+  .dock-inner::-webkit-scrollbar{width:5px;}
+  .dock-inner::-webkit-scrollbar-thumb{background:var(--d-divider);border-radius:3px;}
+  .dock-h{font-size:10.5px;font-weight:800;letter-spacing:1.3px;color:var(--d-text2);margin-bottom:8px;}
+  .dock-sep{height:1px;background:var(--d-divider);transition:background .4s ease;}
+  .pdt{display:flex;flex-direction:column;gap:3px;margin-bottom:11px;}
+  .pdt .n{font-size:16px;font-weight:800;letter-spacing:.4px;color:var(--d-text);}
+  .pdt .s{font-size:11.5px;color:var(--d-text2);line-height:1.55;}
+  .kv-rows{display:flex;flex-direction:column;gap:5px;margin-bottom:2px;}
+  .kv-row{display:flex;gap:8px;font-size:12px;line-height:1.6;}
+  .kv-row .k{flex:0 0 28px;color:var(--d-text2);font-weight:600;}
+  .kv-row .v{flex:1 1 auto;color:var(--d-text);}
+  .kpi{display:flex;flex-direction:column;gap:6px;}
+  .kpi-row{display:flex;align-items:baseline;gap:8px;}
+  .kpi-row .n{font-size:14.5px;font-weight:800;color:var(--d-accent);font-variant-numeric:tabular-nums;
+    flex:0 0 auto;min-width:54px;}
+  .kpi-row .l{font-size:11.5px;color:var(--d-text2);line-height:1.5;}
+  .dl-group{display:flex;flex-direction:column;gap:2px;}
+  .dl-item{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--d-text);font-size:12.5px;
+    padding:6px 7px;margin:0 -7px;border-radius:8px;transition:background .18s ease;}
+  .dl-item:hover{background:var(--d-hover);}
+  .dl-item .fn{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .dl-item .fs{flex:0 0 auto;font-size:10.5px;color:var(--d-text2);font-variant-numeric:tabular-nums;}
+  .ft{flex:0 0 auto;font-size:9.5px;font-weight:800;letter-spacing:.3px;padding:2px 5px;border-radius:4px;line-height:1.45;}
+  .ft-pdf{background:rgba(201,102,74,.13);color:#C9664A;}
+  .ft-xlsx{background:rgba(15,118,110,.12);color:#0F766E;}
+  .ft-zip{background:rgba(109,40,217,.12);color:#6D28D9;}
+  .ft-web{background:rgba(30,58,138,.11);color:#1E3A8A;}
+  body.dark .ft-pdf{background:rgba(232,160,138,.15);color:#E8A08A;}
+  body.dark .ft-xlsx{background:rgba(94,234,212,.14);color:#5EEAD4;}
+  body.dark .ft-zip{background:rgba(196,181,253,.14);color:#C4B5FD;}
+  body.dark .ft-web{background:rgba(147,180,248,.14);color:#93B4F8;}
+  .dock-foot{border-top:1px solid var(--d-divider);padding:8px 14px;display:flex;justify-content:center;
+    transition:border-color .4s ease;}
+  .dock-top{border:none;background:none;color:var(--d-text2);font-size:11.5px;font-weight:600;cursor:pointer;
+    display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:8px;
+    transition:color .18s ease,background .18s ease;}
+  .dock-top:hover{color:var(--d-accent);background:var(--d-hover);}
+  /* 收起态：竖排图标栏（图标 + tooltip + 数量徽章 → 功能一目了然） */
+  .dock-rail{display:none;flex-direction:column;align-items:center;gap:6px;padding:12px 0 14px;}
+  .rail-btn{position:relative;width:40px;height:40px;border:none;background:none;color:var(--d-text2);
+    cursor:pointer;border-radius:11px;display:flex;align-items:center;justify-content:center;
+    transition:background .18s ease,color .18s ease;}
+  .rail-btn:hover{background:var(--d-hover);color:var(--d-accent);}
+  .rail-btn svg{width:18px;height:18px;}
+  .rail-badge{position:absolute;top:2px;right:2px;min-width:15px;height:15px;padding:0 3px;border-radius:8px;
+    background:var(--d-accent);color:#fff;font-size:9px;font-weight:800;line-height:15px;text-align:center;}
+  .dock.collapsed{width:58px;}
+  .dock.collapsed .dock-hd{padding:9px;justify-content:center;}
+  .dock.collapsed .dock-title{display:none;}
+  .dock.collapsed .dock-inner,.dock.collapsed .dock-foot{display:none;}
+  .dock.collapsed .dock-rail{display:flex;}
+  /* 窄屏 FAB */
+  .dock-fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:72;
+    width:54px;height:54px;border-radius:50%;border:1px solid var(--primary-strong,var(--c,#C9664A));
+    background:var(--primary-strong,var(--c,#C9664A));color:#fff;display:none;align-items:center;
+    justify-content:center;cursor:pointer;box-shadow:0 6px 20px rgba(51,48,46,.20);
+    transition:transform .18s ease,background .4s ease;}
+  .dock-fab:hover{transform:translateY(-3px);}
+  .dock-fab svg{width:22px;height:22px;}
+  .dock-scrim{position:fixed;inset:0;z-index:69;background:rgba(51,48,46,.32);opacity:0;visibility:hidden;
+    transition:opacity .25s ease,visibility .25s ease;display:none;}
+  .dock-scrim.show{opacity:1;visibility:visible;}
+  /* 卡片交互：affordance 与实际行为一致 */
+  .ovc,.fcard,.vcard,.mcard,.scard,.ovcell,.hl .item,.mcol,.rcard,.datac{
+    transition:background .2s ease,box-shadow .22s ease,border-color .22s ease,transform .22s ease;}
+  /* ① 不可点（纯展示）：去掉「像按钮」的浮起，只留极轻微底色，指针保持默认 */
+  .ovc:hover,.fcard:hover,.vcard:hover,.mcard:hover,.scard:hover,.ovcell:hover,
+  .hl .item:hover,.mcol:hover,.rcard:hover,.datac:hover{
+    transform:none!important;background:var(--hover-soft);cursor:default;}
+  /* ② 可点（整卡跳转）：明确指针 + 焦点环，保留浮起 */
+  .is-clickable{cursor:pointer;}
+  .is-clickable:focus-visible{outline:2px solid var(--primary-strong,var(--c,#C9664A));outline-offset:3px;}
+  /* 响应式：窄屏抽屉 / 宽屏常显并让位（收起后自动回中） */
+  @media (max-width:1279px){
+    .dock-fab{display:flex;}
+    .dock-scrim{display:block;}
+    .dock{display:flex;right:16px;left:auto;top:auto;bottom:calc(84px + env(safe-area-inset-bottom,0px));
+      width:min(302px,calc(100vw - 32px));max-height:min(72vh,600px);
+      opacity:0;visibility:hidden;transform:translateY(10px) scale(.985);
+      transition:opacity .24s ease,transform .24s cubic-bezier(.4,0,.2,1),visibility .24s ease,
+                 background .4s ease,border-color .4s ease;}
+    .dock.open{opacity:1;visibility:visible;transform:none;}
+    .dock.collapsed{width:min(302px,calc(100vw - 32px));}
+    .dock.collapsed .dock-inner,.dock.collapsed .dock-foot{display:flex;}
+    .dock.collapsed .dock-rail{display:none;}
+    .dock.collapsed .dock-title{display:block;}
+    .dock.collapsed .dock-hd{padding:11px 12px 10px 16px;justify-content:space-between;}
+    .dock.collapsed .dock-btn svg{transform:none;}
+  }
+  @media (min-width:1280px){
+    :root{--maxw:1000px;--dock-w:230px;--shift:-124px;}
+    .dock{display:flex;}
+    .wrap,.topbar .row{transform:translateX(var(--shift));
+      transition:transform .3s cubic-bezier(.4,0,.2,1);}
+    .foot{padding-right:248px;}
+    body.dock-collapsed{--shift:-38px;--maxw:1080px;}
+    body.dock-collapsed .foot{padding-right:76px;}
+  }
+  @media (min-width:1440px){
+    :root{--maxw:1080px;--dock-w:260px;--shift:-139px;}
+    body.dock-collapsed{--shift:-38px;--maxw:1080px;}
+    body.dock-collapsed .foot{padding-right:76px;}
+  }
+  @media print{
+    .dock,.dock-fab,.dock-scrim{display:none!important;}
+    .wrap,.topbar .row{transform:none!important;}
+    .foot{padding-right:0!important;}
+  }
+  /* 顶栏毛玻璃降级：老浏览器回落实色，避免背景全透明导致文字压在正文上 */
+  @supports (background:color-mix(in srgb,red 50%,transparent)){
+    .topbar{background:var(--bg);}
+  }
+</style>
   <script src="qa_data.js"></script>
   <script src="xiaoban_docs.js"></script>
 </head>
@@ -1625,6 +1772,146 @@
     });
     setCozeMode(COZE.mode);
   }
+</script>
+
+
+  <!-- 侧边固定面板：产品核心信息 + 资料下载（可收缩；宽屏常显，窄屏由右下角按钮唤出） -->
+  <aside class="dock" id="dock" aria-label="产品核心信息与资料下载">
+    <div class="dock-hd">
+      <span class="dock-title">核心信息</span>
+      <button class="dock-btn" id="dockCollapse" type="button" aria-controls="dockInner" aria-expanded="true" title="收起侧栏" aria-label="收起侧栏"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+    </div>
+    <div class="dock-rail" id="dockRail">
+      <button class="rail-btn" type="button" data-expand title="核心信息与关键指标" aria-label="展开并查看核心信息"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+      <button class="rail-btn" type="button" data-expand title="资料下载（5 份）" aria-label="展开并查看资料下载，共 5 份"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span class="rail-badge">5</span></button>
+      <button class="rail-btn" type="button" id="dockTopRail" title="回到顶部" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg></button>
+    </div>
+    <div class="dock-inner" id="dockInner">
+      <section>
+        <div class="dock-h">核心信息</div>
+        <div class="pdt">
+          <div class="n">智效办公</div>
+          <div class="s">企业行政制度问答 Agent（小办）</div>
+        </div>
+        <div class="kv-rows">
+          <div class="kv-row"><div class="k">定位</div><div class="v">企业行政制度问答 · 替代 HR 高频重复答疑</div></div>
+          <div class="kv-row"><div class="k">角色</div><div class="v">项目负责人 &amp; AI 产品设计师</div></div>
+          <div class="kv-row"><div class="k">周期</div><div class="v">2026.07 – 2026.08</div></div>
+          <div class="kv-row"><div class="k">载体</div><div class="v">飞书入口 · Coze + 自托管双版本</div></div>
+        </div>
+      </section>
+      <div class="dock-sep"></div>
+      <section>
+        <div class="dock-h">关键指标</div>
+        <div class="kpi">
+          <div class="kpi-row"><div class="n">91.5%</div><div class="l">118 条分层实测整体准确率</div></div>
+          <div class="kpi-row"><div class="n">0</div><div class="l">重度幻觉率</div></div>
+          <div class="kpi-row"><div class="n">60%</div><div class="l">HR 答疑减负（每周 10h+）</div></div>
+        </div>
+      </section>
+      <div class="dock-sep"></div>
+      <section>
+        <div class="dock-h">资料下载</div>
+        <div class="dl-group">
+          <a class="dl-item" href="PRD-XiaoBan.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">产品需求文档</span><span class="fs">1.7 MB</span></a>
+          <a class="dl-item" href="XiaoBan-TestSet.xlsx" download><span class="ft ft-xlsx">XLSX</span><span class="fn">分层评测测试集</span><span class="fs">32 KB</span></a>
+          <a class="dl-item" href="XiaoBan-WorkflowSrc.zip" download><span class="ft ft-zip">ZIP</span><span class="fn">工作流源码</span><span class="fs">122 KB</span></a>
+          <a class="dl-item" href="XiaoBan-Retro.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">项目复盘</span><span class="fs">21 KB</span></a>
+          <a class="dl-item" href="#demo"><span class="ft ft-web">WEB</span><span class="fn">在线问答 Demo</span><span class="fs">↗</span></a>
+        </div>
+      </section>
+    </div>
+    <div class="dock-foot">
+      <button class="dock-top" type="button" id="dockTop">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+        回到顶部
+      </button>
+    </div>
+  </aside>
+
+  <button class="dock-fab" id="dockFab" type="button" aria-controls="dock" aria-expanded="false" aria-label="打开资料与联系方式"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg></button>
+  <div class="dock-scrim" id="dockScrim"></div>
+
+<script>
+  /* ===== 侧边面板：可收缩（宽屏）+ 抽屉（窄屏）===== */
+  (function(){
+    var dock=document.getElementById('dock'); if(!dock) return;
+    var fab=document.getElementById('dockFab'), scrim=document.getElementById('dockScrim'),
+        collapse=document.getElementById('dockCollapse'), rail=document.getElementById('dockRail'),
+        topBtn=document.getElementById('dockTop'), topRail=document.getElementById('dockTopRail');
+    var isNarrow=function(){ return window.matchMedia('(max-width:1279px)').matches; };
+    function syncBtn(){
+      if(!collapse) return;
+      var c=dock.classList.contains('collapsed');
+      collapse.setAttribute('aria-expanded',c?'false':'true');
+      var t=c?'展开侧栏':'收起侧栏';
+      collapse.title=t; collapse.setAttribute('aria-label',t);
+    }
+    function setCollapsed(c){
+      dock.classList.toggle('collapsed',c);
+      document.body.classList.toggle('dock-collapsed',c);
+      syncBtn();
+      try{ localStorage.setItem('hx-dock',c?'collapsed':'expanded'); }catch(e){}
+    }
+    if(collapse) collapse.addEventListener('click',function(){
+      setCollapsed(!dock.classList.contains('collapsed'));
+    });
+    /* 收起态图标：点任意一个即展开 */
+    if(rail) Array.prototype.forEach.call(rail.querySelectorAll('[data-expand]'),function(b){
+      b.addEventListener('click',function(){ setCollapsed(false); });
+    });
+    var saved=null; try{ saved=localStorage.getItem('hx-dock'); }catch(e){}
+    if(saved==='collapsed'&&!isNarrow()) setCollapsed(true); else syncBtn();
+
+    function setOpen(open){
+      dock.classList.toggle('open',open);
+      if(scrim) scrim.classList.toggle('show',open&&isNarrow());
+      if(fab){
+        fab.setAttribute('aria-expanded',open?'true':'false');
+        fab.setAttribute('aria-label',open?'关闭资料与联系方式':'打开资料与联系方式');
+      }
+    }
+    if(fab) fab.addEventListener('click',function(){ setOpen(!dock.classList.contains('open')); });
+    if(scrim) scrim.addEventListener('click',function(){ setOpen(false); });
+    document.addEventListener('keydown',function(e){
+      if(e.key==='Escape'&&dock.classList.contains('open')){ setOpen(false); if(fab) fab.focus(); }
+    });
+    dock.addEventListener('click',function(e){
+      if(isNarrow()&&e.target.closest('a')) setOpen(false);
+    });
+    window.addEventListener('resize',function(){ if(!isNarrow()) setOpen(false); });
+    function toTop(){ window.scrollTo({top:0,behavior:'smooth'}); }
+    if(topBtn) topBtn.addEventListener('click',toTop);
+    if(topRail) topRail.addEventListener('click',toTop);
+  })();
+
+  /* ===== 卡片交互：整卡可点的卡片赋予真实可点性（内部链接不冒泡）===== */
+  (function(){
+    function makeClickable(card,link,label){
+      if(!card||!link) return;
+      card.classList.add('is-clickable');
+      card.setAttribute('role','link');
+      card.setAttribute('tabindex','0');
+      if(label) card.setAttribute('aria-label',label);
+      card.addEventListener('click',function(e){
+        if(e.target.closest('a')) return;   /* 点内部子链接时不触发整卡跳转 */
+        link.click();
+      });
+      card.addEventListener('keydown',function(e){
+        if(e.key==='Enter'||e.key===' '){ e.preventDefault(); link.click(); }
+      });
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('.afile'),function(card){
+      var link=card.querySelector('.ft a');
+      var h=card.querySelector('h4')||card.querySelector('h3');
+      makeClickable(card,link,h?('预览 '+h.textContent.trim()):'预览资料');
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('.pcard'),function(card){
+      var link=card.querySelector('.go.detail');
+      var h=card.querySelector('h3');
+      makeClickable(card,link,h?('查看 '+h.textContent.trim().split(' ')[0]):'查看详情');
+    });
+  })();
 </script>
 
 </body>

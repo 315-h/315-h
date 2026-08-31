@@ -283,6 +283,37 @@
     opacity:0;visibility:hidden;transition:opacity .25s ease,visibility .25s ease;display:none;}
   .dock-scrim.show{opacity:1;visibility:visible;}
 
+  /* 可收缩：头部标题栏 + 收起态竖排图标栏 */
+  .dock-hd{display:flex;align-items:center;justify-content:space-between;gap:8px;
+    padding:11px 12px 10px 16px;border-bottom:1px solid var(--divider);transition:border-color .4s ease;}
+  .dock-title{font-size:11px;font-weight:800;letter-spacing:1.2px;color:var(--text-2);}
+  .dock-btn{border:none;background:none;color:var(--text-2);cursor:pointer;padding:5px;border-radius:8px;
+    display:inline-flex;align-items:center;justify-content:center;transition:background .18s ease,color .18s ease;}
+  .dock-btn:hover{background:var(--hover-soft);color:var(--primary-strong);}
+  .dock-btn svg{width:16px;height:16px;display:block;transition:transform .28s cubic-bezier(.4,0,.2,1);}
+  .dock.collapsed .dock-btn svg{transform:rotate(180deg);}
+  .dock-rail{display:none;flex-direction:column;align-items:center;gap:6px;padding:12px 0 14px;}
+  .rail-btn{position:relative;width:40px;height:40px;border:none;background:none;color:var(--text-2);
+    cursor:pointer;border-radius:11px;display:flex;align-items:center;justify-content:center;
+    transition:background .18s ease,color .18s ease;}
+  .rail-btn:hover{background:var(--hover-soft);color:var(--primary-strong);}
+  .rail-btn svg{width:18px;height:18px;}
+  .rail-badge{position:absolute;top:2px;right:2px;min-width:15px;height:15px;padding:0 3px;border-radius:8px;
+    background:var(--primary-strong);color:#fff;font-size:9px;font-weight:800;line-height:15px;text-align:center;}
+  .dock.collapsed{width:58px;}
+  .dock.collapsed .dock-hd{padding:9px;justify-content:center;}
+  .dock.collapsed .dock-title{display:none;}
+  .dock.collapsed .dock-inner,.dock.collapsed .dock-foot{display:none;}
+  .dock.collapsed .dock-rail{display:flex;}
+
+  /* 卡片交互：affordance 与实际行为一致 */
+  .mcol{transition:background .2s ease,box-shadow .22s ease,border-color .22s ease,transform .22s ease;}
+  /* ① 不可点（纯信息展示）：去掉「像按钮」的浮起，只留极轻微底色，指针保持默认 */
+  .mcol:hover{transform:none!important;background:var(--hover-soft);cursor:default;}
+  /* ② 可点（整卡跳转）：明确指针 + 焦点环，保留浮起 */
+  .is-clickable{cursor:pointer;}
+  .is-clickable:focus-visible{outline:2px solid var(--primary-strong);outline-offset:3px;}
+
   /* 锚点当前位置反馈 */
   .anchors a.active{background:var(--primary-strong);color:#fff;border-color:var(--primary-strong);}
   .foot .cmail a{color:var(--text);text-decoration:none;border-bottom:1px solid transparent;
@@ -321,15 +352,20 @@
   @media (min-width:1280px){
     :root{--maxw:960px;--dock-w:230px;--shift:-124px;}
     .dock{display:flex;}
-    .wrap,.topbar .row{transform:translateX(var(--shift));}
+    .wrap,.topbar .row{transform:translateX(var(--shift));
+      transition:transform .3s cubic-bezier(.4,0,.2,1);}
     .foot{padding-right:248px;}
+    /* 收起侧栏后：正文自动回中并恢复原始宽度，不再为空出的位置留白 */
+    body.dock-collapsed{--shift:-38px;--maxw:1120px;}
+    body.dock-collapsed .foot{padding-right:76px;}
     .cards{gap:18px;}
     .pcard{padding:28px 22px 24px;}
   }
   /* 宽屏 ≥1440：恢复原始正文宽度，留足侧栏空间（侧栏 260 + 右边距 18） */
   @media (min-width:1440px){
     :root{--maxw:1120px;--dock-w:260px;--shift:-139px;}
-    .foot{padding-right:278px;}
+    body.dock-collapsed{--shift:-38px;--maxw:1120px;}
+    body.dock-collapsed .foot{padding-right:76px;}
     .cards{gap:24px;}
     .pcard{padding:32px 26px 28px;}
   }
@@ -510,7 +546,25 @@
 
   <!-- 侧边固定面板：核心信息 + 资料下载（宽屏常显，窄屏由右下角按钮唤出） -->
   <aside class="dock" id="dock" aria-label="核心信息与资料下载">
-    <div class="dock-inner">
+    <div class="dock-hd">
+      <span class="dock-title">核心信息</span>
+      <button class="dock-btn" id="dockCollapse" type="button" aria-controls="dockInner" aria-expanded="true" title="收起侧栏" aria-label="收起侧栏">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </button>
+    </div>
+    <div class="dock-rail" id="dockRail">
+      <button class="rail-btn" type="button" data-expand title="核心信息与联系方式" aria-label="展开并查看核心信息与联系方式">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </button>
+      <button class="rail-btn" type="button" data-expand title="资料下载（10 项）" aria-label="展开并查看资料下载，共 10 项">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        <span class="rail-badge">10</span>
+      </button>
+      <button class="rail-btn" type="button" id="dockTopRail" title="回到顶部" aria-label="回到顶部">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+      </button>
+    </div>
+    <div class="dock-inner" id="dockInner">
 
       <section>
         <div class="dock-h">核心信息</div>
@@ -605,9 +659,36 @@
     var dock=document.getElementById('dock'),
         fab=document.getElementById('dockFab'),
         scrim=document.getElementById('dockScrim'),
-        topBtn=document.getElementById('dockTop');
+        topBtn=document.getElementById('dockTop'),
+        topRail=document.getElementById('dockTopRail'),
+        collapse=document.getElementById('dockCollapse'),
+        rail=document.getElementById('dockRail');
     if(!dock||!fab) return;
     var isNarrow=function(){ return window.matchMedia('(max-width:1279px)').matches; };
+
+    /* 宽屏可收缩：状态记忆到 localStorage；收起后正文自动回中（由 body.dock-collapsed 控制位移） */
+    function syncBtn(){
+      if(!collapse) return;
+      var c=dock.classList.contains('collapsed');
+      collapse.setAttribute('aria-expanded',c?'false':'true');
+      var t=c?'展开侧栏':'收起侧栏';
+      collapse.title=t; collapse.setAttribute('aria-label',t);
+    }
+    function setCollapsed(c){
+      dock.classList.toggle('collapsed',c);
+      document.body.classList.toggle('dock-collapsed',c);
+      syncBtn();
+      try{ localStorage.setItem('hx-dock',c?'collapsed':'expanded'); }catch(e){}
+    }
+    if(collapse) collapse.addEventListener('click',function(){
+      setCollapsed(!dock.classList.contains('collapsed'));
+    });
+    if(rail) Array.prototype.forEach.call(rail.querySelectorAll('[data-expand]'),function(b){
+      b.addEventListener('click',function(){ setCollapsed(false); });
+    });
+    var saved=null; try{ saved=localStorage.getItem('hx-dock'); }catch(e){}
+    if(saved==='collapsed'&&!isNarrow()) setCollapsed(true); else syncBtn();
+
     function setOpen(open){
       dock.classList.toggle('open',open);
       if(scrim) scrim.classList.toggle('show',open&&isNarrow());
@@ -625,8 +706,31 @@
     });
     /* 视口变宽时抽屉态复位，交回常显模式 */
     window.addEventListener('resize',function(){ if(!isNarrow()) setOpen(false); });
-    if(topBtn) topBtn.addEventListener('click',function(){
-      window.scrollTo({top:0,behavior:'smooth'});
+    function toTop(){ window.scrollTo({top:0,behavior:'smooth'}); }
+    if(topBtn) topBtn.addEventListener('click',toTop);
+    if(topRail) topRail.addEventListener('click',toTop);
+  })();
+
+  // 卡片交互：整卡可点的卡片赋予真实可点性（点内部子链接时不触发整卡跳转）
+  (function(){
+    function makeClickable(card,link,label){
+      if(!card||!link) return;
+      card.classList.add('is-clickable');
+      card.setAttribute('role','link');
+      card.setAttribute('tabindex','0');
+      if(label) card.setAttribute('aria-label',label);
+      card.addEventListener('click',function(e){
+        if(e.target.closest('a')) return;   /* 点「打开网站」等子链接时只走子链接 */
+        link.click();
+      });
+      card.addEventListener('keydown',function(e){
+        if(e.key==='Enter'||e.key===' '){ e.preventDefault(); link.click(); }
+      });
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('.pcard'),function(card){
+      var link=card.querySelector('.go.detail');
+      var h=card.querySelector('h3');
+      makeClickable(card,link,h?('查看 '+h.textContent.trim().split(' ')[0]+' 详情'):'查看详情');
     });
   })();
 
