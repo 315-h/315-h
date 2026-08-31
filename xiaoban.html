@@ -477,7 +477,7 @@
   /* ① 不可点（纯展示）：去掉「像按钮」的浮起，只留极轻微底色，指针保持默认 */
   .ovc:hover,.fcard:hover,.vcard:hover,.mcard:hover,.scard:hover,.ovcell:hover,
   .hl .item:hover,.mcol:hover,.rcard:hover,.datac:hover{
-    transform:none!important;background:var(--hover-soft);cursor:default;}
+    transform:none!important;background:transparent;cursor:default;}
   /* ② 可点（整卡跳转）：明确指针 + 焦点环，保留浮起 */
   .is-clickable{cursor:pointer;}
   .is-clickable:focus-visible{outline:2px solid var(--primary-strong,var(--c,#C9664A));outline-offset:3px;}
@@ -572,7 +572,7 @@
         </div>
       </div>
       <div class="hero-note reveal">
-        <span><b>我的角色：</b>项目负责人 &amp; AI 产品设计师（2026.07–2026.08）</span>
+        <span><b>我的角色：</b>独立主导（2026.07–2026.08）</span>
         <span><b>负责：</b>制度 QA 梳理 · 63 条标准库 · 118 条分层评测 · RAG 检索链路 · 迭代修复</span>
         <span><b>数据口径：</b>首屏「问答准确率 97%」为内部回归口径；118 条分层实测整体 91.5%（L1 100% / L2 93.1%），详见「07 / 质量评测」</span>
       </div>
@@ -588,7 +588,7 @@
       <div class="ovgrid reveal">
         <div class="ovcell"><div class="t">产品定位</div><div class="d">企业行政制度问答 Agent，替代 HR 高频重复答疑，可快速复制迁移到多业务场景。</div></div>
         <div class="ovcell"><div class="t">核心价值</div><div class="d">统一口径 + 7×24 响应 + 知识沉淀，让 HR 从重复咨询中解放出来。</div></div>
-        <div class="ovcell"><div class="t">我的角色</div><div class="d">项目负责人 &amp; AI 产品设计师，从 0 到 1 完成定义、实现与迭代。</div></div>
+        <div class="ovcell"><div class="t">我的角色</div><div class="d">独立主导，从 0 到 1 完成定义、实现与迭代。</div></div>
         <div class="ovcell"><div class="t">项目周期</div><div class="d">2026.07 – 2026.08 · Coze 落地 + 自托管后端双版本。</div></div>
       </div>
     </section>
@@ -1079,7 +1079,7 @@
           <div class="meta">
             <h4>全场景测试集</h4>
             <p>118 用例 / 12 维度 / 3 优先级</p>
-            <div class="ft"><span>v1.5 · 32 KB</span><a href="XiaoBan-TestSet.xlsx" target="_blank" rel="noopener">预览 →</a></div>
+            <div class="ft"><span>v1.5 · 194 KB</span><a href="XiaoBan-TestSet.pdf" target="_blank" rel="noopener">预览 →</a></div>
           </div>
         </div>
         <div class="afile reveal">
@@ -1795,7 +1795,7 @@
         </div>
         <div class="kv-rows">
           <div class="kv-row"><div class="k">定位</div><div class="v">企业行政制度问答 · 替代 HR 高频重复答疑</div></div>
-          <div class="kv-row"><div class="k">角色</div><div class="v">项目负责人 &amp; AI 产品设计师</div></div>
+          <div class="kv-row"><div class="k">角色</div><div class="v">独立主导</div></div>
           <div class="kv-row"><div class="k">周期</div><div class="v">2026.07 – 2026.08</div></div>
           <div class="kv-row"><div class="k">载体</div><div class="v">飞书入口 · Coze + 自托管双版本</div></div>
         </div>
@@ -1814,7 +1814,7 @@
         <div class="dock-h">资料下载</div>
         <div class="dl-group">
           <a class="dl-item" href="PRD-XiaoBan.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">产品需求文档</span><span class="fs">1.7 MB</span></a>
-          <a class="dl-item" href="XiaoBan-TestSet.xlsx" download><span class="ft ft-xlsx">XLSX</span><span class="fn">分层评测测试集</span><span class="fs">32 KB</span></a>
+          <a class="dl-item" href="XiaoBan-TestSet.pdf" download><span class="ft ft-xlsx">PDF</span><span class="fn">分层评测测试集</span><span class="fs">194 KB</span></a>
           <a class="dl-item" href="XiaoBan-WorkflowSrc.zip" download><span class="ft ft-zip">ZIP</span><span class="fn">工作流源码</span><span class="fs">122 KB</span></a>
           <a class="dl-item" href="XiaoBan-Retro.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">项目复盘</span><span class="fs">21 KB</span></a>
           <a class="dl-item" href="#demo"><span class="ft ft-web">WEB</span><span class="fn">在线问答 Demo</span><span class="fs">↗</span></a>

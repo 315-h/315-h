@@ -401,7 +401,7 @@
   /* ① 不可点（纯展示）：去掉「像按钮」的浮起，只留极轻微底色，指针保持默认 */
   .ovc:hover,.fcard:hover,.vcard:hover,.mcard:hover,.scard:hover,.ovcell:hover,
   .hl .item:hover,.mcol:hover,.rcard:hover,.datac:hover{
-    transform:none!important;background:var(--hover-soft);cursor:default;}
+    transform:none!important;background:transparent;cursor:default;}
   /* ② 可点（整卡跳转）：明确指针 + 焦点环，保留浮起 */
   .is-clickable{cursor:pointer;}
   .is-clickable:focus-visible{outline:2px solid var(--primary-strong,var(--c,#C9664A));outline-offset:3px;}

@@ -160,6 +160,12 @@
   .pcard.c2:hover .icon{filter:drop-shadow(0 6px 14px color-mix(in srgb,var(--c-huanze) 45%,transparent));}
   .pcard.c3:hover .icon{filter:drop-shadow(0 6px 14px color-mix(in srgb,var(--c-xiaoban) 40%,transparent));}
   .pcard h3{font-size:19px;font-weight:800;line-height:1.4;}
+  .pcard-kpis{font-size:11.5px;font-weight:700;letter-spacing:.3px;margin:2px 0 -6px;
+    display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+  .pcard.c1 .pcard-kpis{color:var(--c-jingli);}
+  .pcard.c2 .pcard-kpis{color:var(--c-huanze);}
+  .pcard.c3 .pcard-kpis{color:var(--c-xiaoban);}
+  .pcard-kpis .kdot{display:inline-block;width:3px;height:3px;border-radius:50%;background:currentColor;opacity:.4;}
   .pcard h3 .role{color:var(--text-2);font-weight:600;font-size:14px;}
   .pcard .desc{color:var(--text-2);font-size:13.5px;line-height:1.85;margin:14px 0 20px;min-height:82px;}
   .pcard .tag{margin-top:auto;align-self:flex-start;font-size:11.5px;font-weight:700;letter-spacing:.5px;
@@ -167,6 +173,13 @@
   .pcard.c1 .tag{background:var(--c-jingli);}
   .pcard.c2 .tag{background:var(--c-huanze);}
   .pcard.c3 .tag{background:var(--c-xiaoban);}
+  /* 卡片下角色/周期小字：项目色点 + 关键事实 */
+  .pcard .pmeta{font-size:11.5px;color:var(--text-2);margin-top:8px;letter-spacing:.2px;
+    display:flex;align-items:center;gap:6px;}
+  .pcard .pmeta::before{content:"";width:5px;height:5px;border-radius:50%;flex:0 0 auto;}
+  .pcard.c1 .pmeta::before{background:var(--c-jingli);}
+  .pcard.c2 .pmeta::before{background:var(--c-huanze);}
+  .pcard.c3 .pmeta::before{background:var(--c-xiaoban);}
   .pcard .actions{margin-top:18px;display:flex;gap:16px;flex-wrap:wrap;align-items:center;}
   .pcard .go{font-size:13.5px;font-weight:700;display:inline-flex;align-items:center;gap:6px;text-decoration:none;}
   .pcard.c1 .go{color:var(--c-jingli);} .pcard.c2 .go{color:var(--c-huanze);} .pcard.c3 .go{color:var(--c-xiaoban);}
@@ -309,7 +322,7 @@
   /* 卡片交互：affordance 与实际行为一致 */
   .mcol{transition:background .2s ease,box-shadow .22s ease,border-color .22s ease,transform .22s ease;}
   /* ① 不可点（纯信息展示）：去掉「像按钮」的浮起，只留极轻微底色，指针保持默认 */
-  .mcol:hover{transform:none!important;background:var(--hover-soft);cursor:default;}
+  .mcol:hover{transform:none!important;background:transparent;cursor:default;}
   /* ② 可点（整卡跳转）：明确指针 + 焦点环，保留浮起 */
   .is-clickable{cursor:pointer;}
   .is-clickable:focus-visible{outline:2px solid var(--primary-strong);outline-offset:3px;}
@@ -445,8 +458,10 @@
             <path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9 13l3 3 6-6"/>
           </svg>
           <h3>经历翻译官 <span class="role">· AI求职工具</span></h3>
+          <div class="pcard-kpis">85%+ 匹配<span class="kdot"></span>6 大模块<span class="kdot"></span>11 类知识库</div>
           <p class="desc">把经历翻译成专业语言。经历拆解、简历优化、面试陪练，温和陪伴、不贩卖焦虑。</p>
           <span class="tag">C端工具 / RAG / 人文向</span>
+          <div class="pmeta">AI 产品设计师（0→1 定义与交互）· 2026</div>
           <div class="actions">
             <a class="go detail" href="jingli.html">查看详情 <span class="arr">→</span></a>
             <a class="go" href="jingli-app.html" target="_blank" rel="noopener">打开网站 <span class="arr">↗</span></a>
@@ -462,8 +477,10 @@
             <ellipse cx="12" cy="12" rx="11" ry="4.5" transform="rotate(28 12 12)"/>
           </svg>
           <h3>缓择星球 <span class="role">· AI决策助手</span></h3>
+          <div class="pcard-kpis">7 大场景<span class="kdot"></span>4 Agent 架构<span class="kdot"></span>6 核心埋点</div>
           <p class="desc">理性拆解，减少后悔。多智能体结构化权衡，把纠结慢慢讲清楚，温柔陪你做选择。</p>
           <span class="tag">C端工具 / 多Agent / 情绪向</span>
+          <div class="pmeta">AI 产品设计师（0→1）· 2026</div>
           <div class="actions">
             <a class="go detail" href="huanze.html">查看详情 <span class="arr">→</span></a>
             <a class="go" href="huanzexingqiu-web/index.html" target="_blank" rel="noopener">网页版 <span class="arr">↗</span></a>
@@ -479,8 +496,10 @@
             <rect x="3" y="9" width="6" height="6" rx="1.5"/><rect x="15" y="9" width="6" height="6" rx="1.5"/><path d="M9 12h6"/>
           </svg>
           <h3>小办 <span class="role">· 企业办事助手</span></h3>
+          <div class="pcard-kpis">91.5% 准确<span class="kdot"></span>118 例测试<span class="kdot"></span>0 重度幻觉</div>
           <p class="desc">7×24 小时自助答疑。企业 RAG 知识库 + Agent 工作流，把重复办事咨询流程化、自动化。</p>
           <span class="tag">B端工具 / RAG问答 / 效率向</span>
+          <div class="pmeta">独立主导 · 2026.07–2026.08</div>
           <div class="actions">
             <a class="go detail" href="xiaoban.html">查看详情 <span class="arr">→</span></a>
             <a class="go" href="xiaoban.html#demo">立即体验 <span class="arr">→</span></a>
@@ -602,7 +621,7 @@
         <div class="dl-group g-huanze">
           <div class="dl-gh"><i class="dot"></i>缓择星球</div>
           <a class="dl-item" href="PRD-HuanZe.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">产品需求文档</span><span class="fs">2.5 MB</span></a>
-          <a class="dl-item" href="HuanZe-TestSet.xlsx" download><span class="ft ft-xlsx">XLSX</span><span class="fn">评测测试集</span><span class="fs">18 KB</span></a>
+          <a class="dl-item" href="HuanZe-TestSet.pdf" download><span class="ft ft-xlsx">PDF</span><span class="fn">评测测试集</span><span class="fs">263 KB</span></a>
           <a class="dl-item" href="HuanZe-Review.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">项目复盘</span><span class="fs">13 KB</span></a>
           <a class="dl-item" href="huanzexingqiu-web/index.html" target="_blank" rel="noopener"><span class="ft ft-web">WEB</span><span class="fn">网页版体验</span><span class="fs">↗</span></a>
         </div>
@@ -610,7 +629,7 @@
         <div class="dl-group g-xiaoban">
           <div class="dl-gh"><i class="dot"></i>小办</div>
           <a class="dl-item" href="PRD-XiaoBan.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">产品需求文档</span><span class="fs">1.7 MB</span></a>
-          <a class="dl-item" href="XiaoBan-TestSet.xlsx" download><span class="ft ft-xlsx">XLSX</span><span class="fn">评测测试集</span><span class="fs">32 KB</span></a>
+          <a class="dl-item" href="XiaoBan-TestSet.pdf" download><span class="ft ft-xlsx">PDF</span><span class="fn">评测测试集</span><span class="fs">194 KB</span></a>
           <a class="dl-item" href="XiaoBan-Retro.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">项目复盘</span><span class="fs">21 KB</span></a>
           <a class="dl-item" href="XiaoBan-WorkflowSrc.zip" download><span class="ft ft-zip">ZIP</span><span class="fn">工作流源码</span><span class="fs">122 KB</span></a>
         </div>

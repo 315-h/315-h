@@ -263,6 +263,11 @@
     box-shadow:var(--shadow-sm);min-height:140px;transition:opacity .3s ease;}
   .panel .pt{font-size:17px;font-weight:800;margin-bottom:8px;color:var(--c);}
   .panel .pd{font-size:14px;color:var(--text-2);line-height:1.95;}
+  .d-headline{font-size:14px;color:var(--text);font-weight:600;margin-bottom:12px;line-height:1.75;}
+  .d-grid{display:flex;flex-direction:column;gap:7px;}
+  .d-row{display:grid;grid-template-columns:46px 1fr;gap:10px;align-items:baseline;font-size:12.5px;line-height:1.75;}
+  .d-row .dk{color:var(--text-2);font-weight:700;letter-spacing:.5px;font-size:11.5px;}
+  .d-row .dv{color:var(--text);}
 
   /* ===== (7) 迭代对比 ===== */
   .cmp{display:flex;flex-direction:column;gap:22px;max-width:940px;margin:0 auto;}
@@ -459,7 +464,7 @@
   /* ① 不可点（纯展示）：去掉「像按钮」的浮起，只留极轻微底色，指针保持默认 */
   .ovc:hover,.fcard:hover,.vcard:hover,.mcard:hover,.scard:hover,.ovcell:hover,
   .hl .item:hover,.mcol:hover,.rcard:hover,.datac:hover{
-    transform:none!important;background:var(--hover-soft);cursor:default;}
+    transform:none!important;background:transparent;cursor:default;}
   /* ② 可点（整卡跳转）：明确指针 + 焦点环，保留浮起 */
   .is-clickable{cursor:pointer;}
   .is-clickable:focus-visible{outline:2px solid var(--primary-strong,var(--c,#C9664A));outline-offset:3px;}
@@ -528,7 +533,7 @@
         <div class="phone">
           <span class="notch"></span>
           <div class="scr">
-            <img src="shots/hz-mp-home.jpg" alt="缓择星球小程序首页">
+            <img src="shots/hz-mp-home.png" alt="缓择星球小程序首页">
           </div>
         </div>
         <h1>缓择星球</h1>
@@ -710,7 +715,7 @@
         </div>
         <div class="panel" id="scenePanel">
           <div class="pt" id="sceneTitle">租房</div>
-          <div class="pd" id="sceneDesc">从通勤、预算到合租边界，把「租哪儿」拆成可比较的维度，避免被中介话术带着走。</div>
+          <div class="pd" id="sceneDesc"><div class="d-headline">从通勤、预算到合租边界，把「租哪儿」拆成可比较的维度，避免被中介话术带着走。</div><div class="d-grid"><div class="d-row"><span class="dk">维度</span><span class="dv">通勤时长 · 月租预算 · 户型朝向 · 隔音条件 · 楼层 · 合同条款</span></div><div class="d-row"><span class="dk">启发</span><span class="dv">你最在意的 1 个不可妥协项是什么？</span></div><div class="d-row"><span class="dk">踩坑</span><span class="dv">二房东无授权 · 合同模糊条款 · 口头承诺无书面 · 押金克扣风险</span></div><div class="d-row"><span class="dk">适配</span><span class="dv">极致通勤党 · 安静独居党 · 性价比合租党 · 短租过渡党</span></div></div></div>
         </div>
       </div>
     </section>
@@ -725,13 +730,13 @@
       <div class="sgroup">
         <div class="sgt reveal"><b>微信小程序端</b><span>7 个核心页面</span></div>
         <div class="sgrid">
-          <figure class="reveal"><img src="shots/hz-mp-home.jpg" alt="小程序首页"><figcaption>首页 · 场景入口</figcaption></figure>
-          <figure class="reveal"><img src="shots/hz-mp-chat.jpg" alt="小程序聊天"><figcaption>决策对话 · 需求采集</figcaption></figure>
-          <figure class="reveal"><img src="shots/hz-mp-toolbox.jpg" alt="小程序抉择工具箱"><figcaption>抉择工具箱</figcaption></figure>
-          <figure class="reveal"><img src="shots/hz-mp-compare.jpg" alt="小程序对比表格"><figcaption>权衡官 · 中立对比</figcaption></figure>
-          <figure class="reveal"><img src="shots/hz-mp-bottom.jpg" alt="小程序底线"><figcaption>我的底线 · 代价预演</figcaption></figure>
-          <figure class="reveal"><img src="shots/hz-mp-history.jpg" alt="小程序历史"><figcaption>历史决策</figcaption></figure>
-          <figure class="reveal"><img src="shots/hz-mp-mine.jpg" alt="小程序我的"><figcaption>我的 · 偏好设置</figcaption></figure>
+          <figure class="reveal"><img src="shots/hz-mp-home.png" alt="小程序首页"><figcaption>首页 · 场景入口</figcaption></figure>
+          <figure class="reveal"><img src="shots/hz-mp-chat.png" alt="小程序聊天"><figcaption>决策对话 · 需求采集</figcaption></figure>
+          <figure class="reveal"><img src="shots/hz-mp-toolbox.png" alt="小程序抉择工具箱"><figcaption>抉择工具箱</figcaption></figure>
+          <figure class="reveal"><img src="shots/hz-mp-compare.png" alt="小程序对比表格"><figcaption>权衡官 · 中立对比</figcaption></figure>
+          <figure class="reveal"><img src="shots/hz-mp-bottom.png" alt="小程序底线"><figcaption>我的底线 · 代价预演</figcaption></figure>
+          <figure class="reveal"><img src="shots/hz-mp-history.png" alt="小程序历史"><figcaption>历史决策</figcaption></figure>
+          <figure class="reveal"><img src="shots/hz-mp-mine.png" alt="小程序我的"><figcaption>我的 · 偏好设置</figcaption></figure>
         </div>
       </div>
       <div class="sgroup">
@@ -824,7 +829,7 @@
           <div class="meta">
             <h4>全场景测试集</h4>
             <p>分层用例 / 真实场景覆盖</p>
-            <div class="ft"><span>v1.5 · 18 KB</span><a href="HuanZe-TestSet.xlsx" target="_blank" rel="noopener">预览 →</a></div>
+            <div class="ft"><span>v1.5 · 263 KB</span><a href="HuanZe-TestSet.pdf" target="_blank" rel="noopener">预览 →</a></div>
           </div>
         </div>
         <div class="afile reveal">
@@ -853,7 +858,7 @@
         <div class="datac reveal"><div class="n">&lt;5%</div><div class="l">交互负面率</div></div>
         <div class="datac reveal"><div class="n">&gt;70%</div><div class="l">纠偏触发率</div></div>
       </div>
-      <div class="res-note reveal">* 指标口径：6 项核心埋点（决策完成率 / 交互负面率 / 纠偏触发率等）；交互负面率 &lt;5% 与纠偏触发率 &gt;70% 基于 V1.5 分层测试集（HuanZe-TestSet.xlsx）回归 + 线上埋点抽样；测试覆盖度 90% 为用例覆盖比例。</div>
+      <div class="res-note reveal">* 指标口径：6 项核心埋点（决策完成率 / 交互负面率 / 纠偏触发率等）；交互负面率 &lt;5% 与纠偏触发率 &gt;70% 基于 V1.5 分层测试集（HuanZe-TestSet.pdf）回归 + 线上埋点抽样；测试覆盖度 90% 为用例覆盖比例。</div>
       <div class="btns reveal">
         <a class="btn btn-primary" href="huanzexingqiu-web/index.html" target="_blank" rel="noopener">打开网页版 ↗</a>
         <a class="btn btn-doc" href="PRD-HuanZe.pdf" target="_blank" rel="noopener">
@@ -905,15 +910,15 @@
     io3.unobserve(e.target);}});},{threshold:.4});
   io3.observe(ringProg);
 
-  // 场景标签切换
+  // 场景标签切换（7 大场景·每场景含典型纠结/决策维度/启发问题/常见踩坑/适配人群，来自 .docx 全量知识库）
   var scenes=[
-    ['租房','从通勤、预算到合租边界，把「租哪儿」拆成可比较的维度，避免被中介话术带着走。'],
-    ['职业','结合岗位与个人诉求，梳理「稳定 / 成长 / 兴趣」的权重，让跳槽或转行不再拍脑袋。'],
-    ['旅行','在预算、时间、体验之间做取舍，避开「攻略越看越乱」的决策疲劳。'],
-    ['购物','大额消费前先算清真实需求与替代方案，减少冲动与后悔。'],
-    ['健康','把就医、运动、作息等选择结构化呈现，辅助而非替代专业判断。'],
-    ['搬家','跨城 / 换房的多变量权衡，把琐碎事项收敛成可执行清单。'],
-    ['学习','选课、考证、技能投入的优先级排序，让时间花在更值得的地方。']
+    ['租房','<div class="d-headline">从通勤、预算到合租边界，把「租哪儿」拆成可比较的维度，避免被中介话术带着走。</div><div class="d-grid"><div class="d-row"><span class="dk">维度</span><span class="dv">通勤时长 · 月租预算 · 户型朝向 · 隔音条件 · 楼层 · 合同条款</span></div><div class="d-row"><span class="dk">启发</span><span class="dv">你最在意的 1 个不可妥协项是什么？</span></div><div class="d-row"><span class="dk">踩坑</span><span class="dv">二房东无授权 · 合同模糊条款 · 口头承诺无书面 · 押金克扣风险</span></div><div class="d-row"><span class="dk">适配</span><span class="dv">极致通勤党 · 安静独居党 · 性价比合租党 · 短租过渡党</span></div></div>'],
+    ['职业','<div class="d-headline">结合岗位与个人诉求，梳理「稳定 / 成长 / 兴趣」的权重，让跳槽或转行不再拍脑袋。</div><div class="d-grid"><div class="d-row"><span class="dk">维度</span><span class="dv">薪资结构 · 加班强度 · 晋升通道 · 行业前景 · 团队文化 · 通勤时长</span></div><div class="d-row"><span class="dk">启发</span><span class="dv">5 年后你想成为什么样的人？当前 offer 帮你靠近那个目标吗？</span></div><div class="d-row"><span class="dk">踩坑</span><span class="dv">基本工资占比低 · 隐性加班 · 岗位边缘化 · 行业下行 · 团队内耗</span></div><div class="d-row"><span class="dk">适配</span><span class="dv">应届生求稳 · 高薪冲刺跳槽 · 工作生活平衡 · 转行试错</span></div></div>'],
+    ['旅行','<div class="d-headline">在预算、时间、体验之间做取舍，避开「攻略越看越乱」的决策疲劳。</div><div class="d-grid"><div class="d-row"><span class="dk">维度</span><span class="dv">预算 · 季节适配 · 人流密度 · 行程节奏 · 体力成本 · 同行人群</span></div><div class="d-row"><span class="dk">启发</span><span class="dv">你想要的是「打卡」还是「发呆」？这决定目的地类型</span></div><div class="d-row"><span class="dk">踩坑</span><span class="dv">行程过载 · 网红滤镜 · 高估体力 · 预算失控 · 季节错配</span></div><div class="d-row"><span class="dk">适配</span><span class="dv">城市逛吃党 · 山野治愈党 · 懒人度假党 · 人文古迹党</span></div></div>'],
+    ['购物','<div class="d-headline">大额消费前先算清真实需求与替代方案，减少冲动与后悔。</div><div class="d-grid"><div class="d-row"><span class="dk">维度</span><span class="dv">核心性能 · 使用场景 · 品质耐用 · 长期成本 · 售后覆盖 · 生态联动</span></div><div class="d-row"><span class="dk">启发</span><span class="dv">这是高频刚需还是低频尝鲜？低频不要为用不上的功能付费</span></div><div class="d-row"><span class="dk">踩坑</span><span class="dv">盲目顶配 · 纸面参数 · 低频功能溢价 · 低价售后差 · 跨生态割裂</span></div><div class="d-row"><span class="dk">适配</span><span class="dv">通勤实用党 · 学生性价比党 · 办公生产力党 · 游戏性能党 · 极简耐用党</span></div></div>'],
+    ['健康','<div class="d-headline">把运动、作息、饮食等选择结构化呈现，辅助而非替代专业判断。</div><div class="d-grid"><div class="d-row"><span class="dk">维度</span><span class="dv">当前体能 · 碎片时间 · 饮食结构 · 作息规律 · 体态痛点</span></div><div class="d-row"><span class="dk">启发</span><span class="dv">先保证「坚持」而非「强度」——每天 15 分钟比一周猛一次有效</span></div><div class="d-row"><span class="dk">踩坑</span><span class="dv">初期拉满易放弃 · 极端节食伤代谢 · 追求速减重 · 单一动作过量</span></div><div class="d-row"><span class="dk">适配</span><span class="dv">久坐党 · 熬夜党 · 体态不适 · 没时间运动 · 反复减肥失败</span></div></div>'],
+    ['搬家','<div class="d-headline">跨城 / 换房的多变量权衡，把琐碎事项收敛成可执行清单。</div><div class="d-grid"><div class="d-row"><span class="dk">维度</span><span class="dv">距离 · 物品量 · 时间 · 预算 · 风险 · 隐性成本（新家清洁/换锁/通勤变化）</span></div><div class="d-row"><span class="dk">启发</span><span class="dv">跨城搬家前先算「空档期住宿 + 通勤变化 + 适应期」隐性成本</span></div><div class="d-row"><span class="dk">踩坑</span><span class="dv">低价引流加价 · 暴力搬运损坏 · 隐性收费 · 时间延误 · 跨城衔接错位</span></div><div class="d-row"><span class="dk">适配</span><span class="dv">同城通勤优化 · 居住品质升级 · 极简低成本 · 跨城发展 · 短期过渡</span></div></div>'],
+    ['学习','<div class="d-headline">选课、考证、技能投入的优先级排序，让时间花在更值得的地方。</div><div class="d-grid"><div class="d-row"><span class="dk">维度</span><span class="dv">目标类型 · 学习方式 · 成本 · 效果 · 适配度 · 服务保障</span></div><div class="d-row"><span class="dk">启发</span><span class="dv">你买的是「系统能力」还是「虚假证书」？看真实案例与退费政策</span></div><div class="d-row"><span class="dk">踩坑</span><span class="dv">虚假宣传 · 内容过时 · 售后缺失 · 冲动消费 · 体系混乱 · 诱导续费</span></div><div class="d-row"><span class="dk">适配</span><span class="dv">考试冲刺 · 职场技能 · 低成本自学 · 系统报班 · 兴趣松弛 · 副业变现</span></div></div>']
   ];
   var tabs=document.querySelectorAll('#sceneTabs .tab');
   var st=document.getElementById('sceneTitle'),sd=document.getElementById('sceneDesc');
@@ -923,7 +928,7 @@
     t.classList.add('active');
     var i=+t.getAttribute('data-i');
     panel.style.opacity=0;
-    setTimeout(function(){st.textContent=scenes[i][0];sd.textContent=scenes[i][1];panel.style.opacity=1;},150);
+    setTimeout(function(){st.textContent=scenes[i][0];sd.innerHTML=scenes[i][1];panel.style.opacity=1;},150);
   });});
 </script>
 
@@ -966,7 +971,7 @@
         <div class="dock-h">资料下载</div>
         <div class="dl-group">
           <a class="dl-item" href="PRD-HuanZe.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">产品需求文档</span><span class="fs">2.5 MB</span></a>
-          <a class="dl-item" href="HuanZe-TestSet.xlsx" download><span class="ft ft-xlsx">XLSX</span><span class="fn">全场景测试集</span><span class="fs">18 KB</span></a>
+          <a class="dl-item" href="HuanZe-TestSet.pdf" download><span class="ft ft-xlsx">PDF</span><span class="fn">全场景测试集</span><span class="fs">263 KB</span></a>
           <a class="dl-item" href="HuanZe-Review.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">迭代方案与复盘</span><span class="fs">13 KB</span></a>
           <a class="dl-item" href="huanzexingqiu-web/index.html" target="_blank" rel="noopener"><span class="ft ft-web">WEB</span><span class="fn">网页版体验</span><span class="fs">↗</span></a>
         </div>
