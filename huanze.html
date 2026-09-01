@@ -508,6 +508,42 @@
   @supports (background:color-mix(in srgb,red 50%,transparent)){
     .topbar{background:var(--bg);}
   }
+
+  /* ===== 卡片交互 5 层方案（统一规范）===== */
+  /* 第 5 层：纯展示卡 —— hover 完全无视觉变化，cursor 一扫即知不可点 */
+  .layer-5,.vcard,.ovc,.fcard,.mcard,.scard,.ovcell,.rcard,.datac,
+  .hl .item,.mcol,.chips span,.icbox,.val,.alayer,.box-cell{
+    transition:background .2s ease,box-shadow .2s ease,border-color .2s ease,transform .2s ease;}
+  .layer-5:hover,.vcard:hover,.ovc:hover,.fcard:hover,.mcard:hover,
+  .scard:hover,.ovcell:hover,.rcard:hover,.datac:hover,
+  .hl .item:hover,.mcol:hover,.chips span:hover,
+  .icbox:hover,.val:hover,.alayer:hover,.box-cell:hover{
+    transform:none!important;background:transparent!important;cursor:default;border-color:var(--divider)!important;box-shadow:var(--shadow-sm)!important;}
+  /* 第 1 层：项目入口卡（强反馈）—— 整卡可点，hover 上浮+阴影+轻主题色背景 */
+  .layer-1{cursor:pointer;transition:transform .28s cubic-bezier(.4,0,.2,1),box-shadow .28s ease,background .28s ease,border-color .28s ease;}
+  .layer-1:hover{transform:translateY(-4px);box-shadow:var(--shadow);
+    background:color-mix(in srgb,var(--c-jingli,var(--c,#F5A98A)) 7%,transparent);
+    border-color:color-mix(in srgb,var(--c-jingli,var(--c,#F5A98A)) 35%,transparent);}
+  .layer-1:active{transform:translateY(-1px) scale(0.99);transition:transform .08s ease;}
+  /* 第 2 层：在线体验入口（强 CTA）—— hover 阴影加深+上浮，:active 下沉 */
+  .layer-2,.btn-primary{cursor:pointer;transition:transform .22s ease,box-shadow .22s ease,background .22s ease;}
+  .layer-2:hover,.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(201,102,74,.36);}
+  .layer-2:active,.btn-primary:active{transform:translateY(0) scale(0.98);transition:transform .08s ease;}
+  /* 第 3 层：功能操作卡/次级按钮（中等反馈）—— hover 浅主题色背景+轻微上浮 */
+  .layer-3{cursor:pointer;transition:background .22s ease,border-color .22s ease,transform .22s ease,color .22s ease;}
+  .layer-3:hover{background:color-mix(in srgb,var(--c-jingli,var(--c,#F5A98A)) 8%,transparent);
+    border-color:color-mix(in srgb,var(--c-jingli,var(--c,#F5A98A)) 40%,transparent);transform:translateY(-1px);}
+  .layer-3:active{transform:translateY(0) scale(0.99);transition:transform .08s ease;}
+  /* 第 4 层：可折叠卡（默认展开，标题可点击折叠/展开） */
+  .layer-4 .collapse-head{cursor:pointer;display:flex;align-items:center;justify-content:space-between;
+    width:100%;border:none;background:transparent;padding:0;font:inherit;color:inherit;gap:12px;text-align:left;}
+  .layer-4 .collapse-head:hover{color:var(--c-jingli,var(--c,#F5A98A));}
+  .layer-4 .collapse-icon{transition:transform .25s ease;width:18px;height:18px;flex:0 0 auto;}
+  .layer-4.is-collapsed .collapse-icon{transform:rotate(-90deg);}
+  .layer-4 .collapse-content{overflow:hidden;max-height:2400px;
+    transition:max-height .32s cubic-bezier(.4,0,.2,1),opacity .32s ease;opacity:1;}
+  .layer-4.is-collapsed .collapse-content{max-height:0;opacity:0;pointer-events:none;}
+
 </style>
 </head>
 <body>
@@ -572,14 +608,14 @@
         </div>
         <div class="ovc reveal"><span class="pl"></span>
           <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
-          <h3>我的角色</h3><p>AI 产品设计师，从 0 到 1 定义形态与交互。</p>
+          <h3>我的角色</h3><p>独立主导，从 0 到 1 定义形态与交互。</p>
         </div>
         <div class="ovc reveal"><span class="pl"></span>
           <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>
           <h3>项目周期</h3><p>2026 · 多轮迭代打磨体验。</p>
         </div>
       </div>
-      <div class="role-bar reveal"><b>我的角色：</b>AI 产品设计师（0→1）——需求采集卡 Schema 设计 · 四 Agent 架构定义 · 反事实代价预演卡交互 · 全场景知识库与测试体系搭建</div>
+      <div class="role-bar reveal"><b>我的角色：</b>独立主导——需求采集卡 Schema 设计 · 四 Agent 架构定义 · 反事实代价预演卡交互 · 全场景知识库与测试体系搭建</div>
     </section>
 
     <!-- (3) 设计理念 -->
@@ -952,7 +988,7 @@
         </div>
         <div class="kv-rows">
           <div class="kv-row"><div class="k">定位</div><div class="v">多智能体结构化决策 · 引导而非给答案</div></div>
-          <div class="kv-row"><div class="k">角色</div><div class="v">AI 产品设计师（0→1）</div></div>
+          <div class="kv-row"><div class="k">角色</div><div class="v">独立主导</div></div>
           <div class="kv-row"><div class="k">周期</div><div class="v">2026 · 多轮迭代</div></div>
           <div class="kv-row"><div class="k">载体</div><div class="v">微信小程序（待发布）+ 网页版</div></div>
         </div>
@@ -1067,6 +1103,21 @@
       var h=card.querySelector('h3');
       makeClickable(card,link,h?('查看 '+h.textContent.trim().split(' ')[0]):'查看详情');
     });
+  })();
+</script>
+
+<script>
+  /* 5 层方案：折叠交互（点 .collapse-head 切换 .is-collapsed） */
+  (function(){
+    document.addEventListener('click',function(e){
+      var head = e.target.closest('.layer-4 .collapse-head');
+      if(!head) return;
+      var box = head.closest('.layer-4');
+      if(!box) return;
+      var c = box.classList.toggle('is-collapsed');
+      head.setAttribute('aria-expanded', c?'false':'true');
+    });
+    /* 初始：所有 .layer-4 默认展开，无需 JS 设置 */
   })();
 </script>
 
