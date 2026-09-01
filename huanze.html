@@ -60,9 +60,9 @@
   /* 全局星云背景（加强柔光） */
   body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
     background:
-      radial-gradient(56% 46% at 14% 14%, color-mix(in srgb,var(--purple) 44%,transparent), transparent 68%),
+      radial-gradient(56% 46% at 14% 14%, color-mix(in srgb,var(--purple) 12%,transparent), transparent 68%),
       radial-gradient(52% 44% at 88% 18%, color-mix(in srgb,var(--c) 34%,transparent), transparent 70%),
-      radial-gradient(80% 66% at 62% 104%, color-mix(in srgb,var(--purple) 36%,transparent), transparent 74%),
+      radial-gradient(80% 66% at 62% 104%, color-mix(in srgb,var(--purple) 10%,transparent), transparent 74%),
       radial-gradient(40% 36% at 48% 50%, color-mix(in srgb,var(--c) 18%,transparent), transparent 72%);}
   body.dark::before{opacity:.72;}
   /* 星点散布层 */
@@ -127,7 +127,7 @@
   .kv .rings{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);width:680px;height:680px;z-index:0;opacity:.5;pointer-events:none;}
   .kv .rings ellipse{fill:none;stroke:color-mix(in srgb,var(--c) 45%,transparent);stroke-width:1.2;}
   .kv .rings2{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);width:520px;height:520px;z-index:0;opacity:.55;pointer-events:none;}
-  .kv .rings2 ellipse{fill:none;stroke:color-mix(in srgb,var(--purple) 60%,transparent);stroke-width:1.2;}
+  .kv .rings2 ellipse{fill:none;stroke:color-mix(in srgb,var(--purple) 22%,transparent);stroke-width:1.2;}
   .kv .rings3{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);width:840px;height:840px;z-index:0;opacity:.4;pointer-events:none;}
   .kv .rings3 ellipse{fill:none;stroke:color-mix(in srgb,var(--c) 30%,transparent);stroke-width:1;}
   .kv .meteor{position:absolute;left:6%;top:22%;width:130px;height:2px;z-index:1;pointer-events:none;opacity:0;
@@ -149,7 +149,7 @@
   @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
   .phone .notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:64px;height:14px;border-radius:999px;background:var(--divider);}
   .phone .scr{position:absolute;top:40px;left:14px;right:14px;bottom:14px;border-radius:20px;overflow:hidden;
-    background:radial-gradient(130% 95% at 50% 0%, color-mix(in srgb,var(--purple) 42%,var(--card)), var(--card));
+    background:radial-gradient(130% 95% at 50% 0%, color-mix(in srgb,var(--purple) 12%,var(--card)), var(--card));
     display:flex;flex-direction:column;gap:9px;padding:18px 12px;}
   .phone .scr::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.85;
     background-image:radial-gradient(1px 1px at 22% 28%,#fff,transparent),radial-gradient(1.3px 1.3px at 70% 46%,#fff,transparent),radial-gradient(1px 1px at 46% 74%,#fff,transparent);}
@@ -307,7 +307,7 @@
   .datac{text-align:center;background:var(--card);border:1px solid var(--divider);border-radius:var(--radius);
     padding:22px 16px;box-shadow:var(--shadow-sm);position:relative;overflow:hidden;}
   .datac::before{content:"";position:absolute;top:-30px;left:50%;transform:translateX(-50%);width:90px;height:90px;border-radius:50%;
-    background:radial-gradient(circle,color-mix(in srgb,var(--purple) 55%,transparent),transparent 70%);}
+    background:radial-gradient(circle,color-mix(in srgb,var(--purple) 12%,transparent),transparent 70%);}
   .datac .n{position:relative;font-family:var(--serif);font-size:30px;font-weight:800;color:var(--c);}
   .datac .l{position:relative;font-size:13px;color:var(--text-2);margin-top:2px;}
   .res-note{margin-top:24px;text-align:center;color:var(--text-3);font-size:12px;line-height:1.8;max-width:760px;margin-left:auto;margin-right:auto;}
