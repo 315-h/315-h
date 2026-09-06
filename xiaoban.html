@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>小办 · 详情 ｜ 韩佳雪</title>
-<meta property="og:title" content="小办 · 企业行政 RAG 问答助手 ｜ 韩佳雪" />
+<meta property="og:title" content="小办 · 企业行政问答 Agent ｜ 韩佳雪" />
 <meta property="og:description" content="企业级行政制度问答 Agent：RAG 混合检索 + 三级兜底，118 例分层实测整体 91.5%，替代 HR 高频重复答疑。" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://315-h.github.io/315-h/xiaoban.html" />
 <meta property="og:image" content="https://315-h.github.io/315-h/shots/xb-workflow.jpg" />
-<meta name="description" content="小办 · 企业行政 RAG 问答助手详情页：63 条标准 QA、118 条分层评测、RAG 混合检索，在线 Demo 可直接体验。" />
+<meta name="description" content="小办 · 企业行政问答 Agent 详情页：63 条标准 QA、118 条分层评测、RAG 混合检索，在线 Demo 可直接体验。" />
 <style>
   :root{
     --bg:#F8FAFC;        /* 浅灰蓝基底 */
@@ -128,6 +128,21 @@
   .ev-n{font-family:var(--mono);font-size:14px;font-weight:800;color:var(--text);}
   .ev-note{margin-top:16px;text-align:center;font-size:12px;color:var(--text-3);}
   @media (max-width:760px){.ev-row{grid-template-columns:1fr 70px;}.ev-l{text-align:left;}}}
+  /* ===== (7.5) 演进方向（规划中） ===== */
+  .evolve-dir{max-width:900px;margin:0 auto;}
+  .dir-flow{display:flex;align-items:stretch;gap:0;}
+  .dir-step{flex:1 1 0;min-width:0;background:var(--card);border:1px solid var(--divider);border-radius:var(--radius);padding:22px 16px 18px;box-shadow:var(--shadow-sm);position:relative;margin-top:12px;}
+  .dir-step .ds-n{position:absolute;top:-13px;left:16px;width:26px;height:26px;border-radius:50%;background:var(--c);color:var(--on-c);font-family:var(--mono);font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm);}
+  .dir-step .ds-t{font-size:15px;font-weight:800;color:var(--text);margin:2px 0 8px;letter-spacing:.3px;}
+  .dir-step .ds-d{font-size:12.5px;color:var(--text-2);line-height:1.7;}
+  .dir-arrow{display:flex;align-items:center;justify-content:center;color:var(--c);font-size:20px;font-weight:800;flex:0 0 26px;}
+  .dir-perms{margin-top:22px;background:linear-gradient(135deg,color-mix(in srgb,var(--c) 9%,transparent),transparent);border:1px solid color-mix(in srgb,var(--c) 30%,var(--divider));border-radius:var(--radius);padding:18px 20px;}
+  .dir-perms .dp-t{font-size:14px;font-weight:800;color:var(--c);margin-bottom:6px;letter-spacing:.3px;}
+  .dir-perms .dp-d{font-size:13.5px;color:var(--text);line-height:1.8;}
+  .dir-principle{margin-top:16px;font-size:12.5px;color:var(--text-2);line-height:1.9;text-align:center;}
+  .dir-principle b{color:var(--c);}
+  .dir-principle span{display:inline-block;font-weight:800;color:var(--text);background:var(--card-soft);border:1px solid var(--divider);border-radius:4px;padding:3px 9px;margin-right:8px;font-family:var(--mono);font-size:11px;vertical-align:1px;}
+  @media (max-width:760px){.dir-flow{flex-direction:column;}.dir-arrow{flex-basis:auto;transform:rotate(90deg);height:22px;}}
   /* 按钮（家族统一，颜色随主题） */
   .btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:700;font-size:14.5px;
     padding:13px 27px;border-radius:var(--radius-btn);cursor:pointer;
@@ -579,38 +594,38 @@
       <div class="reveal">
         <div class="sec-head" style="margin-bottom:0">
           <div class="num">01 / 项目首屏</div>
-          <h1>智效<span class="acc">办公</span></h1>
-          <p class="sub">把企业内部琐碎、重复的「办事咨询」交给 AI，让员工 7×24 自助答疑、让 HR 从重复答疑中解脱出来。</p>
+          <h1>小<span class="acc">办</span></h1>
+          <p class="sub">把企业知识问答，从「能回答」做成「能办事」的 Agent —— 答得出给依据，答不出不硬编。把 HR 最耗时的重复答疑（请假 / 报销 / 办公用品）交给 AI，已规划 <b style="color:var(--c)">「追问-打开-细读-验证」办事闭环 + 组织权限透传</b>（演进中）。</p>
         </div>
         <div class="tags">
-          <span><b>RAG</b> 检索</span>
-          <span><b>Agent</b> 工作流</span>
-          <span>飞书入口</span>
-          <span><b>B</b> 端工具</span>
+          <span><b>标准 QA</b> 优先</span>
+          <span><b>混合</b> 检索</span>
+          <span>分级兜底</span>
+          <span><b>Coze</b> → LangChain 自研</span>
         </div>
         <a class="btn btn-primary" href="PRD-XiaoBan.pdf" target="_blank" rel="noopener">查看完整 PRD ↗</a>
       </div>
       <div class="mgrid reveal">
         <div class="mcard">
-          <div class="num" data-num="97">0</div>
-          <div class="lab">问答准确率</div>
-          <div class="delta">▲ 12% vs 上线前</div>
+          <div class="num" data-num="91.5" data-suffix="%">0</div>
+          <div class="lab">整体通过</div>
+          <div class="delta">118 例，逐条人工核对</div>
         </div>
         <div class="mcard acc">
-          <div class="num" data-num="0">0</div>
-          <div class="lab">重度幻觉率</div>
-          <div class="delta">制度冲突兜底</div>
+          <div class="num" data-num="100" data-suffix="%">0</div>
+          <div class="lab">L1 高频直答</div>
+          <div class="delta">24 / 24 全命中</div>
         </div>
         <div class="mcard ok">
-          <div class="num" data-num="60" data-suffix="%">0</div>
-          <div class="lab">HR 答疑减负</div>
-          <div class="delta">每周节省 10h+</div>
+          <div class="num" data-num="4" data-suffix=" 步">0</div>
+          <div class="lab">办事循环</div>
+          <div class="delta">追问-打开-细读-验证（演进中）</div>
         </div>
       </div>
       <div class="hero-note reveal">
         <span><b>我的角色：</b>独立主导（2026.07–2026.08）</span>
         <span><b>负责：</b>制度 QA 梳理 · 63 条标准库 · 118 条分层评测 · RAG 检索链路 · 迭代修复</span>
-        <span><b>数据口径：</b>首屏「问答准确率 97%」为内部回归口径；118 条分层实测整体 91.5%（L1 100% / L2 93.1%），详见「07 / 质量评测」</span>
+        <span><b>数据口径：</b>118 条人工逐条核对，按 L0 极端边界 / L1 库内高频 / L2 全量正常分层 —— L1 100% / L2 93.1% / L0 75–81% / 整体 91.5%。「整体准确率」是虚荣指标，分层才能暴露短板，详见「07 / 质量评测」</span>
       </div>
     </section>
 
@@ -622,10 +637,10 @@
         <div class="rule"></div>
       </div>
       <div class="ovgrid reveal">
-        <div class="ovcell"><div class="t">产品定位</div><div class="d">企业行政制度问答 Agent，替代 HR 高频重复答疑，可快速复制迁移到多业务场景。</div></div>
-        <div class="ovcell"><div class="t">核心价值</div><div class="d">统一口径 + 7×24 响应 + 知识沉淀，让 HR 从重复咨询中解放出来。</div></div>
+        <div class="ovcell"><div class="t">产品定位</div><div class="d">企业行政制度问答 Agent，<b>从「能回答」走向「能办事」</b> —— 覆盖请假 / 报销 / 办公用品三大高频场景。</div></div>
+        <div class="ovcell"><div class="t">核心价值</div><div class="d"><b>答得出给依据，答不出不硬编</b> —— 引用制度条款 + 判定结论，答不上就明说，绝不硬编。</div></div>
         <div class="ovcell"><div class="t">我的角色</div><div class="d">独立主导，从 0 到 1 完成定义、实现与迭代。</div></div>
-        <div class="ovcell"><div class="t">项目周期</div><div class="d">2026.07 – 2026.08 · Coze 落地 + 自托管后端双版本。</div></div>
+        <div class="ovcell"><div class="t">项目周期</div><div class="d">2026.07 – 2026.08 · <b>Coze 原型验证 → LangChain 手写状态机自研</b>（非 LangGraph）。</div></div>
       </div>
     </section>
 
@@ -1084,6 +1099,32 @@
           </div>
           <div class="loopcap">自动化评测 → 问题归因 → 版本迭代 → 效果验证 → 线上监控 <b>· 完整闭环</b></div>
         </div>
+      </div>
+    </section>
+
+    <!-- (7.5) 演进方向（规划中） -->
+    <section class="sec">
+      <div class="sec-head reveal">
+        <div class="num">07.5 / 演进方向</div>
+        <h2>从「问答工具」走向「办事 Agent」（规划中）</h2>
+        <p>跳出一问一答，走「追问-打开-细读-验证」四步办事循环 + 组织权限全链路透传。</p>
+        <div class="rule"></div>
+      </div>
+      <div class="evolve-dir reveal">
+        <div class="dir-flow">
+          <div class="dir-step"><div class="ds-n">1</div><div class="ds-t">追问</div><div class="ds-d">诉求模糊、缺关键条件（金额 / 时长 / 人员类型）时主动补全，而非盲目检索。</div></div>
+          <div class="dir-arrow">→</div>
+          <div class="dir-step"><div class="ds-n">2</div><div class="ds-t">打开</div><div class="ds-d">定位到对应制度章节，而非整库召回，缩小干扰面。</div></div>
+          <div class="dir-arrow">→</div>
+          <div class="dir-step"><div class="ds-n">3</div><div class="ds-t">细读</div><div class="ds-d">召回条款原文，引用依据作答，不凭空生成。</div></div>
+          <div class="dir-arrow">→</div>
+          <div class="dir-step"><div class="ds-n">4</div><div class="ds-t">验证</div><div class="ds-d">核对冲突与边界，答不出明说，绝不硬编。</div></div>
+        </div>
+        <div class="dir-perms">
+          <div class="dp-t">组织权限全链路透传</div>
+          <div class="dp-d">按角色 / 职级 / 部门过滤可见制度，从根源解决越权查看的合规风险 —— 这比「准确率 95%」更能打动企业决策者。</div>
+        </div>
+        <div class="dir-principle"><span>落地原则</span>内部仍是工作流状态机（守住 118 条稳定性）；追问极度克制；权限先轻后重；场景先深耕再复制。</div>
       </div>
     </section>
 
@@ -1826,8 +1867,8 @@
       <section>
         <div class="dock-h">核心信息</div>
         <div class="pdt">
-          <div class="n">智效办公</div>
-          <div class="s">企业行政制度问答 Agent（小办）</div>
+          <div class="n">小办</div>
+          <div class="s">企业行政制度问答 Agent</div>
         </div>
         <div class="kv-rows">
           <div class="kv-row"><div class="k">定位</div><div class="v">企业行政制度问答 · 替代 HR 高频重复答疑</div></div>
@@ -1842,7 +1883,7 @@
         <div class="kpi">
           <div class="kpi-row"><div class="n">91.5%</div><div class="l">118 条分层实测整体准确率</div></div>
           <div class="kpi-row"><div class="n">0</div><div class="l">重度幻觉率</div></div>
-          <div class="kpi-row"><div class="n">60%</div><div class="l">HR 答疑减负（每周 10h+）</div></div>
+          <div class="kpi-row"><div class="n">100%</div><div class="l">L1 高频直答（24 / 24）</div></div>
         </div>
       </section>
       <div class="dock-sep"></div>
