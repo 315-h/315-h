@@ -481,6 +481,27 @@
     transition:max-height .32s cubic-bezier(.4,0,.2,1),opacity .32s ease;opacity:1;}
   .layer-4.is-collapsed .collapse-content{max-height:0;opacity:0;pointer-events:none;}
 
+  /* ===== 资产卡片（与首页 / 小办 / 缓择统一风格） ===== */
+  .ass{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;max-width:760px;margin:0 auto;}
+  .afile{background:var(--card);border:1px solid var(--divider);border-radius:var(--radius);overflow:hidden;
+    transition:transform .25s ease,box-shadow .25s ease;}
+  .afile:hover{transform:translateY(-4px);box-shadow:var(--shadow);}
+  .afile .preview{position:relative;height:78px;padding:14px 16px;
+    background:linear-gradient(160deg,color-mix(in srgb,var(--c) 10%,var(--card)),var(--card));
+    border-bottom:1px solid var(--divider);}
+  .afile .preview .tag{position:absolute;top:12px;left:16px;font-family:var(--mono,monospace);font-size:10.5px;font-weight:700;
+    color:#fff;background:var(--c);padding:2px 7px;border-radius:4px;letter-spacing:.5px;}
+  .afile .preview .ln{height:5px;border-radius:3px;background:color-mix(in srgb,var(--c) 16%,var(--divider));margin:30px 0 0 auto;width:62%;}
+  .afile .preview .ln.s{width:42%;}
+  .afile .preview .ln.t{width:80%;}
+  .afile .meta{padding:14px 16px 15px;}
+  .afile .meta h4{font-size:15px;font-weight:800;margin-bottom:4px;}
+  .afile .meta p{font-size:12.5px;color:var(--text-2);line-height:1.6;margin-bottom:10px;}
+  .afile .meta .ft{display:flex;align-items:center;justify-content:space-between;font-size:11.5px;color:var(--text-2);}
+  .afile .meta .ft a{color:var(--c);font-weight:700;text-decoration:none;}
+  .afile .meta .ft a:hover{text-decoration:underline;}
+  @media (max-width:680px){ .ass{grid-template-columns:1fr;} }
+
 </style>
 </head>
 <body>
@@ -797,6 +818,39 @@
         <div class="item reveal"><h3>单段落局部改写</h3><p>可只改某一段，而非整篇重写，保留用户真实语气与个人痕迹。</p></div>
         <div class="item reveal"><h3>本地隐私存储</h3><p>简历与诊断数据仅存浏览器本地，不上传服务器，安心使用。</p></div>
         <div class="item reveal"><h3>置信度分级体系</h3><p>每条结论标注可信等级，让用户知道「哪条更值得参考」。</p></div>
+      </div>
+    </section>
+
+    <!-- (8.5) 资产沉淀 -->
+    <section class="sec" id="assets">
+      <div class="sec-head reveal">
+        <div class="kcap">ASSETS</div>
+        <h2>不只是上线 · 是把方法变成可复用资产</h2>
+        <p>两份可交付物：单次问答成本账 / Prompt 方法论（与「小办」共研）。点击预览。</p>
+      </div>
+      <div class="ass">
+        <div class="afile reveal">
+          <div class="preview">
+            <span class="tag">.pdf</span>
+            <div class="ln"></div><div class="ln t"></div><div class="ln s"></div><div class="ln"></div>
+          </div>
+          <div class="meta">
+            <h4>单次问答成本账</h4>
+            <p>完整使用 0.04–0.09 元 · 无状态缩容至 0</p>
+            <div class="ft"><span>v1.0 · 2 页 · 191 KB</span><a href="Jingli-Cost.pdf" target="_blank" rel="noopener">预览 →</a></div>
+          </div>
+        </div>
+        <div class="afile reveal">
+          <div class="preview">
+            <span class="tag">.pdf</span>
+            <div class="ln s"></div><div class="ln"></div><div class="ln t"></div><div class="ln"></div>
+          </div>
+          <div class="meta">
+            <h4>Prompt 方法论（与小办共研）</h4>
+            <p>五段式模板 · 三项目真实提示词片段</p>
+            <div class="ft"><span>v1.0 · 9 页 · 519 KB</span><a href="Prompt-Method.pdf" target="_blank" rel="noopener">预览 →</a></div>
+          </div>
+        </div>
       </div>
     </section>
 
