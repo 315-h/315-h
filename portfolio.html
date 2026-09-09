@@ -266,6 +266,7 @@
   .g-jingli .dot{background:var(--c-jingli);}
   .g-huanze .dot{background:var(--c-huanze);}
   .g-xiaoban .dot{background:var(--c-xiaoban);}
+  .g-common .dot{background:var(--text-2);}
   .dl-item{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--text);font-size:12.5px;
     padding:6px 7px;margin:0 -7px;border-radius:8px;transition:background .18s ease;}
   .dl-item:hover{background:var(--hover-soft);}
@@ -611,9 +612,9 @@
       <button class="rail-btn" type="button" data-expand title="核心信息与联系方式" aria-label="展开并查看核心信息与联系方式">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       </button>
-      <button class="rail-btn" type="button" data-expand title="资料下载（16 项）" aria-label="展开并查看资料下载，共 16 项">
+      <button class="rail-btn" type="button" data-expand title="资料下载（15 项）" aria-label="展开并查看资料下载，共 15 项">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-        <span class="rail-badge">16</span>
+        <span class="rail-badge">15</span>
       </button>
       <button class="rail-btn" type="button" id="dockTopRail" title="回到顶部" aria-label="回到顶部">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
@@ -648,12 +649,16 @@
       <section>
         <div class="dock-h">资料下载</div>
 
+        <div class="dl-group g-common">
+          <div class="dl-gh"><i class="dot"></i>跨项目通用</div>
+          <a class="dl-item" href="Prompt-Method.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">Prompt 方法论（三项目共研）</span><span class="fs">519 KB</span></a>
+        </div>
+
         <div class="dl-group g-jingli">
           <div class="dl-gh"><i class="dot"></i>经历翻译官</div>
           <a class="dl-item" href="PRD-Experience.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">产品需求文档</span><span class="fs">1.3 MB</span></a>
           <a class="dl-item" href="jingli-app.html" target="_blank" rel="noopener"><span class="ft ft-web">WEB</span><span class="fn">在线体验</span><span class="fs">↗</span></a>
           <a class="dl-item" href="Jingli-Cost.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">单次问答成本账</span><span class="fs">191 KB</span></a>
-          <a class="dl-item" href="Prompt-Method.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">Prompt 方法论（与小办共研）</span><span class="fs">519 KB</span></a>
         </div>
 
         <div class="dl-group g-huanze">
@@ -669,11 +674,10 @@
           <div class="dl-gh"><i class="dot"></i>小办</div>
           <a class="dl-item" href="PRD-XiaoBan.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">产品需求文档</span><span class="fs">1.7 MB</span></a>
           <a class="dl-item" href="XiaoBan-TestSet.pdf" download><span class="ft ft-xlsx">PDF</span><span class="fn">评测测试集</span><span class="fs">194 KB</span></a>
-          <a class="dl-item" href="XiaoBan-Retro.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">项目复盘</span><span class="fs">21 KB</span></a>
+          <a class="dl-item" href="XiaoBan-Retro.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">项目复盘（含 V2 规划）</span><span class="fs">498 KB</span></a>
           <a class="dl-item" href="XiaoBan-WorkflowSrc.zip" download><span class="ft ft-zip">ZIP</span><span class="fn">工作流源码</span><span class="fs">122 KB</span></a>
           <a class="dl-item" href="XiaoBan-EvalOnePager.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">评测体系一页纸</span><span class="fs">270 KB</span></a>
           <a class="dl-item" href="XiaoBan-CostCache.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">单次问答成本账与缓存</span><span class="fs">258 KB</span></a>
-          <a class="dl-item" href="Prompt-Method.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">Prompt 方法论（与经历翻译官共研）</span><span class="fs">519 KB</span></a>
         </div>
       </section>
 
