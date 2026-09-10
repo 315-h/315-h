@@ -244,7 +244,7 @@
   .sgrid figure{margin:0;background:var(--card);border:1px solid var(--divider);border-radius:var(--radius-sm);
     overflow:hidden;box-shadow:var(--shadow-sm);transition:transform .2s ease,box-shadow .2s ease;}
   .sgrid figure:hover{transform:translateY(-4px);box-shadow:var(--shadow);}
-  .sgrid figure img{display:block;width:100%;aspect-ratio:9/16;object-fit:cover;background:var(--card-soft);}
+  .sgrid figure img{display:block;width:100%;aspect-ratio:9/16;object-fit:contain;background:var(--card-soft);}
   .sgrid figure.wide img{aspect-ratio:4/3;}
   .sgrid figure figcaption{padding:9px 12px;font-size:12px;color:var(--text-2);text-align:center;}
   @media (max-width:860px){.sgrid{grid-template-columns:1fr 1fr;}}
@@ -544,6 +544,8 @@
     transition:max-height .32s cubic-bezier(.4,0,.2,1),opacity .32s ease;opacity:1;}
   .layer-4.is-collapsed .collapse-content{max-height:0;opacity:0;pointer-events:none;}
 
+
+  img{max-width:100%;height:auto;display:block;}
 </style>
 </head>
 <body>
@@ -953,7 +955,9 @@
 
   // 滚动淡入
   var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.12});
-  document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
+  document.querySelectorAll('.reveal').forEach(function(el){io.observe(el); });
+  // 兜底：即使 IntersectionObserver 未触发也确保内容可见
+  window.addEventListener('load',function(){setTimeout(function(){document.querySelectorAll('.reveal:not(.in)').forEach(function(el){el.classList.add('in');});},800);});
 
   // 四 Agent 星轨点亮
   var orbit=document.getElementById('orbitWrap');

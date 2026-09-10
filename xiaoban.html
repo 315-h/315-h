@@ -127,7 +127,7 @@
   .ev-row.hot .ev-bar i{background:linear-gradient(90deg,color-mix(in srgb,var(--ok) 55%,transparent),var(--ok));}
   .ev-n{font-family:var(--mono);font-size:14px;font-weight:800;color:var(--text);}
   .ev-note{margin-top:16px;text-align:center;font-size:12px;color:var(--text-3);}
-  @media (max-width:760px){.ev-row{grid-template-columns:1fr 70px;}.ev-l{text-align:left;}}}
+  @media (max-width:760px){.ev-row{grid-template-columns:1fr 70px;}.ev-l{text-align:left;}}
   /* ===== (7.5) 演进方向（规划中） ===== */
   .evolve-dir{max-width:900px;margin:0 auto;}
   .dir-flow{display:flex;align-items:stretch;gap:0;}
@@ -572,6 +572,8 @@
     transition:max-height .32s cubic-bezier(.4,0,.2,1),opacity .32s ease;opacity:1;}
   .layer-4.is-collapsed .collapse-content{max-height:0;opacity:0;pointer-events:none;}
 
+
+  img{max-width:100%;height:auto;display:block;}
 </style>
   <script src="qa_data.js"></script>
   <script src="xiaoban_docs.js"></script>
@@ -1272,6 +1274,8 @@
     });
   },{threshold:.12, rootMargin:'0px 0px -40px 0px'});
   document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+  // 兜底：即使 IntersectionObserver 未触发也确保内容可见
+  window.addEventListener('load',function(){setTimeout(function(){document.querySelectorAll('.reveal:not(.in)').forEach(function(el){el.classList.add('in');});},800);});
 
   // ===== Hero 数字滚动 =====
   function rollNum(el){
