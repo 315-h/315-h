@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+<script>document.documentElement.classList.add('js');</script>
+<meta name="theme-color" id="themeColorMeta" content="#F6F6F5">
+<script>
+(function(){
+  var meta=document.getElementById('themeColorMeta');
+  if(!meta) return;
+  function set(dark){ meta.setAttribute('content', dark ? '#242423' : '#F6F6F5'); }
+  try{ if(localStorage.getItem('hx-theme')==='dark') set(true); }catch(e){}
+  function watch(){ if(document.body){ new MutationObserver(function(){ set(document.body.classList.contains('dark')); }).observe(document.body,{attributes:true,attributeFilter:['class']}); } else { setTimeout(watch,30); } }
+  if(document.readyState!=='loading') watch(); else document.addEventListener('DOMContentLoaded',watch);
+})();
+</script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>经历翻译官 · 详情 ｜ 韩佳雪</title>
@@ -11,8 +24,15 @@
 <meta property="og:image" content="https://315-h.github.io/315-h/shots/jingli-home.jpg" />
 <meta name="description" content="经历翻译官 · AI 求职诊断工具详情页：六模块诊断、11 类岗位知识库 RAG、5 种沟通风格，附在线体验 Demo。" />
 <style>
+  /* 无障碍：键盘用户跳过顶栏直达主内容 */
+  .skip-link{position:absolute;left:50%;top:10px;transform:translateX(-50%);z-index:9999;
+    padding:10px 20px;border-radius:999px;background:#C9664A;color:#fff;font-size:14px;font-weight:600;
+    text-decoration:none;white-space:nowrap;box-shadow:0 8px 28px rgba(0,0,0,.18);
+    opacity:0;pointer-events:none;transition:opacity .2s ease,transform .2s ease;}
+  .skip-link:focus{opacity:1;pointer-events:auto;outline:2px solid #fff;outline-offset:2px;}
+  #main-content:focus{outline:none;}
   :root{
-    --bg:#FAF7F2;            /* 暖米白基底 */
+    --bg:#F6F6F5;            /* 暖米白基底 */
     --paper:#FFFFFF;
     --paper-soft:#FDFBF7;
     --card:var(--paper);
@@ -34,11 +54,11 @@
     --maxw:1080px;
     --font:"PingFang SC","Microsoft YaHei","Hiragino Sans GB","Helvetica Neue",Arial,sans-serif;
     --serif:"Songti SC","STSong","SimSun",Georgia,"Times New Roman",serif;
-    --font-head:var(--serif);
+    --font-head:var(--font);
     --font-mono:"SF Mono","JetBrains Mono","Roboto Mono","Menlo",Consolas,monospace;
   }
   body.dark{
-    --bg:#2B2724; --paper:#34302B; --paper-soft:#2F2B27; --card:#34302B; --card-soft:#2F2B27;
+    --bg:#242423; --paper:#34302B; --paper-soft:#2F2B27; --card:#34302B; --card-soft:#2F2B27;
     --text:#EDE6DC; --text-2:#B7A99B; --text-3:#8C8074; --divider:#3D3731; --divider-strong:#4A433C;
     --on-c:#F3D9C8; --doc-c:#9DB4F0;
     --shadow:0 2px 6px rgba(0,0,0,.30), 0 14px 34px rgba(0,0,0,.42);
@@ -81,7 +101,7 @@
   .theme-btn:hover{transform:translateY(-2px);border-color:var(--c);}
 
   /* ===== 通用 section（三页统一） ===== */
-  .sec{padding:64px 0;}
+  .sec{padding:76px 0;}
   .sec-head{text-align:center;margin-bottom:40px;}
   .sec-head .eyebrow,.sec-head .kcap,.sec-head .num{display:inline-block;font-family:var(--font-mono);font-size:11.5px;letter-spacing:2.5px;font-weight:700;
     color:var(--c);margin-bottom:10px;text-transform:uppercase;}
@@ -151,7 +171,7 @@
   .note b{display:block;margin-bottom:3px;font-size:14.5px;}
 
   /* ===== (3) 价值卡 ===== */
-  .vgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .vgrid{display:grid;grid-template-columns:1fr 1.3fr 1fr;gap:22px;}
   .vcard{position:relative;background:var(--paper);border:1px solid var(--divider);border-radius:var(--radius);
     padding:26px 22px;box-shadow:var(--shadow-sm);overflow:hidden;transition:transform .2s ease,box-shadow .2s ease;}
   .vcard:hover{transform:translateY(-5px);box-shadow:var(--shadow);}
@@ -202,7 +222,7 @@
   .fcard .more{margin-top:12px;font-size:12.5px;font-weight:700;color:var(--c);}
 
   /* ===== (5.5) 界面与工作流实录 ===== */
-  .sgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  .sgrid{display:grid;grid-template-columns:1.45fr 1fr 1fr;gap:20px;}
   .sgrid figure{margin:0;background:var(--paper);border:1px solid var(--divider);border-radius:var(--radius);
     overflow:hidden;box-shadow:var(--shadow-sm);transition:transform .2s ease,box-shadow .2s ease;}
   .sgrid figure:hover{transform:translateY(-4px);box-shadow:var(--shadow);}
@@ -252,7 +272,7 @@
   .layer p{font-size:13.5px;color:var(--text-2);line-height:1.85;}
 
   /* ===== (7) 成果印章 ===== */
-  .res{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+  .res{display:grid;grid-template-columns:1fr 1fr 1.24fr;gap:24px;}
   .rcard{text-align:center;}
   .rcard .stamp{width:158px;height:158px;margin:0 auto 16px;border-radius:50%;border:2.5px dashed var(--c);
     background:color-mix(in srgb,var(--c) 8%,transparent);display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -285,8 +305,12 @@
   .foot .contact-line a{color:var(--text-2);text-decoration:underline;}
 
   /* 滚动淡入（三页统一） */
-  .reveal{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s ease;}
-  .reveal.in{opacity:1;transform:none;}
+  /* 纯 CSS 兜底：即使 JS 失效 / 旧缓存，加载后自动淡入，绝不留白 */
+  @keyframes xbRevealIn{from{opacity:0;transform:translateY(26px);}to{opacity:1;transform:none;}}
+  .reveal{opacity:0;transform:translateY(26px);animation:xbRevealIn .9s ease .15s forwards;}
+  .js .reveal{animation:none;transition:opacity .8s ease,transform .8s ease;}
+  .js .reveal.in{opacity:1;transform:none;}
+
 
   @media (max-width:860px){ .sec-head h2{font-size:23px;} }
 
@@ -504,9 +528,35 @@
 
 
   img{max-width:100%;height:auto;display:block;}
+/* 网格错峰入场（轻动效；prefers-reduced-motion 已全局兜底） */
+  .vgrid>*:nth-child(2){transition-delay:.07s;}
+  .vgrid>*:nth-child(3){transition-delay:.14s;}
+  .sgrid>*:nth-child(2){transition-delay:.07s;}
+  .sgrid>*:nth-child(3){transition-delay:.14s;}
+  .res>*:nth-child(2){transition-delay:.07s;}
+  .res>*:nth-child(3){transition-delay:.14s;}
+
+
+/* ===== §4.3 反居中：章节标题左对齐 + 副文案右下角对齐 =====
+   封面/页脚保留居中的编辑感，只把重复出现 11-12 次的章节标题改成不对称两列。 */
+.sec-head{text-align:left;margin-bottom:46px;display:grid;
+  grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);column-gap:48px;align-items:end;}
+.sec-head .kcap,.sec-head .eyebrow,.sec-head .num{grid-column:1;grid-row:1;}
+.sec-head h2{grid-column:1;grid-row:2;}
+.sec-head p{grid-column:2;grid-row:2;margin:0 0 2px;max-width:none;}
+@media (max-width:860px){
+  .sec-head{display:block;margin-bottom:40px;}
+  .sec-head p{margin-top:9px;}
+}
+
+/* 数据卡去居中：圆形印章左置 + 文案左对齐，与章节标题的不对称呼应 */
+.rcard{text-align:left;}
+.rcard .stamp{margin-left:0;margin-right:0;}
 </style>
+<noscript><style>.reveal{opacity:1!important;transform:none!important;animation:none!important;}</style></noscript>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">跳到主内容</a>
 
   <!-- 顶栏 -->
   <div class="topbar">
@@ -517,7 +567,7 @@
     </div>
   </div>
 
-  <div class="wrap">
+  <div class="wrap" id="main-content" tabindex="-1">
 
     <!-- (1) 档案封面首屏 -->
     <section class="cover" id="cover">
@@ -554,15 +604,15 @@
         </div>
         <div class="notes reveal">
           <div class="note">
-            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
             <b>经历不会提炼</b>做了很多事，却说不清「我到底擅长什么、价值在哪」。
           </div>
           <div class="note">
-            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>
             <b>岗位匹配度低</b>投了很多岗位石沉大海，却得不到任何结构化反馈。
           </div>
           <div class="note">
-            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
             <b>隐私安全顾虑</b>简历是高度敏感资料，不敢随意上传到陌生 AI 工具。
           </div>
         </div>
@@ -739,7 +789,7 @@
         </div>
         <div class="layer reveal"><div class="idx">02</div>
           <h3>原型层</h3><div class="en">PROTOTYPE · COZE</div>
-          <p>Coze（扣子）搭建工作流，用于方案验证与演示，快速跑通「输入—诊断—输出」闭环。</p>
+          <p>Coze（扣子）搭建工作流，用于方案验证与演示，快速跑通「输入 → 诊断 → 输出」闭环。</p>
         </div>
         <div class="layer reveal"><div class="idx">03</div>
           <h3>自研层</h3><div class="en">SELF-BUILT · RAG</div>
@@ -748,11 +798,11 @@
       </div>
     </section>
 
-    <!-- (6.2) 背后的实现 · 大白话 -->
+    <!-- (6.2) 技术链路，说人话 -->
     <section class="sec" id="how">
       <div class="sec-head reveal">
         <div class="kcap">HOW IT WORKS</div>
-        <h2>背后的实现 · 大白话</h2>
+        <h2>技术链路，说人话</h2>
         <p>不用懂代码，也能看懂它是怎么工作的</p>
       </div>
       <div class="vgrid">
@@ -827,7 +877,7 @@
     <section class="sec" id="assets">
       <div class="sec-head reveal">
         <div class="kcap">ASSETS</div>
-        <h2>不只是上线 · 是把方法变成可复用资产</h2>
+        <h2>从「我做过什么」到「我能解决什么」</h2>
         <p>两份可交付物：单次问答成本账 / Prompt 方法论（与「小办」共研）。点击预览。</p>
       </div>
       <div class="ass">
@@ -838,7 +888,7 @@
           </div>
           <div class="meta">
             <h4>单次问答成本账</h4>
-            <p>完整使用 0.04–0.09 元 · 无状态缩容至 0</p>
+            <p>完整使用 0.04-0.09 元 · 无状态缩容至 0</p>
             <div class="ft"><span>v1.0 · 2 页 · 191 KB</span><a href="Jingli-Cost.pdf" target="_blank" rel="noopener">预览 →</a></div>
           </div>
         </div>
@@ -862,7 +912,7 @@
         <div class="btns">
           <a class="btn btn-primary" href="jingli-app.html" target="_blank" rel="noopener">在线体验 Demo ↗</a>
           <a class="btn btn-doc" href="PRD-Experience.pdf" target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;">
               <path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9 13h6M9 17h6"/>
             </svg>
             查看 PRD ↗
@@ -946,12 +996,12 @@
   <aside class="dock" id="dock" aria-label="产品核心信息与资料下载">
     <div class="dock-hd">
       <span class="dock-title">核心信息</span>
-      <button class="dock-btn" id="dockCollapse" type="button" aria-controls="dockInner" aria-expanded="true" title="收起侧栏" aria-label="收起侧栏"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+      <button class="dock-btn" id="dockCollapse" type="button" aria-controls="dockInner" aria-expanded="true" title="收起侧栏" aria-label="收起侧栏"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
     </div>
     <div class="dock-rail" id="dockRail">
-      <button class="rail-btn" type="button" data-expand title="核心信息与关键指标" aria-label="展开并查看核心信息"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
-      <button class="rail-btn" type="button" data-expand title="资料下载（4 份）" aria-label="展开并查看资料下载，共 4 份"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span class="rail-badge">4</span></button>
-      <button class="rail-btn" type="button" id="dockTopRail" title="回到顶部" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg></button>
+      <button class="rail-btn" type="button" data-expand title="核心信息与关键指标" aria-label="展开并查看核心信息"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+      <button class="rail-btn" type="button" data-expand title="资料下载（4 份）" aria-label="展开并查看资料下载，共 4 份"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span class="rail-badge">4</span></button>
+      <button class="rail-btn" type="button" id="dockTopRail" title="回到顶部" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg></button>
     </div>
     <div class="dock-inner" id="dockInner">
       <section>
@@ -989,13 +1039,13 @@
     </div>
     <div class="dock-foot">
       <button class="dock-top" type="button" id="dockTop">
-        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
         回到顶部
       </button>
     </div>
   </aside>
 
-  <button class="dock-fab" id="dockFab" type="button" aria-controls="dock" aria-expanded="false" aria-label="打开资料与联系方式"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg></button>
+  <button class="dock-fab" id="dockFab" type="button" aria-controls="dock" aria-expanded="false" aria-label="打开资料与联系方式"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg></button>
   <div class="dock-scrim" id="dockScrim"></div>
 
 <script>
@@ -1092,6 +1142,31 @@
       head.setAttribute('aria-expanded', c?'false':'true');
     });
     /* 初始：所有 .layer-4 默认展开，无需 JS 设置 */
+  })();
+</script>
+
+<!-- 独立兜底：与主页脚本完全解耦，确保 .reveal 内容一定可见 -->
+<script>
+  (function(){
+    function reveal(el){ el.classList.add('in'); }
+    function revealInView(){
+      var els = document.querySelectorAll('.reveal:not(.in)');
+      var vh = window.innerHeight || document.documentElement.clientHeight || 0;
+      for(var i=0;i<els.length;i++){
+        var r = els[i].getBoundingClientRect();
+        if(r.top < vh && r.bottom > 0){ reveal(els[i]); }
+      }
+    }
+    if(!('IntersectionObserver' in window)){
+      document.querySelectorAll('.reveal').forEach(reveal);
+      return;
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ reveal(e.target); io.unobserve(e.target); } });
+    },{threshold:.08, rootMargin:'0px 0px -30px 0px'});
+    document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+    var t=0, timer=setInterval(function(){ revealInView(); t+=400; if(t>=3000){ clearInterval(timer); } },400);
+    setTimeout(function(){ document.querySelectorAll('.reveal:not(.in)').forEach(reveal); }, 3200);
   })();
 </script>
 

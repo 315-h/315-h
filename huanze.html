@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+<script>document.documentElement.classList.add('js');</script>
+<meta name="theme-color" id="themeColorMeta" content="#F1EBE2">
+<script>
+(function(){
+  var meta=document.getElementById('themeColorMeta');
+  if(!meta) return;
+  function set(dark){ meta.setAttribute('content', dark ? '#2A2622' : '#F1EBE2'); }
+  try{ if(localStorage.getItem('hx-theme')==='dark') set(true); }catch(e){}
+  function watch(){ if(document.body){ new MutationObserver(function(){ set(document.body.classList.contains('dark')); }).observe(document.body,{attributes:true,attributeFilter:['class']}); } else { setTimeout(watch,30); } }
+  if(document.readyState!=='loading') watch(); else document.addEventListener('DOMContentLoaded',watch);
+})();
+</script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>缓择星球 · 详情 ｜ 韩佳雪</title>
@@ -11,8 +24,15 @@
 <meta property="og:image" content="https://315-h.github.io/315-h/shots/hz-web-home.jpg" />
 <meta name="description" content="缓择星球（慢慢选）· AI 多智能体决策助手详情页：四 Agent 架构、7 大决策场景、反事实代价预演卡，小程序 + 网页双端。" />
 <style>
+  /* 无障碍：键盘用户跳过顶栏直达主内容 */
+  .skip-link{position:absolute;left:50%;top:10px;transform:translateX(-50%);z-index:9999;
+    padding:10px 20px;border-radius:999px;background:#C9664A;color:#fff;font-size:14px;font-weight:600;
+    text-decoration:none;white-space:nowrap;box-shadow:0 8px 28px rgba(0,0,0,.18);
+    opacity:0;pointer-events:none;transition:opacity .2s ease,transform .2s ease;}
+  .skip-link:focus{opacity:1;pointer-events:auto;outline:2px solid #fff;outline-offset:2px;}
+  #main-content:focus{outline:none;}
   :root{
-    --bg:#FAF6F0;            /* 暖米白基底 */
+    --bg:#F1EBE2;            /* 暖米白基底 */
     --card:#FFFFFF;
     --card-soft:#FCF7F2;
     --text:#333333;         /* 深炭灰 */
@@ -37,11 +57,11 @@
     --maxw:1080px;
     --font:"PingFang SC","Microsoft YaHei","Hiragino Sans GB","Helvetica Neue",Arial,sans-serif;
     --serif:"Songti SC","STSong","SimSun",Georgia,"Times New Roman",serif;
-    --font-head:var(--serif);
+    --font-head:var(--font);
     --font-mono:"SF Mono","JetBrains Mono","Roboto Mono","Menlo",Consolas,monospace;
   }
   body.dark{
-    --bg:#2B2724; --card:#342F2B; --card-soft:#2F2A27; --text:#F0E9E2;
+    --bg:#2A2622; --card:#342F2B; --card-soft:#2F2A27; --text:#F0E9E2;
     --text-2:#BCAFA3; --text-3:#8C8074; --divider:#3D3731; --divider-strong:#4A433C; --primary-strong:#C9664A;
     --on-c:#fff;
     --shadow:0 6px 20px rgba(0,0,0,.30), 0 18px 44px rgba(0,0,0,.40);
@@ -102,7 +122,7 @@
   .theme-btn:hover{transform:translateY(-2px);border-color:var(--c);}
 
   /* ===== 通用 section（三页统一） ===== */
-  .sec{padding:64px 0;}
+  .sec{padding:74px 0;}
   .sec-head{text-align:center;margin-bottom:40px;}
   .sec-head .eyebrow,.sec-head .kcap,.sec-head .num{display:inline-block;font-family:var(--font-mono);font-size:11.5px;letter-spacing:2.5px;font-weight:700;
     color:var(--c);margin-bottom:10px;text-transform:uppercase;}
@@ -137,8 +157,7 @@
     12%{opacity:.9}32%{opacity:0;transform:translate(240px,86px) rotate(18deg) scaleX(1)}
     100%{opacity:0;transform:translate(240px,86px) rotate(18deg)}}
   .kv-inner{position:relative;z-index:2;max-width:760px;margin:0 auto;}
-  .kv h1{font-family:var(--serif);font-size:50px;line-height:1.15;font-weight:800;letter-spacing:3px;
-    text-shadow:0 0 26px color-mix(in srgb,var(--c) 35%,transparent);}
+  .kv h1{font-family:var(--serif);font-size:50px;line-height:1.15;font-weight:800;letter-spacing:3px;}
   .kv .sub{font-size:17px;color:var(--text);max-width:520px;margin:18px auto 0;line-height:1.95;}
   .kv .label{margin-top:18px;font-size:13px;font-weight:700;letter-spacing:.5px;color:var(--text-2);}
   .kv .cta{margin-top:30px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
@@ -158,7 +177,7 @@
   .phone .scr .b.s{width:60%;}
   .phone .scr .b.l{width:85%;}
   .phone .scr .b.m{width:72%;}
-  .phone .scr .dot{width:34px;height:34px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,var(--c));box-shadow:0 0 14px color-mix(in srgb,var(--c) 55%,transparent);margin:6px auto 2px;}
+  .phone .scr .dot{width:34px;height:34px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,var(--c));box-shadow:0 0 9px color-mix(in srgb,var(--c) 38%,transparent);margin:6px auto 2px;}
   .phone .scr img{position:relative;z-index:2;width:100%;height:100%;object-fit:cover;border-radius:20px;}
 
   /* ===== (2) 项目概览 四栏 ===== */
@@ -218,7 +237,7 @@
   .orbit-note{text-align:center;color:var(--text-2);font-size:13px;margin-top:18px;}
 
   /* ===== (5) 核心功能 星球卡 ===== */
-  .fgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .fgrid{display:grid;grid-template-columns:1.26fr 1fr 1.1fr;gap:22px;}
   .fcard{background:var(--card);border:1px solid var(--divider);border-radius:var(--radius);
     padding:28px 24px;box-shadow:var(--shadow-sm);position:relative;overflow:hidden;
     transition:transform .25s ease,box-shadow .25s ease;}
@@ -226,7 +245,7 @@
   .fcard .glow{position:absolute;bottom:-40px;right:-40px;width:120px;height:120px;border-radius:50%;
     background:radial-gradient(circle,color-mix(in srgb,var(--purple) 60%,transparent),transparent 70%);}
   .fcard .mini{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-    background:radial-gradient(circle at 34% 30%,#fff,color-mix(in srgb,var(--c) 60%,transparent));color:#fff;margin-bottom:16px;box-shadow:0 0 16px color-mix(in srgb,var(--c) 45%,transparent);}
+    background:radial-gradient(circle at 34% 30%,#fff,color-mix(in srgb,var(--c) 60%,transparent));color:#fff;margin-bottom:16px;box-shadow:0 0 10px color-mix(in srgb,var(--c) 32%,transparent);}
   .fcard h3{font-size:17.5px;font-weight:800;margin-bottom:8px;}
   .fcard .d{font-size:13px;color:var(--text-2);line-height:1.8;margin-bottom:14px;}
   .fcard .tags{display:flex;flex-wrap:wrap;gap:7px;}
@@ -253,11 +272,11 @@
   .tab{position:relative;display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:var(--text-2);
     background:var(--card);border:1px solid var(--divider);padding:9px 18px;border-radius:999px;cursor:pointer;
     transition:color .2s ease,border-color .2s ease,background .2s ease;}
-  .tab .dot{width:9px;height:9px;border-radius:50%;background:var(--divider);transition:all .2s ease;}
+  .tab .dot{width:9px;height:9px;border-radius:50%;background:var(--divider);transition:background-color .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease, transform .2s ease, opacity .2s ease;}
   .tab:hover .dot{background:color-mix(in srgb,var(--c) 50%,transparent);}
   .tab.active{color:#fff;background:linear-gradient(135deg,var(--primary-strong),#D98A6E);border-color:transparent;
     box-shadow:0 6px 16px color-mix(in srgb,var(--c) 38%,transparent);}
-  .tab.active .dot{background:#fff;box-shadow:0 0 8px #fff;animation:breath 1.8s ease-in-out infinite;}
+  .tab.active .dot{background:#fff;box-shadow:0 0 5px rgba(255,255,255,.70);animation:breath 1.8s ease-in-out infinite;}
   @keyframes breath{0%,100%{opacity:1}50%{opacity:.4}}
   .panel{background:var(--card);border:1px solid var(--divider);border-radius:var(--radius);padding:30px 28px;
     box-shadow:var(--shadow-sm);min-height:140px;transition:opacity .3s ease;}
@@ -303,7 +322,7 @@
   .qg .desc .pill{display:inline-block;font-size:11.5px;font-weight:700;color:#3a4a55;background:color-mix(in srgb,var(--blue) 50%,var(--card-soft));border:1px solid var(--divider);padding:4px 10px;border-radius:999px;margin:3px 4px 0 0;}
 
   /* ===== (9) 数据收尾 ===== */
-  .data{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:760px;margin:0 auto 30px;}
+  .data{display:grid;grid-template-columns:1fr 1.34fr 1fr;gap:18px;max-width:760px;margin:0 auto 30px;}
   .datac{text-align:center;background:var(--card);border:1px solid var(--divider);border-radius:var(--radius);
     padding:22px 16px;box-shadow:var(--shadow-sm);position:relative;overflow:hidden;}
   .datac::before{content:"";position:absolute;top:-30px;left:50%;transform:translateX(-50%);width:90px;height:90px;border-radius:50%;
@@ -324,7 +343,7 @@
   /* ===== (9) 资产沉淀 ===== */
   .ass{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;max-width:760px;margin:0 auto;}
   .afile{background:var(--card);border:1px solid var(--divider);border-radius:var(--radius);overflow:hidden;
-    transition:all .25s ease;cursor:pointer;display:flex;flex-direction:column;}
+    transition:background-color .25s ease, border-color .25s ease, color .25s ease, box-shadow .25s ease, transform .25s ease, opacity .25s ease;cursor:pointer;display:flex;flex-direction:column;}
   .afile:hover{transform:translateY(-5px);border-color:var(--c);box-shadow:var(--shadow-lg);}
   .afile .preview{flex:1;background:linear-gradient(180deg,var(--card-soft) 0%,var(--card) 100%);
     padding:20px;border-bottom:1px solid var(--divider);display:flex;flex-direction:column;gap:5px;min-height:140px;position:relative;}
@@ -349,8 +368,12 @@
   .foot .contact-line a{color:var(--text-2);text-decoration:underline;}
 
   /* 滚动淡入（三页统一） */
-  .reveal{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s ease;}
-  .reveal.in{opacity:1;transform:none;}
+  /* 纯 CSS 兜底：即使 JS 失效 / 旧缓存，加载后自动淡入，绝不留白 */
+  @keyframes xbRevealIn{from{opacity:0;transform:translateY(26px);}to{opacity:1;transform:none;}}
+  .reveal{opacity:0;transform:translateY(26px);animation:xbRevealIn .9s ease .15s forwards;}
+  .js .reveal{animation:none;transition:opacity .8s ease,transform .8s ease;}
+  .js .reveal.in{opacity:1;transform:none;}
+
 
   @media (max-width:860px){ .sec-head h2{font-size:23px;} }
 
@@ -546,9 +569,33 @@
 
 
   img{max-width:100%;height:auto;display:block;}
+/* 网格错峰入场（轻动效；prefers-reduced-motion 已全局兜底） */
+  .fgrid>*:nth-child(2){transition-delay:.07s;}
+  .fgrid>*:nth-child(3){transition-delay:.14s;}
+  .data>*:nth-child(2){transition-delay:.07s;}
+  .data>*:nth-child(3){transition-delay:.14s;}
+
+
+/* ===== §4.3 反居中：章节标题左对齐 + 副文案右下角对齐 =====
+   封面/页脚保留居中的编辑感，只把重复出现 11-12 次的章节标题改成不对称两列。 */
+.sec-head{text-align:left;margin-bottom:46px;display:grid;
+  grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);column-gap:48px;align-items:end;}
+.sec-head .kcap,.sec-head .eyebrow,.sec-head .num{grid-column:1;grid-row:1;}
+.sec-head h2{grid-column:1;grid-row:2;}
+.sec-head p{grid-column:2;grid-row:2;margin:0 0 2px;max-width:none;}
+@media (max-width:860px){
+  .sec-head{display:block;margin-bottom:40px;}
+  .sec-head p{margin-top:9px;}
+}
+
+/* 数据卡去居中：数字与标签左对齐，装饰光晕同步左移 */
+.datac{text-align:left;}
+.datac::before{left:26px;transform:none;}
 </style>
+<noscript><style>.reveal{opacity:1!important;transform:none!important;animation:none!important;}</style></noscript>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">跳到主内容</a>
 
   <!-- 顶栏 -->
   <div class="topbar">
@@ -559,7 +606,7 @@
     </div>
   </div>
 
-  <div class="wrap">
+  <div class="wrap" id="main-content" tabindex="-1">
 
     <!-- (1) 首屏 KV -->
     <section class="kv" id="kv">
@@ -582,7 +629,7 @@
         </div>
         <div class="mpcode">
           <div class="qr">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
               <rect x="3" y="3" width="7" height="7" rx="1.4"/><rect x="14" y="3" width="7" height="7" rx="1.4"/>
               <rect x="3" y="14" width="7" height="7" rx="1.4"/><path d="M14 14h3v3M21 14v7M14 21h7"/>
             </svg>
@@ -601,19 +648,19 @@
       </div>
       <div class="ov">
         <div class="ovc reveal"><span class="pl"></span>
-          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
           <h3>产品定位</h3><p>多智能体 AI 决策辅助，结构化引导而非直接给答案。</p>
         </div>
         <div class="ovc reveal"><span class="pl"></span>
-          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5z"/></svg>
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5z"/></svg>
           <h3>核心价值</h3><p>降低决策焦虑，把模糊的纠结拆成可衡量的选项。</p>
         </div>
         <div class="ovc reveal"><span class="pl"></span>
-          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
           <h3>我的角色</h3><p>独立主导，从 0 到 1 定义形态与交互。</p>
         </div>
         <div class="ovc reveal"><span class="pl"></span>
-          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>
           <h3>项目周期</h3><p>2026 · 多轮迭代打磨体验。</p>
         </div>
       </div>
@@ -629,12 +676,12 @@
       </div>
       <div class="idea">
         <div class="ideac reveal">
-          <div class="ic"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 6h16M4 12h10M4 18h13"/><circle cx="18" cy="12" r="2.4"/></svg></div>
+          <div class="ic"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h10M4 18h13"/><circle cx="18" cy="12" r="2.4"/></svg></div>
           <h3>场景化决策体系</h3>
           <p>覆盖 7 大高频生活场景，用结构化引导代替空洞建议——先理解你纠结的到底是什么，再陪你把每个选项的利弊摊开。</p>
         </div>
         <div class="ideac reveal">
-          <div class="ic"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="9" r="3.2"/><circle cx="15" cy="15" r="3.2"/><path d="M9 12v4a3 3 0 0 0 3 3h1"/></svg></div>
+          <div class="ic"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="9" r="3.2"/><circle cx="15" cy="15" r="3.2"/><path d="M9 12v4a3 3 0 0 0 3 3h1"/></svg></div>
           <h3>无性别平等设计</h3>
           <p>中立化话术，不预设用户身份，也不替用户做最终选择。所有输出保持克制——陪伴，而不是替代。</p>
         </div>
@@ -670,34 +717,34 @@
       <div class="orbit-note reveal">悬停任意星球，查看对应 Agent 的作用</div>
     </section>
 
-    <!-- (4.5) 背后的实现 · 大白话 -->
+    <!-- (4.5) 四个 Agent 是怎么配合的 -->
     <section class="sec" id="how">
       <div class="sec-head reveal">
         <div class="kcap">HOW IT WORKS</div>
-        <h2>背后的实现 · 大白话</h2>
+        <h2>四个 Agent 是怎么配合的</h2>
         <p>不用懂代码，也能看懂它是怎么工作的</p>
       </div>
       <div class="fgrid">
         <div class="fcard reveal"><span class="glow"></span>
-          <div class="mini"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z" stroke-opacity=".5"/></svg></div>
+          <div class="mini"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z" stroke-opacity=".5"/></svg></div>
           <h3>四 Agent = 决策流程的四步</h3>
           <div class="d">不是「四个机器人开会」，而是把「了解你 → 找方案 → 挑毛病 → 算代价」四个步骤用代码串起来，一步步走完，像一张流程图。</div>
           <div class="tags"><span>流程编排</span><span>步骤化</span><span>非黑盒</span></div>
         </div>
         <div class="fcard reveal"><span class="glow"></span>
-          <div class="mini"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/><circle cx="12" cy="12" r="4"/></svg></div>
+          <div class="mini"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/><circle cx="12" cy="12" r="4"/></svg></div>
           <h3>国产大模型驱动</h3>
           <div class="d">决策分析由国产大模型（DeepSeek / 通义千问）完成，可本地部署、数据可控，不依赖外部黑盒服务。</div>
           <div class="tags"><span>DeepSeek</span><span>通义千问</span><span>本地可控</span></div>
         </div>
         <div class="fcard reveal"><span class="glow"></span>
-          <div class="mini"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h10"/><circle cx="19" cy="16" r="2.5"/></svg></div>
+          <div class="mini"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h16M4 18h10"/><circle cx="19" cy="16" r="2.5"/></svg></div>
           <h3>先查知识库，再回答</h3>
           <div class="d">7 大场景的方案与测试集沉淀成知识库，AI 先检索再组织输出——结论有依据，不凭空发挥。</div>
           <div class="tags"><span>场景知识库</span><span>先查后答</span><span>可追溯</span></div>
         </div>
         <div class="fcard reveal"><span class="glow"></span>
-          <div class="mini"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg></div>
+          <div class="mini"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg></div>
           <h3>双端共用一套逻辑</h3>
           <div class="d">小程序和网页版共用同一套后端决策流程（LangChain 手写状态机编排），写一次、跑两端，体验一致。</div>
           <div class="tags"><span>小程序 + 网页</span><span>一套逻辑</span><span>体验一致</span></div>
@@ -714,19 +761,19 @@
       </div>
       <div class="fgrid">
         <div class="fcard reveal"><span class="glow"></span>
-          <div class="mini"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+          <div class="mini"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
           <h3>双模式需求采集</h3>
           <div class="d">文字对话 + 结构化卡片并行，压缩需求收集轮次，快速定位核心纠结点。</div>
           <div class="tags"><span>自由对话</span><span>结构化卡片</span><span>需求收敛</span></div>
         </div>
         <div class="fcard reveal"><span class="glow"></span>
-          <div class="mini"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18M3 12h18M3 18h18"/><path d="M9 6v12M15 6v12" stroke-opacity=".5"/></svg></div>
+          <div class="mini"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6h18M3 12h18M3 18h18"/><path d="M9 6v12M15 6v12" stroke-opacity=".5"/></svg></div>
           <h3>权衡官中立对比</h3>
           <div class="d">多方案维度化拆解，中立呈现利弊，不替你下结论，只让差异更可见。</div>
           <div class="tags"><span>维度拆解</span><span>中立对比</span><span>利弊可视</span></div>
         </div>
         <div class="fcard reveal"><span class="glow"></span>
-          <div class="mini"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="9"/></svg></div>
+          <div class="mini"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="9"/></svg></div>
           <h3>反事实代价预演</h3>
           <div class="d">所选收益 + 放弃代价 + 总结收束，把「万一后悔」提前算清楚。</div>
           <div class="tags"><span>收益</span><span>放弃代价</span><span>收束建议</span></div>
@@ -762,7 +809,7 @@
     <section class="sec" id="screens">
       <div class="sec-head reveal">
         <div class="kcap">SCREENS</div>
-        <h2>界面实录 · 双端</h2>
+        <h2>双端界面实录</h2>
         <p>微信小程序 + 网页版，同一套「温柔陪伴、理性决策」体验</p>
       </div>
       <div class="sgroup">
@@ -855,7 +902,7 @@
     <section class="sec" id="assets">
       <div class="sec-head reveal">
         <div class="kcap">ASSETS</div>
-        <h2>不只是上线 · 是把方法变成可复用资产</h2>
+        <h2>不替你做决定，只把纠结摊开</h2>
         <p>四份可交付物：分层全场景测试集 / 迭代方案与复盘 / 成本账与腾讯云部署 / Prompt 方法论（跨项目共研）。点击预览。</p>
       </div>
       <div class="ass">
@@ -888,7 +935,7 @@
           </div>
           <div class="meta">
             <h4>成本账与腾讯云部署</h4>
-            <p>四 Agent 单次 0.03–0.06 元 · CloudBase 部署</p>
+            <p>四 Agent 单次 0.03-0.06 元 · CloudBase 部署</p>
             <div class="ft"><span>v1.0 · 3 页 · 234 KB</span><a href="HuanZe-CostCloud.pdf" target="_blank" rel="noopener">预览 →</a></div>
           </div>
         </div>
@@ -911,7 +958,7 @@
       <div class="sec-head reveal">
         <div class="kcap">DATA & CLOSE</div>
         <h2>数据迭代与收尾</h2>
-        <p>6 项核心埋点指标，驱动「数据—反馈—迭代」闭环</p>
+        <p>6 项核心埋点指标，驱动「数据 → 反馈 → 迭代」闭环</p>
       </div>
       <div class="data">
         <div class="datac reveal"><div class="n">6</div><div class="l">核心埋点指标</div></div>
@@ -922,7 +969,7 @@
       <div class="btns reveal">
         <a class="btn btn-primary" href="huanzexingqiu-web/index.html" target="_blank" rel="noopener">打开网页版 ↗</a>
         <a class="btn btn-doc" href="PRD-HuanZe.pdf" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;">
             <path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9 13h6M9 17h6"/>
           </svg>
           查看 PRD ↗
@@ -1004,12 +1051,12 @@
   <aside class="dock" id="dock" aria-label="产品核心信息与资料下载">
     <div class="dock-hd">
       <span class="dock-title">核心信息</span>
-      <button class="dock-btn" id="dockCollapse" type="button" aria-controls="dockInner" aria-expanded="true" title="收起侧栏" aria-label="收起侧栏"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+      <button class="dock-btn" id="dockCollapse" type="button" aria-controls="dockInner" aria-expanded="true" title="收起侧栏" aria-label="收起侧栏"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
     </div>
     <div class="dock-rail" id="dockRail">
-      <button class="rail-btn" type="button" data-expand title="核心信息与关键指标" aria-label="展开并查看核心信息"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
-      <button class="rail-btn" type="button" data-expand title="资料下载（6 份）" aria-label="展开并查看资料下载，共 6 份"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span class="rail-badge">6</span></button>
-      <button class="rail-btn" type="button" id="dockTopRail" title="回到顶部" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg></button>
+      <button class="rail-btn" type="button" data-expand title="核心信息与关键指标" aria-label="展开并查看核心信息"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+      <button class="rail-btn" type="button" data-expand title="资料下载（6 份）" aria-label="展开并查看资料下载，共 6 份"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span class="rail-badge">6</span></button>
+      <button class="rail-btn" type="button" id="dockTopRail" title="回到顶部" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg></button>
     </div>
     <div class="dock-inner" id="dockInner">
       <section>
@@ -1049,13 +1096,13 @@
     </div>
     <div class="dock-foot">
       <button class="dock-top" type="button" id="dockTop">
-        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
         回到顶部
       </button>
     </div>
   </aside>
 
-  <button class="dock-fab" id="dockFab" type="button" aria-controls="dock" aria-expanded="false" aria-label="打开资料与联系方式"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg></button>
+  <button class="dock-fab" id="dockFab" type="button" aria-controls="dock" aria-expanded="false" aria-label="打开资料与联系方式"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg></button>
   <div class="dock-scrim" id="dockScrim"></div>
 
 <script>
@@ -1152,6 +1199,31 @@
       head.setAttribute('aria-expanded', c?'false':'true');
     });
     /* 初始：所有 .layer-4 默认展开，无需 JS 设置 */
+  })();
+</script>
+
+<!-- 独立兜底：与主页脚本完全解耦，确保 .reveal 内容一定可见 -->
+<script>
+  (function(){
+    function reveal(el){ el.classList.add('in'); }
+    function revealInView(){
+      var els = document.querySelectorAll('.reveal:not(.in)');
+      var vh = window.innerHeight || document.documentElement.clientHeight || 0;
+      for(var i=0;i<els.length;i++){
+        var r = els[i].getBoundingClientRect();
+        if(r.top < vh && r.bottom > 0){ reveal(els[i]); }
+      }
+    }
+    if(!('IntersectionObserver' in window)){
+      document.querySelectorAll('.reveal').forEach(reveal);
+      return;
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ reveal(e.target); io.unobserve(e.target); } });
+    },{threshold:.08, rootMargin:'0px 0px -30px 0px'});
+    document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+    var t=0, timer=setInterval(function(){ revealInView(); t+=400; if(t>=3000){ clearInterval(timer); } },400);
+    setTimeout(function(){ document.querySelectorAll('.reveal:not(.in)').forEach(reveal); }, 3200);
   })();
 </script>
 

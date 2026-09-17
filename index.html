@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+<script>document.documentElement.classList.add('js');</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI产品叙事集 · 韩佳雪</title>
@@ -187,8 +188,12 @@
   .foot .copy{color:var(--text-2);font-size:12.5px;margin-top:18px;}
 
   /* ===== 滚动淡入 ===== */
-  .reveal{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s ease;}
-  .reveal.in{opacity:1;transform:none;}
+  /* 纯 CSS 兜底：即使 JS 失效 / 旧缓存，加载后自动淡入，绝不留白 */
+  @keyframes xbRevealIn{from{opacity:0;transform:translateY(26px);}to{opacity:1;transform:none;}}
+  .reveal{opacity:0;transform:translateY(26px);animation:xbRevealIn .9s ease .15s forwards;}
+  .js .reveal{animation:none;transition:opacity .8s ease,transform .8s ease;}
+  .js .reveal.in{opacity:1;transform:none;}
+
 
   @media (max-width:880px){
     .hero{grid-template-columns:1fr;gap:26px;padding:54px 0 36px;}
@@ -198,6 +203,7 @@
     .matrix{grid-template-columns:1fr;}
     .hero::before{width:280px;height:280px;}
   }
+<noscript><style>.reveal{opacity:1!important;transform:none!important;animation:none!important;}</style></noscript>
 </style>
 </head>
 <body>
@@ -393,5 +399,30 @@
   },{threshold:.12});
   document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
 </script>
+<!-- 独立兜底：与主页脚本完全解耦，确保 .reveal 内容一定可见 -->
+<script>
+  (function(){
+    function reveal(el){ el.classList.add('in'); }
+    function revealInView(){
+      var els = document.querySelectorAll('.reveal:not(.in)');
+      var vh = window.innerHeight || document.documentElement.clientHeight || 0;
+      for(var i=0;i<els.length;i++){
+        var r = els[i].getBoundingClientRect();
+        if(r.top < vh && r.bottom > 0){ reveal(els[i]); }
+      }
+    }
+    if(!('IntersectionObserver' in window)){
+      document.querySelectorAll('.reveal').forEach(reveal);
+      return;
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ reveal(e.target); io.unobserve(e.target); } });
+    },{threshold:.08, rootMargin:'0px 0px -30px 0px'});
+    document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+    var t=0, timer=setInterval(function(){ revealInView(); t+=400; if(t>=3000){ clearInterval(timer); } },400);
+    setTimeout(function(){ document.querySelectorAll('.reveal:not(.in)').forEach(reveal); }, 3200);
+  })();
+</script>
+
 </body>
 </html>

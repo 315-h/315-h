@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+<script>document.documentElement.classList.add('js');</script>
+<meta name="theme-color" id="themeColorMeta" content="#F8FAFC">
+<script>
+(function(){
+  var meta=document.getElementById('themeColorMeta');
+  if(!meta) return;
+  function set(dark){ meta.setAttribute('content', dark ? '#1F2937' : '#F8FAFC'); }
+  try{ if(localStorage.getItem('hx-theme')==='dark') set(true); }catch(e){}
+  function watch(){ if(document.body){ new MutationObserver(function(){ set(document.body.classList.contains('dark')); }).observe(document.body,{attributes:true,attributeFilter:['class']}); } else { setTimeout(watch,30); } }
+  if(document.readyState!=='loading') watch(); else document.addEventListener('DOMContentLoaded',watch);
+})();
+</script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>小办 · 详情 ｜ 韩佳雪</title>
@@ -11,6 +24,13 @@
 <meta property="og:image" content="https://315-h.github.io/315-h/shots/xb-workflow.jpg" />
 <meta name="description" content="小办 · 企业行政问答 Agent 详情页：63 条标准 QA、118 条分层评测、RAG 混合检索，在线 Demo 可直接体验。" />
 <style>
+  /* 无障碍：键盘用户跳过顶栏直达主内容 */
+  .skip-link{position:absolute;left:50%;top:10px;transform:translateX(-50%);z-index:9999;
+    padding:10px 20px;border-radius:999px;background:#C9664A;color:#fff;font-size:14px;font-weight:600;
+    text-decoration:none;white-space:nowrap;box-shadow:0 8px 28px rgba(0,0,0,.18);
+    opacity:0;pointer-events:none;transition:opacity .2s ease,transform .2s ease;}
+  .skip-link:focus{opacity:1;pointer-events:auto;outline:2px solid #fff;outline-offset:2px;}
+  #main-content:focus{outline:none;}
   :root{
     --bg:#F8FAFC;        /* 浅灰蓝基底 */
     --card:#FFFFFF;
@@ -69,7 +89,7 @@
   body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.8;
     font-size:15px;letter-spacing:.2px;-webkit-font-smoothing:antialiased;font-weight:400;
     transition:background .4s ease,color .4s ease;overflow-x:hidden;}
-  /* 全局工程网格（更密更明显 — 商务蓝图感） */
+  /* 全局工程网格（更密更明显，商务蓝图感） */
   body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
     background-image:
       linear-gradient(color-mix(in srgb,var(--divider) 85%,transparent) 1px,transparent 1px),
@@ -157,7 +177,7 @@
   .btn.disabled:hover,.btn[aria-disabled="true"]:hover{transform:none;}
 
   /* Hero 右侧三张数据卡 */
-  .mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .mgrid{display:grid;grid-template-columns:1.22fr 1fr 1fr;gap:14px;}
   .mcard{background:var(--card);border:1px solid var(--divider);border-radius:var(--radius);
     padding:22px 18px;position:relative;box-shadow:var(--shadow);overflow:hidden;transition:transform .25s ease,box-shadow .25s ease;}
   .mcard::after{content:"";position:absolute;top:9px;right:11px;width:14px;height:14px;
@@ -172,7 +192,7 @@
   .mcard .delta{margin-top:10px;font-size:11.5px;color:var(--ok);display:inline-flex;align-items:center;gap:3px;font-weight:600;}
 
   /* ===== Section 通用（三页统一节奏） ===== */
-  .sec{padding:64px 0;border-bottom:1px solid var(--divider);}
+  .sec{padding:76px 0;}
   .sec:last-of-type{border-bottom:none;}
   .sec-head{text-align:center;margin-bottom:40px;}
   .sec-head .eyebrow,.sec-head .kcap,.sec-head .num{display:inline-block;font-family:var(--font-mono);font-size:11.5px;letter-spacing:2.5px;font-weight:700;
@@ -186,7 +206,7 @@
   .paintxt .lead{font-size:16px;color:var(--text-2);line-height:1.95;margin-bottom:24px;}
   .pailist{display:flex;flex-direction:column;gap:14px;}
   .pailist .li{display:flex;gap:14px;align-items:flex-start;padding:14px 16px;background:var(--card);
-    border:1px solid var(--divider);border-radius:var(--radius);transition:all .2s ease;}
+    border:1px solid var(--divider);border-radius:var(--radius);transition:background-color .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease, transform .2s ease, opacity .2s ease;}
   .pailist .li:hover{border-color:var(--c);transform:translateX(3px);}
   .pailist .li .dot{width:8px;height:8px;border-radius:50%;background:var(--acc);margin-top:9px;flex-shrink:0;box-shadow:0 0 0 4px var(--acc-tint);}
   .pailist .li h4{font-size:14.5px;font-weight:700;margin-bottom:3px;}
@@ -194,7 +214,7 @@
   .paivis{position:relative;border:1px solid var(--divider);border-radius:var(--radius);background:var(--card);
     padding:30px;box-shadow:var(--shadow);}
   .paivis .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
-  .paivis .icbox{border:1px solid var(--divider);border-radius:var(--radius-sm);padding:18px;background:var(--bg);text-align:center;transition:all .2s ease;}
+  .paivis .icbox{border:1px solid var(--divider);border-radius:var(--radius-sm);padding:18px;background:var(--bg);text-align:center;transition:background-color .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease, transform .2s ease, opacity .2s ease;}
   .paivis .icbox:hover{border-color:var(--c);background:var(--c-tint);}
   .paivis .icbox svg{width:32px;height:32px;margin:0 auto 8px;color:var(--c);}
   .paivis .icbox .lab{font-size:12px;color:var(--text-2);font-weight:600;}
@@ -203,7 +223,7 @@
   .arch{display:flex;flex-direction:column;gap:18px;max-width:760px;margin:0 auto;}
   .alayer{background:var(--card);border:1px solid var(--divider);border-radius:var(--radius);
     padding:22px 24px;display:grid;grid-template-columns:200px 1fr;gap:24px;align-items:start;position:relative;
-    cursor:pointer;transition:all .25s ease;}
+    cursor:pointer;transition:background-color .25s ease, border-color .25s ease, color .25s ease, box-shadow .25s ease, transform .25s ease, opacity .25s ease;}
   .alayer:hover{border-color:var(--c);box-shadow:var(--shadow-lg);transform:translateX(4px);}
   .alayer.active{border-color:var(--c);background:var(--c-tint);}
   .alayer .ic{width:46px;height:46px;border-radius:var(--radius-sm);background:var(--c-tint);color:var(--c);
@@ -220,7 +240,7 @@
   /* ===== (4) 真实工作流（样式见上方 .wf 区块） ===== */
 
   /* ===== (4) 三段式问题解法（守门人卡 · 20px 大圆角 + 等高 + 胶囊标签） ===== */
-  .solve{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:stretch;}
+  .solve{display:grid;grid-template-columns:1fr 1.24fr 1fr;gap:20px;align-items:stretch;}
   .scard{background:var(--card);border:1px solid var(--divider);border-radius:20px;overflow:hidden;
     display:flex;flex-direction:column;transition:transform .25s ease,box-shadow .25s ease;}
   .scard:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
@@ -244,7 +264,7 @@
 
   /* ===== (6) 评测与埋点 ===== */
   .qa{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:center;}
-  .dash{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+  .dash{display:grid;grid-template-columns:1fr 1.3fr 1fr;gap:14px;}
   .dk{background:var(--card);border:1px solid var(--divider);border-radius:var(--radius);padding:18px;position:relative;text-align:left;}
   .dk .n{font-size:32px;font-weight:800;line-height:1;letter-spacing:-1px;color:var(--c);font-feature-settings:"tnum";}
   .dk .l{font-size:12px;color:var(--text-2);font-weight:600;margin-top:6px;letter-spacing:.4px;}
@@ -257,7 +277,7 @@
   /* ===== (7) 资产沉淀 ===== */
   .ass{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
   .afile{background:var(--card);border:1px solid var(--divider);border-radius:var(--radius);overflow:hidden;
-    transition:all .25s ease;cursor:pointer;display:flex;flex-direction:column;}
+    transition:background-color .25s ease, border-color .25s ease, color .25s ease, box-shadow .25s ease, transform .25s ease, opacity .25s ease;cursor:pointer;display:flex;flex-direction:column;}
   .afile:hover{transform:translateY(-5px);border-color:var(--c);box-shadow:var(--shadow-lg);}
   .afile .preview{flex:1;background:linear-gradient(180deg,var(--card-soft) 0%,var(--card) 100%);
     padding:20px;border-bottom:1px solid var(--divider);display:flex;flex-direction:column;gap:5px;min-height:140px;position:relative;}
@@ -280,7 +300,7 @@
   .closesec .le{font-size:15.5px;color:var(--text-2);max-width:620px;margin:0 auto 32px;line-height:1.95;}
   .values{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:36px;}
   .val{background:var(--card);border:1px solid var(--divider);border-radius:var(--radius);padding:18px 22px;
-    text-align:left;flex:1;min-width:220px;max-width:280px;transition:all .2s ease;}
+    text-align:left;flex:1;min-width:220px;max-width:280px;transition:background-color .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease, transform .2s ease, opacity .2s ease;}
   .val:hover{border-color:var(--c);transform:translateY(-3px);}
   .val h4{font-size:15px;font-weight:800;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
   .val h4 svg{width:18px;height:18px;color:var(--c);}
@@ -294,8 +314,12 @@
   .foot .contact-line a{color:var(--text-2);text-decoration:underline;}
 
   /* 滚动淡入（三页统一） */
-  .reveal{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s ease;}
-  .reveal.in{opacity:1;transform:none;}
+  /* 纯 CSS 兜底：即使 JS 完全失效 / 被缓存旧版，加载后也会自动淡入，绝不留白 */
+  @keyframes xbRevealIn{from{opacity:0;transform:translateY(26px);}to{opacity:1;transform:none;}}
+  .reveal{opacity:0;transform:translateY(26px);animation:xbRevealIn .9s ease .15s forwards;}
+  /* 有 JS（<html class="js">）：关掉自动动画，改由 IntersectionObserver 控制滚动淡入，保留动效体验 */
+  .js .reveal{animation:none;transition:opacity .8s ease,transform .8s ease;}
+  .js .reveal.in{opacity:1;transform:none;}
 
   /* ===== (4b) 真实工作流（对齐 graph.py 实现） ===== */
   .wf{max-width:920px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:14px;}
@@ -332,7 +356,7 @@
   .demo-side{background:var(--card);border:1px solid var(--divider);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:14px;}
   .demo-side h4{font-size:14.5px;font-weight:800;}
   .demo-chips{display:flex;flex-direction:column;gap:8px;}
-  .chip{font-size:12.5px;text-align:left;padding:9px 12px;border:1px solid var(--divider-strong);background:var(--bg);color:var(--text-2);border-radius:var(--radius-sm);cursor:pointer;transition:all .18s ease;font-weight:600;}
+  .chip{font-size:12.5px;text-align:left;padding:9px 12px;border:1px solid var(--divider-strong);background:var(--bg);color:var(--text-2);border-radius:var(--radius-sm);cursor:pointer;transition:background-color .18s ease, border-color .18s ease, color .18s ease, box-shadow .18s ease, transform .18s ease, opacity .18s ease;font-weight:600;}
   .chip:hover{border-color:var(--c);color:var(--c);transform:translateX(3px);}
   .chip.on{background:var(--c-tint);border-color:var(--c);color:var(--c);}
   .demo-note{font-size:11.5px;color:var(--text-3);line-height:1.7;border-top:1px dashed var(--divider);padding-top:12px;margin-top:auto;}
@@ -344,7 +368,7 @@
   .chat-head{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;border-bottom:1px solid var(--divider);font-size:13.5px;font-weight:800;background:var(--card-soft);}
   .chat-head .demo-tag{font-family:var(--mono);font-size:10px;letter-spacing:1px;background:var(--acc);color:#fff;padding:2px 7px;border-radius:3px;font-weight:700;}
   .engine-switch{display:inline-flex;gap:4px;align-items:center;margin-left:auto;margin-right:10px;}
-  .engine-btn{font-family:var(--mono);font-size:10.5px;padding:4px 10px;border:1px solid var(--divider-strong);background:var(--card);color:var(--text-2);border-radius:999px;cursor:pointer;font-weight:700;letter-spacing:.3px;transition:all .18s ease;}
+  .engine-btn{font-family:var(--mono);font-size:10.5px;padding:4px 10px;border:1px solid var(--divider-strong);background:var(--card);color:var(--text-2);border-radius:999px;cursor:pointer;font-weight:700;letter-spacing:.3px;transition:background-color .18s ease, border-color .18s ease, color .18s ease, box-shadow .18s ease, transform .18s ease, opacity .18s ease;}
   .engine-btn.on{background:var(--c);color:#fff;border-color:var(--c);}
   .engine-btn:hover:not(.on){border-color:var(--c);color:var(--c);}
   .chat-body{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:14px;min-height:380px;max-height:480px;}
@@ -574,11 +598,34 @@
 
 
   img{max-width:100%;height:auto;display:block;}
+
+  /* 网格错峰入场（轻动效；prefers-reduced-motion 已全局兜底） */
+  .mgrid>*:nth-child(2){transition-delay:.07s;}
+  .mgrid>*:nth-child(3){transition-delay:.14s;}
+  .solve>*:nth-child(2){transition-delay:.07s;}
+  .solve>*:nth-child(3){transition-delay:.14s;}
+  .dash>*:nth-child(2){transition-delay:.07s;}
+  .dash>*:nth-child(3){transition-delay:.14s;}
+
+
+/* ===== 反居中 · 变体 B：标题左侧 2px 短竖线 =====
+   与 jingli / huanze 的「左标题 + 右下副文两列」刻意不同，避免四页套同一个模板。 */
+.sec-head{text-align:left;margin-bottom:42px;padding-left:16px;}
+.sec-head h2{position:relative;}
+.sec-head h2::before{content:"";position:absolute;left:-16px;top:.14em;bottom:.14em;
+  width:2px;border-radius:2px;background:var(--c);}
+.sec-head p{margin-left:0;margin-right:0;max-width:640px;}
+/* 标题下原有的 36px 横线与左竖线会打架，先隐藏（HTML 保留，删掉本行即恢复） */
+.sec-head .rule{display:none;}
+/* hero 里的 sec-head 是主标题，不加缩进与竖线 */
+.hero .sec-head{padding-left:0;text-align:left;}
 </style>
+<noscript><style>.reveal{opacity:1!important;transform:none!important;animation:none!important;}</style></noscript>
   <script src="qa_data.js"></script>
   <script src="xiaoban_docs.js"></script>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">跳到主内容</a>
 
   <!-- 顶栏 -->
   <div class="topbar">
@@ -589,13 +636,13 @@
     </div>
   </div>
 
-  <div class="wrap">
+  <div class="wrap" id="main-content" tabindex="-1">
 
     <!-- (1) Hero -->
     <section class="hero">
       <div class="reveal">
         <div class="sec-head" style="margin-bottom:0">
-          <div class="num">01 / 项目首屏</div>
+          <div class="num">项目首屏</div>
           <h1>小<span class="acc">办</span></h1>
           <p class="sub">把企业知识问答，从「能回答」做成「能办事」的 Agent —— 答得出给依据，答不出不硬编。把 HR 最耗时的重复答疑（请假 / 报销 / 办公用品）交给 AI，已规划 <b style="color:var(--c)">「追问-打开-细读-验证」办事闭环 + 组织权限透传</b>（演进中）。</p>
         </div>
@@ -625,9 +672,9 @@
         </div>
       </div>
       <div class="hero-note reveal">
-        <span><b>我的角色：</b>独立主导（2026.07–2026.08）</span>
+        <span><b>我的角色：</b>独立主导（2026.07-2026.08）</span>
         <span><b>负责：</b>制度 QA 梳理 · 63 条标准库 · 118 条分层评测 · RAG 检索链路 · 迭代修复</span>
-        <span><b>数据口径：</b>118 条人工逐条核对，按 L0 极端边界 / L1 库内高频 / L2 全量正常分层 —— L1 100% / L2 93.1% / L0 75–81% / 整体 91.5%。「整体准确率」是虚荣指标，分层才能暴露短板，详见「07 / 质量评测」</span>
+        <span><b>数据口径：</b>118 条人工逐条核对，按 L0 极端边界 / L1 库内高频 / L2 全量正常分层 —— L1 100% / L2 93.1% / L0 75-81% / 整体 91.5%。「整体准确率」是虚荣指标，分层才能暴露短板，详见「07 / 质量评测」</span>
       </div>
     </section>
 
@@ -642,14 +689,14 @@
         <div class="ovcell"><div class="t">产品定位</div><div class="d">企业行政制度问答 Agent，<b>从「能回答」走向「能办事」</b> —— 覆盖请假 / 报销 / 办公用品三大高频场景。</div></div>
         <div class="ovcell"><div class="t">核心价值</div><div class="d"><b>答得出给依据，答不出不硬编</b> —— 引用制度条款 + 判定结论，答不上就明说，绝不硬编。</div></div>
         <div class="ovcell"><div class="t">我的角色</div><div class="d">独立主导，从 0 到 1 完成定义、实现与迭代。</div></div>
-        <div class="ovcell"><div class="t">项目周期</div><div class="d">2026.07 – 2026.08 · <b>Coze 原型验证 → LangChain 手写状态机自研</b>（非 LangGraph）。</div></div>
+        <div class="ovcell"><div class="t">项目周期</div><div class="d">2026.07 - 2026.08 · <b>Coze 原型验证 → LangChain 手写状态机自研</b>（非 LangGraph）。</div></div>
       </div>
     </section>
 
     <!-- (2) 项目背景与业务痛点 -->
     <section class="sec">
       <div class="sec-head reveal">
-        <div class="num">02 / 项目背景</div>
+        <div class="num">项目背景</div>
         <h2>把「重复答疑」从 HR 肩上挪走</h2>
         <p>1000+ 人企业内部，每天有一半行政咨询是"上周已答过"的同类问题。这是 HR 最耗心力、却最不创造价值的工作。</p>
         <div class="rule"></div>
@@ -658,18 +705,18 @@
         <div class="paintxt reveal">
           <p class="lead">每一家成长型企业都会遇到的「行政咨询瓶颈」：</p>
           <div class="pailist">
-            <div class="li"><div class="dot"></div><div><h4>口径不一 · 答案随人变</h4><p>同一条制度，不同 HR 给出的解释差异 30%+，员工到处求证。</p></div></div>
-            <div class="li"><div class="dot"></div><div><h4>响应滞后 · 业务被打断</h4><p>员工报账、请假、报销遇问题，平均要等 4.5h 才得到回复，协作阻塞。</p></div></div>
-            <div class="li"><div class="dot"></div><div><h4>重复咨询 · 占满 HR 70% 工作</h4><p>"年假怎么算""加班怎么报"等高频问题每周被问 30+ 次。</p></div></div>
-            <div class="li"><div class="dot"></div><div><h4>知识无沉淀 · 新人 HR 接不住</h4><p>老 HR 离职后，制度问答经验断层，新人 HR 接电话手忙脚乱。</p></div></div>
+            <div class="li"><div class="dot"></div><div><h4>口径不一，答案随人变</h4><p>同一条制度，不同 HR 给出的解释差异 30%+，员工到处求证。</p></div></div>
+            <div class="li"><div class="dot"></div><div><h4>响应滞后，业务被打断</h4><p>员工报账、请假、报销遇问题，平均要等 4.5h 才得到回复，协作阻塞。</p></div></div>
+            <div class="li"><div class="dot"></div><div><h4>重复咨询，占满 HR 70% 工作</h4><p>"年假怎么算""加班怎么报"等高频问题每周被问 30+ 次。</p></div></div>
+            <div class="li"><div class="dot"></div><div><h4>知识无沉淀，新人 HR 接不住</h4><p>老 HR 离职后，制度问答经验断层，新人 HR 接电话手忙脚乱。</p></div></div>
           </div>
         </div>
         <div class="paivis reveal">
           <div class="grid2">
-            <div class="icbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/></svg><div class="lab">多版本口径</div></div>
-            <div class="icbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg><div class="lab">4.5h 响应</div></div>
-            <div class="icbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg><div class="lab">重复答疑</div></div>
-            <div class="icbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 4h12l4 4v12H4z"/><path d="M16 4v4h4"/></svg><div class="lab">知识断层</div></div>
+            <div class="icbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/></svg><div class="lab">多版本口径</div></div>
+            <div class="icbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg><div class="lab">4.5h 响应</div></div>
+            <div class="icbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg><div class="lab">重复答疑</div></div>
+            <div class="icbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4h12l4 4v12H4z"/><path d="M16 4v4h4"/></svg><div class="lab">知识断层</div></div>
           </div>
         </div>
       </div>
@@ -678,14 +725,14 @@
     <!-- (3) AI 系统三层架构 -->
     <section class="sec">
       <div class="sec-head reveal">
-        <div class="num">03 / 系统架构</div>
-        <h2>三层架构 · 把 AI 工具接到企业现场</h2>
+        <div class="num">系统架构</div>
+        <h2>三层架构：把 AI 工具接到企业现场</h2>
         <p>应用层做入口、AI 能力层做推理、数据层做沉淀。鼠标悬停任意一层，看它在系统里承担什么角色。</p>
         <div class="rule"></div>
       </div>
       <div class="arch">
         <div class="alayer reveal" tabindex="0" aria-label="应用层：飞书机器人作为唯一对话入口，员工在原有工作流里直接提问，零迁移成本。" data-info="飞书机器人作为唯一对话入口，员工在原有工作流里直接提问，零迁移成本。">
-          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 10h10M7 14h6"/></svg></div>
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 10h10M7 14h6"/></svg></div>
           <div>
             <h3>应用层 <span class="tag">APPLICATION</span></h3>
             <p class="desc">嵌入式对话入口，员工不跳出原有工作流即可问。</p>
@@ -693,7 +740,7 @@
           </div>
         </div>
         <div class="alayer reveal" tabindex="0" aria-label="AI 能力层：标准 QA 优先召回 → 双路混合检索兜底 → 规则冲突校验 → 三级兜底，每一层出问题都有降级策略。" data-info="标准 QA 优先召回 → 双路混合检索兜底 → 规则冲突校验 → 三级兜底，每一层出问题都有降级策略。">
-          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l3 3M16 16l3 3M5 19l3-3M16 8l3-3"/><circle cx="12" cy="12" r="4"/></svg></div>
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l3 3M16 16l3 3M5 19l3-3M16 8l3-3"/><circle cx="12" cy="12" r="4"/></svg></div>
           <div>
             <h3>AI 能力层 <span class="tag">AGENT</span></h3>
             <p class="desc">RAG + Agent 多级协同，含规则校验与三级兜底。</p>
@@ -701,7 +748,7 @@
           </div>
         </div>
         <div class="alayer reveal" tabindex="0" aria-label="数据层：制度文档做向量切分，标准 QA 做结构化表，两路并联检索提升召回。" data-info="制度文档做向量切分，标准 QA 做结构化表，两路并联检索提升召回。">
-          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg></div>
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg></div>
           <div>
             <h3>数据层 <span class="tag">KNOWLEDGE</span></h3>
             <p class="desc">制度文档 + 结构化 QA 双轨知识源，支撑检索与版本管理。</p>
@@ -715,7 +762,7 @@
     <section class="sec">
       <div class="sec-head reveal">
         <div class="num">工作流实录</div>
-        <h2>Coze 工作流 · 落地实拍</h2>
+        <h2>Coze 工作流落地实拍</h2>
         <p>标准 QA 优先命中 → 双路混合检索 → 规则冲突校验 → 三级兜底的节点编排</p>
         <div class="rule"></div>
       </div>
@@ -727,7 +774,7 @@
     <!-- (4) 部分命中 · 真实问题攻坚 -->
     <section class="sec">
       <div class="sec-head reveal">
-        <div class="num">04 / 问题攻坚</div>
+        <div class="num">问题攻坚</div>
         <h2>「部分命中」是怎么被我揪出来修好的</h2>
         <p>上线后实测回归用例，发现一类反复出现的问题：明明是知识库里的内容，换种说法就不命中；或明明检索到了答案，却输出了兜底话术。下面是完整诊断与修复。</p>
         <div class="rule"></div>
@@ -740,9 +787,9 @@
             <tr><th>实测用例</th><th>得分</th><th>实际分支</th><th>表现</th><th>根因归类</th></tr>
           </thead>
           <tbody>
-            <tr><td class="id">TC-S01 工作满 3 年年假</td><td class="pass">90 PASS</td><td class="mini">正常回答</td><td class="mini">5 天 / 1–10 年 准确命中</td><td class="mini">—</td></tr>
-            <tr><td class="id">TC-S02 显示器换新</td><td class="pass">100 PASS</td><td class="mini">正常回答</td><td class="mini">更换周期 / 维修准确</td><td class="mini">—</td></tr>
-            <tr><td class="id">TC-S03 商务宴请标准</td><td class="pass">90 PASS</td><td class="mini">正常回答</td><td class="mini">200 / 5000、审批层级命中</td><td class="mini">—</td></tr>
+            <tr><td class="id">TC-S01 工作满 3 年年假</td><td class="pass">90 PASS</td><td class="mini">正常回答</td><td class="mini">5 天 / 1-10 年 准确命中</td><td class="mini">-</td></tr>
+            <tr><td class="id">TC-S02 显示器换新</td><td class="pass">100 PASS</td><td class="mini">正常回答</td><td class="mini">更换周期 / 维修准确</td><td class="mini">-</td></tr>
+            <tr><td class="id">TC-S03 商务宴请标准</td><td class="pass">90 PASS</td><td class="mini">正常回答</td><td class="mini">200 / 5000、审批层级命中</td><td class="mini">-</td></tr>
             <tr><td class="id">TC-S04 新员工办公用品</td><td class="fail">60 FAIL</td><td class="mini">正常回答（检索 + LLM）</td><td class="mini">未列出具体物品清单</td><td class="rc"><b>守门人①</b> 字符重叠非语义，改写稀释重叠比；同义词字段未参与匹配</td></tr>
             <tr><td class="id">TC-S05 病假工资</td><td class="fail">60 FAIL</td><td class="mini">全局兜底「未明确规定」</td><td class="mini">库里有答案却走了兜底</td><td class="rc"><b>守门人②③</b> 短条款被启发式误杀 + 路由按向量分划档，与「能否回答」脱节</td></tr>
             <tr><td class="id">TC-S06 加班打车票据</td><td class="fail">60 FAIL</td><td class="mini">标准 QA 命中但回答为空</td><td class="mini">命中后返回空串</td><td class="rc"><b>守门人①</b> 命中后未做空值兜底</td></tr>
@@ -756,7 +803,7 @@
         <div class="scard reveal">
           <div class="hd">
             <div class="hd-left">
-              <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg></div>
+              <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg></div>
               <div class="title">守门人① 标准问答匹配</div>
             </div>
             <div class="no">A</div>
@@ -775,7 +822,7 @@
         <div class="scard reveal">
           <div class="hd">
             <div class="hd-left">
-              <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg></div>
+              <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg></div>
               <div class="title">守门人② 检索 → 兜底路由</div>
             </div>
             <div class="no">B</div>
@@ -794,7 +841,7 @@
         <div class="scard reveal">
           <div class="hd">
             <div class="hd-left">
-              <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4v5c0 4.5-3.4 8.6-8 10-4.6-1.4-8-5.5-8-10V7l8-4z"/></svg></div>
+              <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4v5c0 4.5-3.4 8.6-8 10-4.6-1.4-8-5.5-8-10V7l8-4z"/></svg></div>
               <div class="title">守门人③ 兜底节点</div>
             </div>
             <div class="no">C</div>
@@ -815,7 +862,7 @@
       <!-- 产品流程图 -->
       <div class="reveal" style="margin-top:46px">
         <div class="sec-head" style="margin-bottom:18px">
-          <div class="num">05 / 产品流程</div>
+          <div class="num">产品流程</div>
           <h2 style="font-size:22px">修复后的完整链路</h2>
           <p style="margin-top:10px;font-size:13px;color:var(--text-2);line-height:1.75;max-width:760px;margin-left:auto;margin-right:auto"><b style="color:var(--c)">架构设计：</b>标准问答优先 + 双路混合检索 + 规则冲突校验 + 三级分级兜底，每个分支都有明确路由依据，而非凭相似度硬答。</p>
         </div>
@@ -986,8 +1033,8 @@
     <!-- (6) 交互体验 Demo -->
     <section class="sec" id="demo">
       <div class="sec-head reveal">
-        <div class="num">06 / 交互体验</div>
-        <h2>不只看图 · 直接上手问一句</h2>
+        <div class="num">交互体验</div>
+        <h2>不只看图，直接上手问一句</h2>
         <p>内置 63 条脱敏制度问答，前端本地语义检索模拟真实全流程（标准 QA 直答 / 混合检索 / 兜底）。回答下方可展开「检索召回 Top3」与「运行链路」，看看这次提问走了哪条路。</p>
         <div class="rule"></div>
       </div>
@@ -1032,7 +1079,7 @@
     <section class="sec">
       <div class="sec-head reveal">
         <div class="num">演进对比</div>
-        <h2>两版实现 · 准确率演进</h2>
+        <h2>两版实现的准确率演进</h2>
         <p>同一个问答任务，从「关键词匹配」到「LLM 检索增强」，实测准确率的变化</p>
         <div class="rule"></div>
       </div>
@@ -1059,8 +1106,8 @@
     <!-- (7) 质量评测 -->
     <section class="sec">
       <div class="sec-head reveal">
-        <div class="num">07 / 质量评测</div>
-        <h2>用测试集锁住稳定性 · 用闭环驱动迭代</h2>
+        <div class="num">质量评测</div>
+        <h2>用测试集锁住稳定性</h2>
         <p>12 类维度、118 条用例、3 级优先级——把"AI 表现波动"压成可量化的工程指标。</p>
         <div class="rule"></div>
       </div>
@@ -1107,7 +1154,7 @@
     <!-- (7.5) 演进方向（规划中） -->
     <section class="sec">
       <div class="sec-head reveal">
-        <div class="num">07.5 / 演进方向</div>
+        <div class="num">演进方向</div>
         <h2>从「问答工具」走向「办事 Agent」（规划中）</h2>
         <p>跳出一问一答，走「追问-打开-细读-验证」四步办事循环 + 组织权限全链路透传。</p>
         <div class="rule"></div>
@@ -1133,8 +1180,8 @@
     <!-- (8) 资产沉淀 -->
     <section class="sec">
       <div class="sec-head reveal">
-        <div class="num">08 / 资产沉淀</div>
-        <h2>不只是上线 · 是把方法变成可复用资产</h2>
+        <div class="num">资产沉淀</div>
+        <h2>从「能回答」到「能办事」</h2>
         <p>七份可交付物：标准 PRD / 全场景测试集 / 工作流源文件 / 迭代复盘与 V2 规划 / 评测体系一页纸 / 单次问答成本账 / Prompt 方法论。点击预览。</p>
         <div class="rule"></div>
       </div>
@@ -1180,7 +1227,7 @@
           <div class="meta">
             <h4>迭代方案与复盘（含 V2 规划）</h4>
             <p>v1.0 → 扣子实测全链路 + V2 升级规划</p>
-            <div class="ft"><span>v1.0–V2 · 10 页 · 498 KB</span><a href="XiaoBan-Retro.pdf" target="_blank" rel="noopener">预览 →</a></div>
+            <div class="ft"><span>v1.0-V2 · 10 页 · 498 KB</span><a href="XiaoBan-Retro.pdf" target="_blank" rel="noopener">预览 →</a></div>
           </div>
         </div>
         <div class="afile reveal">
@@ -1201,7 +1248,7 @@
           </div>
           <div class="meta">
             <h4>单次问答成本账与缓存</h4>
-            <p>单次 4–5 分 → 1 分以内 · 缓存策略</p>
+            <p>单次 4-5 分 → 1 分以内 · 缓存策略</p>
             <div class="ft"><span>v1.0 · 3 页 · 258 KB</span><a href="XiaoBan-CostCache.pdf" target="_blank" rel="noopener">预览 →</a></div>
           </div>
         </div>
@@ -1221,22 +1268,22 @@
 
     <!-- (9) 业务价值与收尾 -->
     <section class="closesec">
-      <div class="sec-head reveal" style="text-align:center">
-        <div class="num" style="text-align:center">09 / 业务价值</div>
-        <h2>省下来的人力 · 留给真正的人</h2>
+      <div class="sec-head reveal">
+        <div class="num">业务价值</div>
+        <h2>把省下来的人力，留给真正的人</h2>
         <p class="le">AI 拿走重复答疑，让 HR 去处理真正需要判断的事——入职面谈、组织氛围、员工关系。这是工具该有的位置。</p>
       </div>
       <div class="values">
         <div class="val reveal">
-          <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8"/></svg>降本提效</h4>
+          <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 17l6-6 4 4 8-8"/></svg>降本提效</h4>
           <p>每周节省 HR 答疑时间 10h+，响应时长从 4.5h 缩到实时。</p>
         </div>
         <div class="val reveal">
-          <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>可复用模板</h4>
+          <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>可复用模板</h4>
           <p>PRD / 测试集 / 工作流均为可复用模板，适配同类企业场景。</p>
         </div>
         <div class="val reveal">
-          <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg>可快速部署</h4>
+          <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12l5 5L20 7"/></svg>可快速部署</h4>
           <p>从 0 到 1 跑通生产环境，最快 2 周可上线，含飞书机器人集成。</p>
         </div>
       </div>
@@ -1245,7 +1292,7 @@
         <a class="btn btn-ghost" href="portfolio.html">← 返回作品集首页</a>
       </div>
       <div style="margin-top:32px;font-family:var(--mono);font-size:11.5px;color:var(--text-3);letter-spacing:1px">
-        ROLE · 独立主导 &nbsp;|&nbsp; DURATION · 2026.Q1 — Q2 &nbsp;|&nbsp; STATUS · 已交付 / 线上运行
+        ROLE 独立主导 &nbsp;|&nbsp; DURATION 2026.Q1 - Q2 &nbsp;|&nbsp; STATUS 已交付 / 线上运行
       </div>
     </section>
 
@@ -1896,12 +1943,12 @@
   <aside class="dock" id="dock" aria-label="产品核心信息与资料下载">
     <div class="dock-hd">
       <span class="dock-title">核心信息</span>
-      <button class="dock-btn" id="dockCollapse" type="button" aria-controls="dockInner" aria-expanded="true" title="收起侧栏" aria-label="收起侧栏"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+      <button class="dock-btn" id="dockCollapse" type="button" aria-controls="dockInner" aria-expanded="true" title="收起侧栏" aria-label="收起侧栏"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
     </div>
     <div class="dock-rail" id="dockRail">
-      <button class="rail-btn" type="button" data-expand title="核心信息与关键指标" aria-label="展开并查看核心信息"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
-      <button class="rail-btn" type="button" data-expand title="资料下载（8 份）" aria-label="展开并查看资料下载，共 8 份"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span class="rail-badge">8</span></button>
-      <button class="rail-btn" type="button" id="dockTopRail" title="回到顶部" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg></button>
+      <button class="rail-btn" type="button" data-expand title="核心信息与关键指标" aria-label="展开并查看核心信息"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+      <button class="rail-btn" type="button" data-expand title="资料下载（8 份）" aria-label="展开并查看资料下载，共 8 份"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span class="rail-badge">8</span></button>
+      <button class="rail-btn" type="button" id="dockTopRail" title="回到顶部" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg></button>
     </div>
     <div class="dock-inner" id="dockInner">
       <section>
@@ -1913,7 +1960,7 @@
         <div class="kv-rows">
           <div class="kv-row"><div class="k">定位</div><div class="v">企业行政制度问答 · 替代 HR 高频重复答疑</div></div>
           <div class="kv-row"><div class="k">角色</div><div class="v">独立主导</div></div>
-          <div class="kv-row"><div class="k">周期</div><div class="v">2026.07 – 2026.08</div></div>
+          <div class="kv-row"><div class="k">周期</div><div class="v">2026.07 - 2026.08</div></div>
           <div class="kv-row"><div class="k">载体</div><div class="v">飞书入口 · Coze + 自托管双版本</div></div>
         </div>
       </section>
@@ -1943,13 +1990,13 @@
     </div>
     <div class="dock-foot">
       <button class="dock-top" type="button" id="dockTop">
-        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
         回到顶部
       </button>
     </div>
   </aside>
 
-  <button class="dock-fab" id="dockFab" type="button" aria-controls="dock" aria-expanded="false" aria-label="打开资料与联系方式"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg></button>
+  <button class="dock-fab" id="dockFab" type="button" aria-controls="dock" aria-expanded="false" aria-label="打开资料与联系方式"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg></button>
   <div class="dock-scrim" id="dockScrim"></div>
 
 <script>
@@ -2046,6 +2093,33 @@
       head.setAttribute('aria-expanded', c?'false':'true');
     });
     /* 初始：所有 .layer-4 默认展开，无需 JS 设置 */
+  })();
+</script>
+
+<!-- 独立兜底：与主页脚本完全解耦，确保 .reveal 内容一定可见（主脚本报错 / IO 失效 / load 未触发都不会留白） -->
+<script>
+  (function(){
+    function reveal(el){ el.classList.add('in'); }
+    function revealInView(){
+      var els = document.querySelectorAll('.reveal:not(.in)');
+      var vh = window.innerHeight || document.documentElement.clientHeight || 0;
+      for(var i=0;i<els.length;i++){
+        var r = els[i].getBoundingClientRect();
+        if(r.top < vh && r.bottom > 0){ reveal(els[i]); }
+      }
+    }
+    if(!('IntersectionObserver' in window)){
+      document.querySelectorAll('.reveal').forEach(reveal);
+      return;
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ reveal(e.target); io.unobserve(e.target); } });
+    },{threshold:.08, rootMargin:'0px 0px -30px 0px'});
+    document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+    // 安全网：每 400ms 把「已在视口内却未显示」的补上，最多 3 秒，避免首屏留白
+    var t=0, timer=setInterval(function(){ revealInView(); t+=400; if(t>=3000){ clearInterval(timer); } },400);
+    // 最终兜底：3.2 秒后仍隐藏的全部强制显示（绝不留白）
+    setTimeout(function(){ document.querySelectorAll('.reveal:not(.in)').forEach(reveal); }, 3200);
   })();
 </script>
 

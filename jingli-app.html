@@ -7,7 +7,7 @@
 <style>
   /* ===================== 设计变量（严格遵循给定色值） ===================== */
   :root{
-    --bg:#FCFAF5;          /* 暖米白基底 */
+    --bg:#F6F6F5;          /* 暖米白基底 */
     --primary:#F2A987;     /* 低饱和暖珊瑚橙（主色） */
     --primary-press:#E8977A;/* 主色按压态，仅交互反馈用 */
     --blue:#94B8D9;        /* 柔雾浅蓝（跳色·小面积） */
@@ -42,7 +42,7 @@
 
   /* 深色模式（暖调深底，不使用纯黑） */
   body.dark{
-    --bg:#262320;
+    --bg:#242423;
     --card:#322D28;
     --card-soft:#2E2925;
     --text:#EDE6DC;
@@ -390,7 +390,7 @@
   .block-tag.blue{background:rgba(148,184,217,.16);color:var(--tag-blue-fg);}
   .block-tag.green{background:rgba(185,203,185,.22);color:var(--tag-green-fg);}
   .block-tag.coral{background:rgba(242,169,135,.14);color:var(--primary-press);}
-  /* 强调色—模块映射：左描边强化「色—模块」扫读线索（与 block-tag 配色一致） */
+  /* 强调色-模块映射：左描边强化「色-模块」扫读线索（与 block-tag 配色一致） */
   .block-card.accent-blue{border-left:4px solid var(--tag-blue-fg);}
   .block-card.accent-green{border-left:4px solid var(--tag-green-fg);}
   .block-card.accent-coral{border-left:4px solid var(--primary);}
@@ -976,19 +976,19 @@
   <div id="pdf-cover">
     <div class="cover-card">
       <div class="cover-top">
-        <span class="cover-no">档案编号 <b id="cover-no">—</b></span>
+        <span class="cover-no">档案编号 <b id="cover-no">-</b></span>
         <span class="cover-seal">仅本地保存</span>
       </div>
       <div class="cover-brand">经历翻译官 · JINGLI</div>
       <div class="cover-title">求职诊断报告</div>
       <div class="cover-line"></div>
       <div class="cover-meta">
-        <div class="cover-row"><span>目标岗位</span><b id="cover-job">—</b></div>
-        <div class="cover-row"><span>分析模式</span><b id="cover-mode">—</b></div>
-        <div class="cover-row"><span>求职阶段</span><b id="cover-stage">—</b></div>
-        <div class="cover-row"><span>沟通风格</span><b id="cover-style">—</b></div>
+        <div class="cover-row"><span>目标岗位</span><b id="cover-job">-</b></div>
+        <div class="cover-row"><span>分析模式</span><b id="cover-mode">-</b></div>
+        <div class="cover-row"><span>求职阶段</span><b id="cover-stage">-</b></div>
+        <div class="cover-row"><span>沟通风格</span><b id="cover-style">-</b></div>
       </div>
-      <div class="cover-date" id="cover-date">—</div>
+      <div class="cover-date" id="cover-date">-</div>
     </div>
   </div>
 
@@ -1112,7 +1112,11 @@ const COZE_BOT_ID = "7666786397797744649";
 /* 公网后端（CloudBase 云托管，https）：配置后本地与线上都走真实 AI；
    置空则回退原行为——本地连 localhost 后端、线上纯离线 mock（避免连不存在的后端报错） */
 const PUBLIC_API_BASE = "https://jingli-backend-300788-11-1459218742.sh.run.tcloudbase.com";
-const COZE_BASE_URL = PUBLIC_API_BASE || "http://localhost:8000";
+/* 本机后端地址（用 127.0.0.1 直连 IPv4，绕开 localhost→::1 的 IPv6 解析差异）：
+   公网云托管不可用时（实例回收 / 资源包过期 / 环境隔离）由 pickBackendBase 自动回退到这里 */
+const LOCAL_API_BASE = "http://127.0.0.1:8000";
+/* 运行时可切换：初始仍取公网（若有），实际生效地址由 pickBackendBase 探测后决定 */
+let COZE_BASE_URL = PUBLIC_API_BASE || LOCAL_API_BASE;
 const COZE_API_TOKEN = "f604a706685fb71bfcb7db661fd39d05";
 // ===============================================
 /* ---------- 静态选项 ---------- */
@@ -1290,6 +1294,7 @@ async function uploadResumeImage(file){
   const card  = document.getElementById('fast-upload');
   if(title) title.textContent = '识别中…（图片理解）';
   if(card)  card.style.opacity = '.6';
+  await pickBackendBase();                        /* 自动选主：公网不可用时回落本机后端 */
   const url = (COZE_BASE_URL||'').replace(/\/+$/,'') + '/ocr';
   try{
     const fd = new FormData();
@@ -1378,9 +1383,41 @@ async function fetchWithTimeout(url, options, timeoutMs){
   if(lastErr && lastErr.name==='AbortError') throw new Error('请求超时（'+Math.round((timeoutMs||API_TIMEOUT_MS)/1000)+' 秒未响应）');
   throw new Error((lastErr&&lastErr.message)||'无法连接后端');
 }
+/* ---------- 后端自动选主（新增；不改变任何既有请求函数的内部逻辑） ----------
+ * 依次探测候选后端的 /ping，命中第一个返回 2xx 者即设为 COZE_BASE_URL：
+ *   ① 本机后端（仅本地 / file:// 打开时纳入）—— 毫秒级、不受云托管配额影响
+ *   ② 公网云托管 —— 线上唯一候选，也是本机后端未启动时的兜底
+ * 全部不可达时保持原配置，由各调用方继续走既有「回退内置演示数据」路径，页面不白屏。
+ * 探测失败通常立即返回（连接被拒 / 网关 5xx），不会明显拖慢首屏。 */
+let BACKEND_BASE_PICKED = null;
+async function pickBackendBase(force){
+  if(BACKEND_BASE_PICKED && !force) return BACKEND_BASE_PICKED;
+  const cands = [];
+  if(!IS_ONLINE) cands.push(LOCAL_API_BASE);
+  if(PUBLIC_API_BASE) cands.push(PUBLIC_API_BASE);
+  for(let i=0; i<cands.length; i++){
+    const base = cands[i];
+    let ok = false;
+    try{
+      const r = await fetchWithTimeout(base.replace(/\/+$/,'') + '/ping', { method:'GET' }, 4000);
+      ok = !!(r && r.ok);
+    }catch(e){ ok = false; }
+    if(ok){
+      const changed = (COZE_BASE_URL !== base);
+      COZE_BASE_URL = base;
+      BACKEND_BASE_PICKED = base;
+      if(changed) console.warn('[后端] 已选用：'+base+(base===LOCAL_API_BASE?'（本机后端）':'（公网云托管）'));
+      return base;
+    }
+  }
+  BACKEND_BASE_PICKED = COZE_BASE_URL;
+  console.warn('[后端] 候选后端均不可达，保持 '+COZE_BASE_URL+'，将回退内置演示数据');
+  return COZE_BASE_URL;
+}
 /* 诊断按钮：直接 GET /ping，毫秒级返回。结果回显在按钮上 + 控制台，
    让用户一眼看出是浏览器侧被拦（始终失败）还是后端真挂了 */
 async function pingBackend(btn){
+  await pickBackendBase(true);                    /* 手动诊断：强制重探候选后端，报告真正可用的那个 */
   const url = (COZE_BASE_URL||'').replace(/\/+$/,'') + '/ping';
   const t0 = performance.now();
   btn.textContent = '🔌 诊断中…'; btn.classList.remove('ok');
@@ -1389,7 +1426,10 @@ async function pingBackend(btn){
     const resp = await fetchWithTimeout(url, { method:'GET' }, 5000);
     const dt = Math.round(performance.now() - t0);
     const txt = await resp.text();
-    console.log('[诊断] OK', resp.status, dt+'ms', txt);
+    console.log('[诊断] 响应', resp.status, dt+'ms', txt);
+    /* 非 2xx 一律视为不可用：网关 503（实例未拉起 / 环境资源被隔离）也走失败分支，
+       避免旧逻辑把 503 当成功、显示「后端已连通」 */
+    if(!resp.ok) throw new Error('HTTP '+resp.status);
     btn.classList.add('ok');
     btn.textContent = '✅ 后端 '+resp.status+' ('+dt+'ms)';
     toast('✅ 后端连接正常：'+resp.status+' · '+dt+'ms');
@@ -1398,7 +1438,7 @@ async function pingBackend(btn){
     const dt = Math.round(performance.now() - t0);
     console.warn('[诊断] FAIL', dt+'ms', e.message);
     btn.textContent = '❌ 连不上';
-    toast('❌ 后端连不上：'+(e.message||e)+'（耗时 '+dt+'ms）','err');
+    toast('❌ 后端连不上：'+(e.message||e)+'（耗时 '+dt+'ms · 当前 '+(COZE_BASE_URL||'').replace(/^https?:\/\//,'')+'）','err');
     setTimeout(()=>{ btn.textContent = '🔌 诊断'; }, 4000);
   }
 }
@@ -1420,6 +1460,7 @@ async function parseCozeResponse(resp, tag){
 async function callCozeWorkflow(parameters, workflowId){
   /* Token 占位自动降级：空值 / 占位值 → 不发起请求，返回 null → 调用方走模拟数据 */
   if(!isTokenValid()){ return null; }
+  await pickBackendBase();                        /* 自动选主：公网不可用时回落本机后端 */
   const wid = workflowId || JING_LI_v1_5_SHENDU_workflow;
   const url = COZE_BASE_URL.replace(/\/+$/,'') + '/workflow/run';
   try{
@@ -2562,19 +2603,22 @@ async function probeBackendOnOpen(){
   if(!sub || !cst) return;
   const origSub = cst.textContent;
   cst.textContent = '🔌 正在测试后端连通性…';
+  await pickBackendBase();                        /* 打开面板即选主：公网不可用时用本机后端 */
   const url = (COZE_BASE_URL||'').replace(/\/+$/,'') + '/ping';
   const t0 = performance.now();
   try{
     const resp = await fetchWithTimeout(url, { method:'GET' }, 5000);
     const dt = Math.round(performance.now() - t0);
-    cst.textContent = `✅ 后端已连通（${resp.status}，${dt} ms）— 真实接口模式下可正常对话`;
+    if(!resp.ok) throw new Error('HTTP '+resp.status);   /* 503 等非 2xx 不再误报为「已连通」 */
+    cst.textContent = `✅ 后端已连通（${resp.status}，${dt} ms · ${(COZE_BASE_URL||'').replace(/^https?:\/\//,'')}），真实接口模式下可正常对话`;
     if(btn){ btn.classList.add('ok'); btn.textContent = '✅ 后端 OK'; setTimeout(()=>{btn.classList.remove('ok'); btn.textContent='🔌 诊断';}, 3000); }
   }catch(e){
     const dt = Math.round(performance.now() - t0);
-    cst.innerHTML = `❌ 后端连不上（${(e.message||e).replace(/</g,'&lt;')}，${dt} ms）— 排查方向：<br>`
-      + `① 确认后端服务已启动并在 8000 端口监听；<br>`
-      + `② 浏览器是否用了代理/VPN 拦截本地请求；<br>`
-      + `③ 若你是直接双击打开本页面（<code>file://</code>），部分浏览器会拦截到后端的请求，建议用 http(s) 方式托管打开（本地可起静态服务：<code>python -m http.server 8080</code>）`;
+    cst.innerHTML = `❌ 后端连不上（${(e.message||e).replace(/</g,'&lt;')}，${dt} ms）。已自动尝试「本机 <code>127.0.0.1:8000</code>」与「公网云托管」两个地址，排查方向：<br>`
+      + `① 本机后端是否已启动（<code>cd backend &amp;&amp; uvicorn main:app --port 8000</code>）；<br>`
+      + `② 公网云托管是否正常（腾讯云控制台 → 云托管：实例状态与资源包是否有效）；<br>`
+      + `③ 浏览器是否用了代理/VPN 拦截本机请求；<br>`
+      + `④ 当前会自动回退内置演示数据，页面功能仍可正常体验`;
     if(btn){ btn.textContent = '❌ 连不上'; setTimeout(()=>{btn.textContent='🔌 诊断';}, 3000); }
     console.warn('[chat] 后端连通失败：', e);
   }
@@ -2924,7 +2968,7 @@ footer{text-align:center;font-size:10.5px;color:#9a8f86;margin-top:20px;padding-
 </style></head><body>
 <header>
   <div class="brand">JING LI · AI CONSULTATION LOG</div>
-  <h1 class="title">经历翻译官 · AI 咨询记录</h1>
+  <h1 class="title">经历翻译官 AI 咨询记录</h1>
   <div class="no">档案编号 ${no} · ${dateStr}</div>
 </header>
 <div class="meta-card">
@@ -2981,6 +3025,7 @@ function pickFollowups(data){
 async function callCozeBot(userMessage){
   /* Token 占位自动降级：不发起网络请求，直接走内置模拟回复 */
   if(!isTokenValid()){ return {mock:true}; }
+  await pickBackendBase();                        /* 自动选主：公网不可用时回落本机后端 */
   const url = COZE_BASE_URL.replace(/\/+$/,'') + '/chat/completions';
   try{
     const messages = buildBotMessages(userMessage);
@@ -3041,7 +3086,7 @@ function mockBotReply(q){
   const style = state.meta?.style || '通用平衡';
   const kw=(q||'').toLowerCase();
   if(kw.includes('面试')){
-    return `针对「${job}」面试，建议从报告里挑 2 个最硬的项目经历，用 STAR 结构讲：背景—你做了什么关键决策—可量化结果。\n\n报告「面试话术」模块已给出示范开头，照着练 3 遍，并把语气调成你设定的「${style}」风格会更自然。`;
+    return `针对「${job}」面试，建议从报告里挑 2 个最硬的项目经历，用 STAR 结构讲：背景、你做了什么关键决策、可量化结果。\n\n报告「面试话术」模块已给出示范开头，照着练 3 遍，并把语气调成你设定的「${style}」风格会更自然。`;
   }
   if(kw.includes('简历')){
     return `简历优化上，优先复用报告「简历改写」里的示范条目，并补齐具体指标（转化率、效率、成本）。\n\n小技巧：每条经历都写成「动作 + 数字 + 结果」，HR 与面试官都会更快抓住你的价值锚点。`;
@@ -3123,7 +3168,7 @@ document.addEventListener('DOMContentLoaded', function(){
   6. 双层加载：首次生成报告 → 全屏流动进度条动画；单段改写 → 卡片内局部 loading（旋转+淡入淡出），不阻塞整页。
   7. 交互保障（重点修复联动错乱）：岗位 / 职业阶段 / 沟通风格 / 输出模块 四组控件【完全解耦、各自独立变量】，采用【父容器事件委托】绑定点击（一次挂载、页面切换与 DOM 重绘后永久生效），并用 e.stopPropagation() 阻止冒泡，点击岗位不会篡改其它控件选中态；所有输入框/文本域 100% 可输入、聚焦有柔光；按钮/标签/单选/多选/Tab 最小点击区统一 48px，按压有回弹反馈；标签 z-index 提升防遮挡、无层级遮挡。
   8. 响应式：PC 宽布局，移动端（≤880px / ≤560px）自动收缩单列，控件与卡片圆角不变、触控放大适配。
-  9. 配色严格遵循规范：底色 #FCFAF5、主色 #F2A987、跳色 #94B8D9 / #B9CBB9、正文 #3E3832、次要 #9C8C7E。
+  9. 配色严格遵循规范：底色 #F6F6F5、主色 #F2A987、跳色 #94B8D9 / #B9CBB9、正文 #3E3832、次要 #9C8C7E。
 ================================================================================
 -->
 <!-- 注：原 Coze WebChat SDK（lf-cdn.coze.cn）已移除。本应用已迁移至本地 LangChain 后端，

@@ -24,3 +24,8 @@ tmp/
 
 # === WorkBuddy 项目数据（本地记忆/运行态，不进公开仓库） ===
 .workbuddy/
+
+# === 本地密钥文件（绝不提交） ===
+*_key.txt
+*_key.env
+jingli_backend_key.txt
