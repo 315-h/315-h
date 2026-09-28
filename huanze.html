@@ -591,6 +591,20 @@
 /* 数据卡去居中：数字与标签左对齐，装饰光晕同步左移 */
 .datac{text-align:left;}
 .datac::before{left:26px;transform:none;}
+
+  /* ===== 工程方法回链（跨项目 harness 层的落点） ===== */
+  .hxnote{margin-top:10px;padding:20px 0 6px 22px;border-left:3px solid #5B6570;}
+  .hxnote .k{font-size:11px;font-weight:700;letter-spacing:1.8px;color:#8B939E;
+    text-transform:uppercase;margin-bottom:9px;}
+  .hxnote h3{font-size:17.5px;font-weight:700;line-height:1.5;margin-bottom:9px;}
+  .hxnote p{font-size:13.8px;line-height:1.82;max-width:780px;opacity:.9;}
+  .hxnote a{display:inline-block;margin-top:13px;font-size:13.6px;font-weight:650;color:#3E464F;
+    text-decoration:none;border-bottom:1px solid rgba(91,101,112,.45);padding-bottom:2px;
+    transition:border-color .15s ease;}
+  .hxnote a:hover{border-bottom-color:#3E464F;}
+  body.dark .hxnote{border-left-color:#98A3AE;}
+  body.dark .hxnote .k{color:#7B828B;}
+  body.dark .hxnote a{color:#B9C3CD;border-bottom-color:rgba(152,163,174,.5);}
 </style>
 <noscript><style>.reveal{opacity:1!important;transform:none!important;animation:none!important;}</style></noscript>
 </head>
@@ -981,6 +995,15 @@
   </div>
 
   <!-- 页脚 -->
+
+    <!-- 工程方法：本页在 harness 八层里的位置 -->
+    <section class="hxnote">
+      <div class="k">ENGINEERING METHOD</div>
+      <h3>这一页在八层框架里的位置：编排与记忆最完整，约束还留在提示词里</h3>
+      <p>中控状态机加四 Agent 严格串行，加上全局记忆三件套，编排层与记忆层的设计是三个项目里最完整的。但约束目前停留在系统提示词的祈使句层面，「绝不越权、绝不串岗、禁止循环」写在提示词里而不是代码转移表里，随时可能被模型忽略。下一步是把阶段转移写成显式的代码表，让非法转移直接被拒绝。这是如实披露的进度。</p>
+      <a href="harness.html">查看完整工程方法与断点定位 →</a>
+    </section>
+
   <footer class="foot">
     <div class="copy">韩佳雪 · AI 产品作品集 ｜ 缓择星球小程序 · 蒙ICP备2026008237号</div>
     <div class="contact-line">电话 15693149386 ｜ 邮箱 <a href="mailto:3415703993@qq.com">3415703993@qq.com</a></div>

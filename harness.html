@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<script>document.documentElement.classList.add('js');</script>
+<meta name="theme-color" id="themeColorMeta" content="#F3F4F6">
+<script>
+(function(){
+  var meta=document.getElementById('themeColorMeta');
+  if(!meta) return;
+  function set(dark){ meta.setAttribute('content', dark ? '#232528' : '#F3F4F6'); }
+  try{ if(localStorage.getItem('hx-theme')==='dark') set(true); }catch(e){}
+  function watch(){ if(document.body){ new MutationObserver(function(){ set(document.body.classList.contains('dark')); }).observe(document.body,{attributes:true,attributeFilter:['class']}); } }
+  if(document.readyState!=='loading') watch(); else document.addEventListener('DOMContentLoaded',watch);
+})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harness 工程方法 · 韩佳雪</title>
+<meta name="description" content="三款 AI 产品的 harness 工程实践：八层框架、现状覆盖矩阵、断点定位，以及小办评测台从「跑完存档」到「跑完回写」的真实回写记录。">
+<style>
+  .skip-link{position:absolute;left:50%;top:10px;transform:translateX(-50%);z-index:9999;
+    padding:10px 20px;border-radius:999px;background:#4A5560;color:#fff;font-size:14px;font-weight:600;
+    text-decoration:none;white-space:nowrap;box-shadow:0 8px 28px rgba(0,0,0,.18);
+    opacity:0;pointer-events:none;transition:opacity .2s ease,transform .2s ease;}
+  .skip-link:focus{opacity:1;pointer-events:auto;outline:2px solid #fff;outline-offset:2px;}
+  #main-content:focus{outline:none;}
+  :root{
+    --bg:#F3F4F6;
+    --card:#FFFFFF;
+    --card-soft:#FAFBFC;
+    --text:#2E3238;
+    --text-2:#646C76;
+    --text-3:#8B939E;
+    --divider:#E2E5E9;
+    --divider-soft:#EDEFF2;
+    --shadow:0 2px 6px rgba(46,50,56,.04), 0 16px 40px rgba(46,50,56,.08);
+    --shadow-sm:0 2px 5px rgba(46,50,56,.04), 0 8px 20px rgba(46,50,56,.05);
+    --radius:20px;
+    --radius-sm:13px;
+    /* 本页主色：冷灰石墨（harness = 跨项目的方法层，刻意不占用三项目色） */
+    --c-hs:#5B6570;
+    --c-hs-strong:#3E464F;
+    --c-hs-soft:#E9ECEF;
+    /* 语义色：断点=陶土、已补=森绿，与三个项目页保持同一套语义 */
+    --c-gap:#C9664A;
+    --c-gap-soft:#F7E9E3;
+    --c-fix:#4A7C59;
+    --c-fix-soft:#E3EDE6;
+    --dock-bg:rgba(255,255,255,.88);
+    --maxw:1120px;
+    --font:"PingFang SC","Microsoft YaHei","Hiragino Sans GB","Helvetica Neue",Arial,sans-serif;
+    --serif:"Songti SC","STSong","SimSun",Georgia,"Times New Roman",serif;
+  }
+  body.dark{
+    --bg:#232528;
+    --card:#2C2F33;
+    --card-soft:#282B2F;
+    --text:#E8EAED;
+    --text-2:#A0A6AE;
+    --text-3:#7B828B;
+    --divider:#3A3E44;
+    --divider-soft:#33373C;
+    --c-hs:#98A3AE;
+    --c-hs-strong:#B9C3CD;
+    --c-hs-soft:#333A41;
+    --c-gap:#E09280;
+    --c-gap-soft:#3B2F2A;
+    --c-fix:#8FB29A;
+    --c-fix-soft:#2A3630;
+    --dock-bg:rgba(44,47,51,.88);
+    --shadow:0 2px 6px rgba(0,0,0,.30), 0 16px 40px rgba(0,0,0,.40);
+    --shadow-sm:0 2px 5px rgba(0,0,0,.26), 0 8px 20px rgba(0,0,0,.32);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  html{scroll-behavior:smooth;}
+  :focus-visible{outline:2px solid var(--c-hs);outline-offset:2px;border-radius:4px;}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important;}}
+  body{font-family:var(--font);background:var(--bg);color:var(--text);
+    line-height:1.75;font-size:15px;letter-spacing:.2px;
+    -webkit-font-smoothing:antialiased;transition:background .4s ease,color .4s ease;overflow-x:hidden;}
+
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;}
+
+  /* ===== 顶栏 ===== */
+  .topbar{position:sticky;top:0;z-index:50;backdrop-filter:saturate(140%) blur(10px);
+    background:var(--bg);border-bottom:1px solid var(--divider);
+    transition:background .4s ease,border-color .4s ease;}
+  @supports (background:color-mix(in srgb,red 50%,transparent)){
+    .topbar{background:color-mix(in srgb,var(--bg) 82%,transparent);}
+  }
+  .topbar .row{max-width:var(--maxw);margin:0 auto;padding:14px 24px;display:flex;
+    align-items:center;justify-content:space-between;gap:16px;}
+  .brand{font-weight:800;letter-spacing:.5px;font-size:16px;display:flex;align-items:baseline;gap:8px;}
+  .brand span{color:var(--text-2);font-weight:600;font-size:13px;}
+  .backlink{font-size:13px;color:var(--text-2);text-decoration:none;border-bottom:1px solid transparent;
+    transition:color .15s ease,border-color .15s ease;}
+  .backlink:hover{color:var(--text);border-bottom-color:var(--divider);}
+  .theme-btn{border:1px solid var(--divider);background:var(--card);color:var(--text);
+    width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:17px;display:flex;
+    align-items:center;justify-content:center;box-shadow:var(--shadow-sm);flex:none;
+    transition:transform .15s ease,border-color .15s ease,background .4s ease;}
+  .theme-btn:hover{transform:translateY(-2px);border-color:var(--c-hs);}
+
+  /* ===== Hero ===== */
+  .hero{padding:76px 0 40px;max-width:820px;}
+  .hero .eyebrow{display:inline-block;font-size:12px;font-weight:700;letter-spacing:2px;
+    color:var(--c-hs);background:var(--c-hs-soft);padding:6px 13px;border-radius:999px;margin-bottom:22px;}
+  .hero h1{font-size:44px;line-height:1.24;letter-spacing:-.5px;font-weight:800;margin-bottom:18px;}
+  .hero h1 em{font-style:normal;color:var(--c-hs);}
+  .hero .sub{font-size:16px;color:var(--text-2);max-width:660px;}
+  .hero .sign{margin-top:22px;font-size:14px;color:var(--text-2);display:flex;align-items:center;gap:8px;}
+  .hero .sign b{color:var(--text);font-weight:700;}
+  .hero .anchors{margin-top:26px;display:flex;flex-wrap:wrap;gap:10px;}
+  .hero .anchors a{font-size:13.5px;color:var(--text-2);text-decoration:none;
+    border:1px solid var(--divider);background:var(--card);border-radius:999px;padding:7px 15px;
+    transition:color .15s ease,border-color .15s ease,transform .15s ease;}
+  .hero .anchors a:hover{color:var(--text);border-color:var(--c-hs);transform:translateY(-1px);}
+
+  /* ===== 公式条 ===== */
+  .formula{display:flex;flex-wrap:wrap;gap:14px;margin:6px 0 30px;}
+  .formula div{border:1px solid var(--divider);background:var(--card);border-radius:var(--radius-sm);
+    padding:16px 20px;box-shadow:var(--shadow-sm);min-width:230px;flex:1 1 230px;}
+  .formula code{font-family:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+    font-size:14.5px;color:var(--c-hs-strong);font-weight:600;display:block;margin-bottom:6px;}
+  .formula p{font-size:13.4px;color:var(--text-2);line-height:1.65;}
+
+  /* ===== 章节 ===== */
+  .sec{padding:34px 0;border-top:1px solid var(--divider-soft);}
+  .sec:first-of-type{border-top:none;}
+  /* 第三套章节标题手法：眉标与标题同行（区别于作品集其他页的上下堆叠） */
+  .shead{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:8px;}
+  .shead .kcap{font-size:11.5px;font-weight:700;letter-spacing:1.8px;color:var(--text-3);
+    text-transform:uppercase;flex:none;padding-top:2px;}
+  .shead h2{font-size:24px;font-weight:750;letter-spacing:-.2px;}
+  .slede{font-size:14.4px;color:var(--text-2);max-width:760px;margin-bottom:22px;}
+
+  /* 定义列表（非卡片），用于准则与边界 */
+  .deflist{display:grid;grid-template-columns:1fr 1fr;gap:8px 42px;}
+  .deflist .item{padding:14px 0;border-top:1px solid var(--divider-soft);}
+  .deflist .item:first-child,.deflist .item:nth-child(2){border-top:none;padding-top:2px;}
+  .deflist dt{font-size:14.6px;font-weight:700;margin-bottom:5px;display:flex;align-items:baseline;gap:8px;}
+  .deflist dt i{font-style:normal;font-size:11.5px;font-weight:700;letter-spacing:.8px;
+    color:var(--c-hs);background:var(--c-hs-soft);border-radius:5px;padding:2px 7px;flex:none;}
+  .deflist dd{font-size:13.6px;color:var(--text-2);line-height:1.7;}
+
+  /* ===== 表格 ===== */
+  .tbl-wrap{overflow-x:auto;border:1px solid var(--divider);border-radius:var(--radius-sm);
+    background:var(--card);box-shadow:var(--shadow-sm);}
+  table{width:100%;border-collapse:collapse;font-size:13.6px;min-width:560px;}
+  thead th{text-align:left;font-weight:700;font-size:12.6px;letter-spacing:.4px;color:var(--text-2);
+    padding:13px 16px;border-bottom:1px solid var(--divider);background:var(--card-soft);white-space:nowrap;}
+  tbody td{padding:12px 16px;border-bottom:1px solid var(--divider-soft);vertical-align:top;line-height:1.72;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody td.lead{font-weight:650;color:var(--text);}
+  .num{font-variant-numeric:tabular-nums;}
+  .st{display:inline-block;font-size:11.6px;font-weight:700;border-radius:5px;padding:2px 7px;white-space:nowrap;}
+  .st-ok{color:var(--c-fix);background:var(--c-fix-soft);}
+  .st-part{color:var(--c-hs-strong);background:var(--c-hs-soft);}
+  .st-no{color:var(--c-gap);background:var(--c-gap-soft);}
+  .mono{font-family:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;font-size:12.6px;}
+
+  /* ===== 断点卡（3 张，刻意不做 4 等分） ===== */
+  .gaps{border:1px solid var(--divider);border-radius:var(--radius);background:var(--card);
+    box-shadow:var(--shadow);padding:8px 26px;margin-top:8px;}
+  .gap{display:grid;grid-template-columns:150px 1fr;gap:24px;padding:22px 0;
+    border-bottom:1px solid var(--divider-soft);}
+  .gap:last-child{border-bottom:none;}
+  .gap .who{font-weight:750;font-size:15.6px;}
+  .gap .who small{display:block;font-weight:600;font-size:12.4px;color:var(--text-3);margin-top:3px;}
+  .gap .what p{font-size:13.8px;color:var(--text-2);line-height:1.72;}
+  .gap .what p b{color:var(--text);font-weight:650;}
+  .gap .what .mark{display:inline-flex;align-items:center;gap:7px;font-size:12.6px;font-weight:700;
+    border-radius:6px;padding:3px 9px;margin-top:9px;}
+  .mark-gap{color:var(--c-gap);background:var(--c-gap-soft);}
+  .mark-fix{color:var(--c-fix);background:var(--c-fix-soft);}
+
+  /* ===== 关键读数 ===== */
+  .readouts{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-top:18px;}
+  .ro{border:1px solid var(--divider);border-left:3px solid var(--c-fix);background:var(--card);
+    border-radius:var(--radius-sm);padding:16px 18px;box-shadow:var(--shadow-sm);}
+  .ro .v{font-size:21px;font-weight:800;letter-spacing:-.3px;font-variant-numeric:tabular-nums;}
+  .ro .k{font-size:12.8px;font-weight:700;color:var(--text-2);margin-top:6px;}
+  .ro .n{font-size:12.2px;color:var(--text-3);margin-top:6px;line-height:1.6;}
+
+  /* 断言有效性（最硬证据）突出块 */
+  .proof{border:1px solid var(--divider);border-left:3px solid var(--c-fix);border-radius:var(--radius-sm);
+    background:var(--card);box-shadow:var(--shadow-sm);padding:20px 24px;margin-top:18px;}
+  .proof h3{font-size:15.4px;font-weight:750;margin-bottom:6px;}
+  .proof > p{font-size:13.4px;color:var(--text-2);margin-bottom:14px;}
+
+  /* ===== 双栏文字块（下载 / 局限） ===== */
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:18px;}
+  .panel{border:1px solid var(--divider);border-radius:var(--radius-sm);background:var(--card);
+    box-shadow:var(--shadow-sm);padding:20px 22px;}
+  .panel h3{font-size:15.2px;font-weight:750;margin-bottom:10px;display:flex;align-items:center;gap:9px;}
+  .panel h3 svg{flex:none;}
+  .panel ul{list-style:none;}
+  .panel li{font-size:13.5px;color:var(--text-2);line-height:1.7;padding-left:15px;position:relative;margin-bottom:8px;}
+  .panel li::before{content:"";position:absolute;left:0;top:10px;width:4px;height:4px;border-radius:50%;background:var(--text-3);}
+  .panel li b{color:var(--text);font-weight:650;}
+  .note{font-size:12.6px;color:var(--text-3);line-height:1.68;margin-top:12px;
+    border-top:1px solid var(--divider-soft);padding-top:11px;}
+
+  /* ===== 下载条 ===== */
+  .dl{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px;}
+  .dl a{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--text);
+    border:1px solid var(--divider);background:var(--card);border-radius:var(--radius-sm);
+    padding:13px 17px;box-shadow:var(--shadow-sm);flex:1 1 260px;
+    transition:transform .15s ease,border-color .15s ease;}
+  .dl a:hover{transform:translateY(-2px);border-color:var(--c-hs);}
+  .dl .ft{font-size:10.8px;font-weight:800;letter-spacing:.7px;border-radius:5px;padding:3px 7px;flex:none;}
+  .ft-pdf{color:#C9664A;background:var(--c-gap-soft);}
+  .ft-zip{color:#6D28D9;background:rgba(109,40,217,.12);}
+  body.dark .ft-zip{color:#C4B5FD;background:rgba(196,181,253,.14);}
+  .dl .ti{font-size:13.6px;font-weight:650;line-height:1.5;}
+  .dl .ti small{display:block;font-weight:500;font-size:12.2px;color:var(--text-3);margin-top:2px;}
+
+  /* ===== 收尾 ===== */
+  .closesec{padding:44px 0 52px;border-top:1px solid var(--divider);}
+  .closesec p{font-size:16px;color:var(--text);max-width:720px;line-height:1.85;}
+  .closesec p b{font-weight:750;}
+  .foot{padding:30px 0 54px;border-top:1px solid var(--divider);color:var(--text-2);font-size:13px;}
+  .foot a{color:var(--text-2);text-decoration:none;border-bottom:1px solid var(--divider);}
+  .foot a:hover{color:var(--text);}
+
+  /* ===== 侧栏 Dock（可收缩 · 与作品集其余五页同一套交互）===== */
+  .dock{position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:60;
+    width:var(--dock-w,260px);max-height:calc(100vh - 44px);display:none;flex-direction:column;
+    background:var(--dock-bg);border:1px solid var(--divider);border-radius:18px;
+    box-shadow:var(--shadow);overflow:hidden;
+    transition:width .3s cubic-bezier(.4,0,.2,1),background .4s ease,border-color .4s ease;}
+  @supports ((backdrop-filter:blur(4px)) or (-webkit-backdrop-filter:blur(4px))){
+    .dock{backdrop-filter:blur(16px) saturate(150%);-webkit-backdrop-filter:blur(16px) saturate(150%);}
+  }
+  .dock-hd{display:flex;align-items:center;justify-content:space-between;gap:8px;
+    padding:11px 12px 10px 16px;border-bottom:1px solid var(--divider);transition:border-color .4s ease;}
+  .dock-title{font-size:11px;font-weight:800;letter-spacing:1.2px;color:var(--text-2);}
+  .dock-btn{border:none;background:none;color:var(--text-2);cursor:pointer;padding:5px;border-radius:8px;
+    display:inline-flex;align-items:center;justify-content:center;transition:background .18s ease,color .18s ease;}
+  .dock-btn:hover{background:var(--c-hs-soft);color:var(--c-hs-strong);}
+  .dock-btn svg{width:16px;height:16px;display:block;transition:transform .28s cubic-bezier(.4,0,.2,1);}
+  .dock.collapsed .dock-btn svg{transform:rotate(180deg);}
+  .dock-inner{overflow-y:auto;overscroll-behavior:contain;padding:15px 15px 13px;
+    display:flex;flex-direction:column;gap:13px;}
+  .dock-inner::-webkit-scrollbar{width:5px;}
+  .dock-inner::-webkit-scrollbar-thumb{background:var(--divider);border-radius:3px;}
+  .dock-h{font-size:10.5px;font-weight:800;letter-spacing:1.3px;color:var(--text-2);margin-bottom:8px;
+    text-transform:uppercase;}
+  .dock-sep{height:1px;background:var(--divider-soft);transition:background .4s ease;}
+  .dl-item{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--text);font-size:12.5px;
+    padding:6px 7px;margin:0 -7px;border-radius:8px;transition:background .18s ease;}
+  .dl-item:hover{background:var(--c-hs-soft);}
+  .dl-item .fn{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .dl-item .fs{flex:0 0 auto;font-size:10.5px;color:var(--text-3);font-variant-numeric:tabular-nums;}
+  .dl-item .ft{flex:0 0 auto;font-size:9.5px;font-weight:800;letter-spacing:.3px;
+    padding:2px 5px;border-radius:4px;line-height:1.45;}
+  .ft-pdf{background:rgba(201,102,74,.13);color:#C9664A;}
+  .ft-zip{background:rgba(109,40,217,.12);color:#6D28D9;}
+  .ft-web{background:rgba(91,101,112,.13);color:#5B6570;}
+  body.dark .ft-pdf{background:rgba(224,146,128,.16);color:#E09280;}
+  body.dark .ft-zip{background:rgba(196,181,253,.14);color:#C4B5FD;}
+  body.dark .ft-web{background:rgba(152,163,174,.18);color:#B9C3CD;}
+  .dl-group{display:flex;flex-direction:column;gap:2px;}
+  .dl-group + .dl-group{margin-top:11px;}
+  .dl-gh{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;
+    color:var(--text-2);margin-bottom:4px;}
+  .dl-gh .dot{width:7px;height:7px;border-radius:50%;background:var(--c-hs);flex:0 0 auto;}
+  .dock-foot{border-top:1px solid var(--divider);padding:8px 14px;display:flex;justify-content:center;
+    transition:border-color .4s ease;}
+  .dock-top{border:none;background:none;color:var(--text-2);font-size:11.5px;font-weight:600;cursor:pointer;
+    display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:8px;
+    transition:color .18s ease,background .18s ease;}
+  .dock-top:hover{color:var(--c-hs-strong);background:var(--c-hs-soft);}
+  /* 收起态：竖排图标栏（图标 + tooltip + 数量徽章 → 功能一目了然） */
+  .dock-rail{display:none;flex-direction:column;align-items:center;gap:6px;padding:12px 0 14px;}
+  .rail-btn{position:relative;width:40px;height:40px;border:none;background:none;color:var(--text-2);
+    cursor:pointer;border-radius:11px;display:flex;align-items:center;justify-content:center;
+    transition:background .18s ease,color .18s ease;}
+  .rail-btn:hover{background:var(--c-hs-soft);color:var(--c-hs-strong);}
+  .rail-btn svg{width:18px;height:18px;}
+  .rail-badge{position:absolute;top:2px;right:2px;min-width:15px;height:15px;padding:0 3px;border-radius:8px;
+    background:var(--c-hs-strong);color:#fff;font-size:9px;font-weight:800;line-height:15px;text-align:center;}
+  .dock.collapsed{width:58px;}
+  .dock.collapsed .dock-hd{padding:9px;justify-content:center;}
+  .dock.collapsed .dock-title{display:none;}
+  .dock.collapsed .dock-inner,.dock.collapsed .dock-foot{display:none;}
+  .dock.collapsed .dock-rail{display:flex;}
+  /* 窄屏 FAB */
+  .dock-fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:72;
+    width:54px;height:54px;border-radius:50%;border:1px solid var(--c-hs-strong);
+    background:var(--c-hs-strong);color:#fff;display:none;align-items:center;justify-content:center;
+    cursor:pointer;box-shadow:0 6px 20px rgba(46,50,56,.20);
+    transition:transform .18s ease,background .4s ease;}
+  .dock-fab:hover{transform:translateY(-3px);}
+  .dock-fab svg{width:22px;height:22px;}
+  .dock-scrim{position:fixed;inset:0;z-index:69;background:rgba(46,50,56,.32);opacity:0;visibility:hidden;
+    transition:opacity .25s ease,visibility .25s ease;display:none;}
+  .dock-scrim.show{opacity:1;visibility:visible;}
+
+  /* ===== 渐进增强：滚动揭示 ===== */
+  html.js .reveal{opacity:0;transform:translateY(14px);}
+  html.js .reveal.in{opacity:1;transform:none;transition:opacity .6s ease,transform .6s ease;}
+
+  /* ===== 响应式 ===== */
+  /* 窄屏 <1280：侧栏转为右下角 FAB 唤出的抽屉，完全不遮挡正文 */
+  @media (max-width:1279px){
+    .dock-fab{display:flex;}
+    .dock-scrim{display:block;}
+    .dock{display:flex;right:16px;left:auto;top:auto;bottom:calc(84px + env(safe-area-inset-bottom,0px));
+      width:min(302px,calc(100vw - 32px));max-height:min(72vh,600px);
+      opacity:0;visibility:hidden;transform:translateY(10px) scale(.985);
+      transition:opacity .24s ease,transform .24s cubic-bezier(.4,0,.2,1),visibility .24s ease,
+                 background .4s ease,border-color .4s ease;}
+    .dock.open{opacity:1;visibility:visible;transform:none;}
+    .dock.collapsed{width:min(302px,calc(100vw - 32px));}
+    .dock.collapsed .dock-inner,.dock.collapsed .dock-foot{display:flex;}
+    .dock.collapsed .dock-rail{display:none;}
+    .dock.collapsed .dock-title{display:block;}
+    .dock.collapsed .dock-hd{padding:11px 12px 10px 16px;justify-content:space-between;}
+    .dock.collapsed .dock-btn svg{transform:none;}
+  }
+  /* 宽屏 1280-1439：侧栏常显，正文整体左移避让（侧栏 230 + 右边距 18） */
+  @media (min-width:1280px){
+    :root{--maxw:960px;--dock-w:230px;--shift:-124px;}
+    .dock{display:flex;}
+    .wrap,.topbar .row{transform:translateX(var(--shift));
+      transition:transform .3s cubic-bezier(.4,0,.2,1);}
+    /* 收起侧栏后：正文自动回中并恢复原始宽度，不再为空出的位置留白 */
+    body.dock-collapsed{--shift:-38px;--maxw:1120px;}
+  }
+  /* 宽屏 ≥1440：恢复原始正文宽度，留足侧栏空间（侧栏 260 + 右边距 18） */
+  @media (min-width:1440px){
+    :root{--maxw:1120px;--dock-w:260px;--shift:-139px;}
+    body.dock-collapsed{--shift:-38px;--maxw:1120px;}
+  }
+  /* 打印：隐藏所有浮层，恢复满宽，避免侧栏挤压正文 */
+  @media print{
+    .dock,.dock-fab,.dock-scrim{display:none!important;}
+    .wrap,.topbar .row{transform:none!important;}
+    .reveal{opacity:1!important;transform:none!important;}
+  }
+  @media (max-width:860px){
+    .deflist{grid-template-columns:1fr;gap:0;}
+    .deflist .item:nth-child(2){border-top:1px solid var(--divider-soft);padding-top:14px;}
+    .cols{grid-template-columns:1fr;}
+    .gap{grid-template-columns:1fr;gap:10px;}
+    .hero h1{font-size:33px;}
+    .hero{padding:52px 0 30px;}
+  }
+</style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">跳到主内容</a>
+
+  <!-- 顶栏 -->
+  <div class="topbar">
+    <div class="row">
+      <div class="brand">Harness 工程方法 <span>韩佳雪</span></div>
+      <div style="display:flex;align-items:center;gap:16px;">
+        <a class="backlink" href="portfolio.html">← 返回作品集</a>
+        <button class="theme-btn" id="themeBtn" title="切换深浅主题" aria-label="切换深色模式">◐</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap" id="main-content" tabindex="-1">
+
+    <!-- Hero -->
+    <section class="hero" id="top">
+      <span class="eyebrow">ENGINEERING METHOD</span>
+      <h1>模型之外的<em>那一层</em></h1>
+      <p class="sub">三款 AI 产品都走过「从 0 到 1 搭功能」，接下来要解决的是「从 1 到 N 保稳定」。这一层不写在提示词里，写在代码里：约束、兜底、trace、评测，以及最关键的一步——评测结果回写成约束。</p>
+      <div class="sign"><b>韩佳雪</b><span>／ 独立主导 · 2026</span></div>
+      <div class="anchors">
+        <a href="#frame">八层框架</a>
+        <a href="#coverage">现状体检</a>
+        <a href="#gaps">断点位置</a>
+        <a href="#evidence">已落地实证</a>
+        <a href="#principles">判断准则</a>
+        <a href="#honest">诚实边界</a>
+      </div>
+    </section>
+
+    <!-- ===== 1. 定义 ===== -->
+    <section class="sec" id="frame">
+      <div class="shead">
+        <div class="kcap">01 / Definition</div>
+        <h2>先把这一层叫什么说清楚</h2>
+      </div>
+      <p class="slede">2026 年 2 月 Mitchell Hashimoto 提出 Harness Engineering，LangChain 给了一个最简的拆法。它不是新框架，也不是模型微调——它是模型权重之外、决定系统能不能稳定交付的全部工程层。</p>
+
+      <div class="formula">
+        <div>
+          <code>Agent = Model + Harness</code>
+          <p>Harness = Agent − Model。把模型拿掉之后剩下的东西，就是这一层。</p>
+        </div>
+        <div>
+          <code>约束 → 执行 → 观测 → 评测 → 回写</code>
+          <p>八层不是功能清单，是一个闭环。跑完评测没有回写成约束，只能叫半套。</p>
+        </div>
+      </div>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr><th style="width:44px;">#</th><th style="width:88px;">层</th><th>它回答的问题</th><th>在三款产品里的具体形态</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="num">1</td><td class="lead">约束</td><td>什么绝对不能做</td><td>输出 Schema 校验、阈值配置、状态转移表</td></tr>
+            <tr><td class="num">2</td><td class="lead">编排</td><td>多步任务怎么串</td><td>13 节点状态图／手写函数编排／四 Agent 串行</td></tr>
+            <tr><td class="num">3</td><td class="lead">记忆</td><td>跨轮次记住什么</td><td>会话状态、全局记忆（底线／偏好／历史）</td></tr>
+            <tr><td class="num">4</td><td class="lead">检索</td><td>给模型看什么材料</td><td>向量 + 关键词 + 合并 + 二次检索；轻量关键词召回</td></tr>
+            <tr><td class="num">5</td><td class="lead">工具</td><td>能对世界做什么动作</td><td>数据库与对象存储、抉择存档、文件导出</td></tr>
+            <tr><td class="num">6</td><td class="lead">护栏</td><td>出错时怎么办</td><td>三级兜底、模板回落、离线演示数据</td></tr>
+            <tr><td class="num">7</td><td class="lead">可观测</td><td>出问题时怎么查</td><td>逐节点 JSONL trace（分支／耗时／命中来源）</td></tr>
+            <tr><td class="num">8</td><td class="lead">评测</td><td>怎么知道变好了</td><td>分层测试集、分支断言、三档口径、基线对比</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ===== 2. 现状体检 ===== -->
+    <section class="sec" id="coverage">
+      <div class="shead">
+        <div class="kcap">02 / Coverage</div>
+        <h2>八层覆盖：三个项目各走到哪</h2>
+      </div>
+      <p class="slede">三个项目都已经握着不同的工程原料，所以这一层不是从零搭，是从既有的东西里长出来的。下表基于对本地代码的实读，逐格判定。</p>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr><th style="width:120px;">层</th><th>小办（企业问答 Agent）</th><th>经历翻译官（求职诊断）</th><th>缓择星球（决策助手）</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="lead">1 约束</td>
+              <td><span class="st st-part">部分</span> 29 个 Schema 模型，但业务阈值原为硬编码</td>
+              <td><span class="st st-part">部分</span> 集中在提示词层</td>
+              <td><span class="st st-no">最弱</span> 只有提示词祈使句，代码层无转移表</td>
+            </tr>
+            <tr>
+              <td class="lead">2 编排</td>
+              <td><span class="st st-ok">最强</span> 13 节点 / 5 条件分支</td>
+              <td><span class="st st-part">部分</span> 4 个手写编排函数</td>
+              <td><span class="st st-ok">完整</span> 中控状态机 + 四 Agent 串行</td>
+            </tr>
+            <tr>
+              <td class="lead">3 记忆</td>
+              <td><span class="st st-ok">有</span> 会话存储</td>
+              <td><span class="st st-no">缺</span> 消息全量透传，无会话持久化</td>
+              <td><span class="st st-ok">最强</span> 全局记忆三件套</td>
+            </tr>
+            <tr>
+              <td class="lead">4 检索</td>
+              <td><span class="st st-ok">最强</span> 标准QA + 向量 + 关键词 + 二次检索</td>
+              <td><span class="st st-part">轻量</span> 关键词打分 top_k=8，无召回评估</td>
+              <td><span class="st st-part">部分</span> 场景话术模板检索</td>
+            </tr>
+            <tr>
+              <td class="lead">5 工具</td>
+              <td><span class="st st-part">部分</span> 存储可用，工具目录为空</td>
+              <td><span class="st st-no">缺</span></td>
+              <td><span class="st st-ok">有</span> 抉择存档、碎片点亮</td>
+            </tr>
+            <tr>
+              <td class="lead">6 护栏</td>
+              <td><span class="st st-ok">有</span> 三级兜底 + 冲突专属兜底</td>
+              <td><span class="st st-ok">最强</span> 三条模板兜底 + OCR 降级</td>
+              <td><span class="st st-part">设计层</span> 唯一回流路径</td>
+            </tr>
+            <tr>
+              <td class="lead">7 可观测</td>
+              <td><span class="st st-ok">已补</span> JSONL trace</td>
+              <td><span class="st st-part">仅静态</span> 只有知识库概况端点</td>
+              <td><span class="st st-no">缺</span></td>
+            </tr>
+            <tr>
+              <td class="lead">8 评测</td>
+              <td><span class="st st-ok">已建成</span> 118 例分层集 + 回写记录</td>
+              <td><span class="st st-no">缺</span></td>
+              <td><span class="st st-part">仅 1 个单测</span></td>
+            </tr>
+            <tr>
+              <td class="lead">合计</td>
+              <td><b>6 / 8</b></td>
+              <td><b>3.5 / 8</b></td>
+              <td><b>4.5 / 8</b></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="note">这张表的读法不在总数，在<b>每一列缺失的位置不同</b>：如果三个项目缺的是同一层，说明是方法问题；缺的是不同层，说明是各自的阶段性取舍。后者才是真实情况。</p>
+    </section>
+
+    <!-- ===== 3. 断点 ===== -->
+    <section class="sec" id="gaps">
+      <div class="shead">
+        <div class="kcap">03 / Breakpoints</div>
+        <h2>三个项目，断在闭环的不同位置</h2>
+      </div>
+      <p class="slede">真正的缺口不是「没有 harness」，而是闭环断在不同环节。所以推进顺序不是按项目平均用力，是按断点从最薄处补。</p>
+
+      <div class="gaps">
+        <div class="gap reveal">
+          <div class="who">小办<small>闭环走到 ④，没回到 ①</small></div>
+          <div class="what">
+            <p>评测台能出报告、能做基线对比，但报告出来之后<b>没有「据此改约束」的动作</b>——跑完就存档。这是三个断点里最薄的一处，也是本轮投入最重的地方。</p>
+            <span class="mark mark-fix">本轮已闭合：R1–R36 回写记录＋6 个生产缺陷修复</span>
+          </div>
+        </div>
+        <div class="gap reveal">
+          <div class="who">经历翻译官<small>闭环只走到 ②</small></div>
+          <div class="what">
+            <p>执行层有编排、有检索、有兜底，但<b>出场没有记录，也没有测试集</b>。护栏是三个项目里最标准的，却没有任何数据能证明它有效。要先补观测，再补评测。</p>
+            <span class="mark mark-gap">待补：结构化重试 + 逐条 trace + 报告评测集</span>
+          </div>
+        </div>
+        <div class="gap reveal">
+          <div class="who">缓择星球<small>闭环的起点建错了地方</small></div>
+          <div class="what">
+            <p>架构文档里反复强调「绝不越权、绝不串岗、禁止循环」，但<b>全是提示词里的祈使句</b>，代码层没有拦截非法转移的转移表。约束随时可能被模型忽略。要先补约束。</p>
+            <span class="mark mark-gap">待补：转移表代码化 + 四 Agent 输出 Schema</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 4. 已落地实证 ===== -->
+    <section class="sec" id="evidence">
+      <div class="shead">
+        <div class="kcap">04 / Evidence</div>
+        <h2>已落地的那一部分：小办评测台</h2>
+      </div>
+      <p class="slede">这是三个项目里唯一成型的 harness 组件，也是后续两个项目的参照样板。它的价值不在「跑出了一个分数」，而在下面这张表——它证明了<b>旧口径的分数是假的</b>。</p>
+
+      <div class="proof">
+        <h3>断言有效性实测：注入分支漂移之后</h3>
+        <p>把 118 条用例的分支期望逐条断言之后，人为注入分支漂移，对比三种口径的反应。</p>
+        <div class="tbl-wrap" style="box-shadow:none;">
+          <table>
+            <thead>
+              <tr><th>口径</th><th>分支正常</th><th>注入分支漂移</th><th>结论</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="lead">新口径（含分支断言）</td><td class="num">99.2%</td><td class="num">12.7%</td><td>能感知漂移</td></tr>
+              <tr><td class="lead">旧口径（分支固定给分）</td><td class="num">99.2%</td><td class="num"><b>99.2%</b></td><td><b>分支全错也照样满分</b></td></tr>
+              <tr><td class="lead">仅分支断言通过率</td><td class="num">100.0%</td><td class="num">11.2%</td><td>11.2% ＝ 13/116，恰等于允许集合含「全局兜底」的用例数，数学自洽</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="note">旧口径之所以恒为 99.2%，是因为原脚本对「路由对不对」这项默认白送 30 分。这就是为什么必须先证明尺子准，再谈尺子量出来的数。</p>
+      </div>
+
+      <h3 style="font-size:16px;font-weight:750;margin:26px 0 6px;">回写记录：把评测结果接回约束</h3>
+      <p class="slede" style="margin-bottom:16px;">每一行都要回答同一组问题——这次改动是被哪条 Bad Case 驱动的、改前改后各是多少、是否回归复测过、是否超过噪声上限。没有这张表，评测报告只是一份文件。</p>
+
+      <div class="readouts">
+        <div class="ro reveal">
+          <div class="v">R1 – R36</div>
+          <div class="k">回写轮次（10 轮迭代）</div>
+          <div class="n">每轮一行，记录触发用例、改动位置、改前改后读数、驱动证据与回归复测</div>
+        </div>
+        <div class="ro reveal">
+          <div class="v">D1 – D6</div>
+          <div class="k">生产缺陷，全部修复并复测</div>
+          <div class="n">从「答案正文输出成 dict」到「冲突信号被静默丢弃」，均给出代码位置与最小修法</div>
+        </div>
+        <div class="ro reveal">
+          <div class="v">16.9 → 23.7%</div>
+          <div class="k">修复 D1/D2 后的全命中口径</div>
+          <div class="n">50% 口径 46.6 → 51.7%、宽松口径 58.5 → 63.6%，三项均 ≥5.1pt，远超噪声上限</div>
+        </div>
+        <div class="ro reveal">
+          <div class="v">±0.8 / ±0.9 / ±1.7</div>
+          <div class="k">噪声带宽（strict / half / anyhit）</div>
+          <div class="n">同一配置连跑两次标定；34/118 条答案文本会变。此线以下一律不作为改动有效的证据</div>
+        </div>
+      </div>
+
+      <div class="cols">
+        <div class="panel reveal">
+          <h3><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#4A7C59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16"/><path d="M4 12h10"/><path d="M4 19h7"/></svg>跨模型回归：哪些结论稳、哪些不稳</h3>
+          <ul>
+            <li><b>逐格相同</b>：换生成厂商后，终端分支分布完全一致（正常 106 / 兜底 11 / 冲突 1），全命中与宽松口径逐位相同，生产缺陷均为 0。</li>
+            <li><b>有波动但不作结论</b>：50% 口径差 2.5pt，逐例看全是答案用词层面的变化，且 7 条路由漂移全部落在「直答 ↔ 检索」之间，属采样噪声。</li>
+            <li><b>判读铁律</b>：离散量（分支分布、字段是否写入）给强结论；文本类指标给弱结论。</li>
+          </ul>
+          <p class="note">13 个生产节点在换厂商时一行代码未改即可跑通，说明 JSON 契约层是厂商中立的。</p>
+        </div>
+        <div class="panel reveal">
+          <h3><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#4A7C59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M5 8l7-5 7 5"/><path d="M5 16l7 5 7-5"/></svg>两个判官：关键词漏掉的，语义抓住了</h3>
+          <ul>
+            <li>行为型要求用逐字关键词判天生脆弱：同一合规语义实测出现 5 种措辞，扩词追不上。因此接入第二个判官做语义判定，<b>不替换主判定</b>，只作为并行第二口径。</li>
+            <li><b>验证方式含阴性对照</b>：标注全反转后一致率从 45/45 掉到 0/45，证明判官真的在读回答，而不是在猜标注方向。</li>
+            <li><b>第一例真实分歧</b>：「必须转人工」这条要求被关键词按一半权重静默放过，语义判官判失败；换成另一家模型后，同样的问题两轮独立复现。</li>
+          </ul>
+          <p class="note">跨厂商判官偏差实测 +0.0pt，但样本只有 8 个组合，只能说「未观察到」，不足以排除更小的偏差。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 5. 准则 ===== -->
+    <section class="sec" id="principles">
+      <div class="shead">
+        <div class="kcap">05 / Principles</div>
+        <h2>做多少就够了：四条判断准则</h2>
+      </div>
+      <p class="slede">这一层不是越多越好。每一层都要跟着业务改，三个项目各搞一套等于同时维护三个小框架。所以先定边界，再动手。</p>
+
+      <dl class="deflist">
+        <div class="item">
+          <dt><i>01</i>按「错一次的代价」分层</dt>
+          <dd>错了要担责或违规的环节重投入，只是体验差一点的环节抽检即可。制度冲突答错会误导报销，必须硬约束；一段文案的风格不够好看，抽查就够。</dd>
+        </div>
+        <div class="item">
+          <dt><i>02</i>先闭环，后加层</dt>
+          <dd>一条最薄的完整闭环（trace → 评测 → 回写），胜过八层里各做一点。三个项目都是「层数不少、闭环不全」，先补断点，别急着加层。</dd>
+        </div>
+        <div class="item">
+          <dt><i>03</i>能写进代码的，不写提示词</dt>
+          <dd>提示词约束是概率性的，代码约束是确定的。把「绝不越权」落成转移表，把拍的阈值放进配置文件并附数据依据，而不是继续加感叹号。</dd>
+        </div>
+        <div class="item">
+          <dt><i>04</i>每一层都要能单层开关</dt>
+          <dd>出问题时要能降级回退。评测台支持关闭重试、切换运行模式、限定用例范围；阈值配置写坏时一律回落代码默认值，行为与改动前完全一致。</dd>
+        </div>
+      </dl>
+
+      <h3 style="font-size:16px;font-weight:750;margin:28px 0 6px;">明确不做</h3>
+      <p class="slede" style="margin-bottom:14px;">这些是平台级团队才需要的基础设施。三个项目合计的用户量、团队规模与迭代频率都不到那个量级，做了只会是维护负债。</p>
+      <div class="panel reveal">
+        <ul style="columns:2;column-gap:34px;">
+          <li>分布式链路追踪（OTel / Jaeger）</li>
+          <li>在线 A/B 实验平台</li>
+          <li>自动化 CI 门禁</li>
+          <li>向量库选型对比</li>
+          <li>多租户与权限体系</li>
+          <li>自建 LLM 网关</li>
+          <li>全量提示词版本管理平台</li>
+        </ul>
+        <p class="note">一句话标准：必备的四件（Schema 校验加重试、兜底路径可测、一份能跑的评测集、一次 trace 落盘）全部到位，就已经超过多数 AI 产品的工程水位。</p>
+      </div>
+    </section>
+
+    <!-- ===== 6. 诚实边界 ===== -->
+    <section class="sec" id="honest">
+      <div class="shead">
+        <div class="kcap">06 / Boundaries</div>
+        <h2>哪些不该套这一层，以及它现在还不能证明什么</h2>
+      </div>
+      <p class="slede">引入之前先划边界，是为了防止后面越做越重。判断准则只有一个问题：这个环节错一次的代价，是否大于维护它的成本。</p>
+
+      <dl class="deflist">
+        <div class="item">
+          <dt><i>不适用</i>单次性、一次性任务</dt>
+          <dd>运行一次就结束，没有回归需求，评测是纯浪费。作品集的 PDF 生成脚本就属于这一类。</dd>
+        </div>
+        <div class="item">
+          <dt><i>不适用</i>纯静态展示页面</dt>
+          <dd>没有模型参与，不存在概率性输出，也就没有可评测的对象。</dd>
+        </div>
+        <div class="item">
+          <dt><i>不适用</i>还在探索产品形态的阶段</dt>
+          <dd>需求每周都变，评测集会跟着重写，维护成本远高于收益。要等输入分布稳定下来再建。</dd>
+        </div>
+        <div class="item">
+          <dt><i>不适用</i>没有稳定输入分布的环节</dt>
+          <dd>评测集需要代表性样本。不知道用户会问什么的时候，测出来的数字没有参考意义。</dd>
+        </div>
+      </dl>
+
+      <div class="cols" style="margin-top:26px;">
+        <div class="panel reveal">
+          <h3><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#C9664A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16h.01"/></svg>口径声明（必须说，不等追问）</h3>
+          <ul>
+            <li><b>绝对分不能替换简历数字。</b>这套评测用的是替代语料（原始知识库文档本地不可得）与另一家模型，与线上归档结果属于不同运行时、不同判定器下的两个数，不能互换，也不能说「复现为 X%」。</li>
+            <li><b>它只用于结构性诊断。</b>能得出结论的是「某条路径是不是死代码」「某个字段有没有被写入」这类结构问题；不能用于评判线上模型能力。</li>
+            <li><b>「评测台已建成并可运行」不等于「已产出可外推的质量结论」。</b>这两件事在面试里必须分开说。</li>
+          </ul>
+        </div>
+        <div class="panel reveal">
+          <h3><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#C9664A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><circle cx="12" cy="12" r="9"/></svg>已知局限</h3>
+          <ul>
+            <li><b>自评偏差未彻底消除。</b>语义判官与被测系统同厂商，靠窄任务、强制引用原文证据、跨厂商交叉验证来压制，但只能说「未观察到」，不能说「已消除」。</li>
+            <li><b>标注集是单方判定</b>，不是人工双标。一致率 100% 只代表与我的判断一致，不代表与共识一致。</li>
+            <li><b>偏差实验样本偏小</b>，8 个组合不足以排除更小的偏差；跨模型轮次只跑了一次，没有重复测量。</li>
+            <li><b>评测集本身需要 lint。</b>已经查出两条「期望词包含禁止词」的矛盾用例——无论系统多好都不可能通过。有评测不等于测对了，跑得越勤可能错得越自信。</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 style="font-size:15.4px;font-weight:750;margin:26px 0 12px;">可下载的材料</h3>
+      <div class="dl">
+        <a href="Harness-Method.pdf" download>
+          <span class="ft ft-pdf">PDF</span>
+          <span class="ti">Harness 工程方法 · 一页纸<small>八层框架 · 覆盖矩阵 · 断点 · 实证数据 · 边界</small></span>
+        </a>
+        <a href="XiaoBan-EvalHarness.zip" download>
+          <span class="ft ft-zip">ZIP</span>
+          <span class="ti">小办评测台源码包<small>评测脚本 · 测试集 · 回写记录 · 含离线自检</small></span>
+        </a>
+      </div>
+      <p class="note">源码包内附两项<b>不需要网络、不需要 API key</b> 的自检：判定器硬门负对照（T1–T4 全过）与阈值配置一致性校验（8 个键逐一比对配置值、节点读到值、代码默认值）。</p>
+    </section>
+
+    <!-- 收尾 -->
+    <section class="closesec">
+      <p>这一层最容易被讲成术语堆砌。所以我把落点收在一句话上：<b>评测跑完存档叫机械标注，评测跑完回写才叫工程闭环。</b>前者产出的是一份文件，后者产出的是下一轮的约束。</p>
+    </section>
+
+  </div>
+
+  <footer class="foot">
+    <div class="wrap">
+      <p>韩佳雪 ｜ 独立主导 ｜ <a href="portfolio.html">返回作品集首页</a> ｜ 手机 15693149386 ｜ 邮箱 3415703993@qq.com</p>
+      <p style="margin-top:6px;font-size:12.4px;color:var(--text-3);">本页所有现状判断与实测数据均来自本地代码实读与评测产物，未经运行时实测的部分已明确标注。</p>
+    </div>
+  </footer>
+
+  <!-- 侧栏 -->
+  <aside class="dock" id="dock" aria-label="本页目录与资料下载">
+    <div class="dock-hd">
+      <span class="dock-title">工程方法</span>
+      <button class="dock-btn" id="dockCollapse" type="button" aria-controls="dockInner" aria-expanded="true" title="收起侧栏" aria-label="收起侧栏">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </button>
+    </div>
+    <div class="dock-rail" id="dockRail">
+      <button class="rail-btn" type="button" data-expand title="本页目录与资料" aria-label="展开并查看本页目录与资料">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/></svg>
+      </button>
+      <button class="rail-btn" type="button" data-expand title="资料下载（4 项）" aria-label="展开并查看资料下载，共 4 项">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        <span class="rail-badge">4</span>
+      </button>
+      <button class="rail-btn" type="button" id="dockTopRail" title="回到顶部" aria-label="回到顶部">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+      </button>
+    </div>
+    <div class="dock-inner" id="dockInner">
+      <section>
+        <div class="dock-h">本页目录</div>
+        <a class="dl-item" href="#frame"><span class="fn">八层框架与闭环</span></a>
+        <a class="dl-item" href="#coverage"><span class="fn">现状覆盖矩阵</span></a>
+        <a class="dl-item" href="#gaps"><span class="fn">三个项目的断点</span></a>
+        <a class="dl-item" href="#evidence"><span class="fn">已落地实证</span></a>
+        <a class="dl-item" href="#principles"><span class="fn">判断准则与不做什么</span></a>
+        <a class="dl-item" href="#honest"><span class="fn">诚实边界</span></a>
+      </section>
+
+      <div class="dock-sep"></div>
+
+      <section>
+        <div class="dock-h">资料下载</div>
+        <div class="dl-group">
+          <div class="dl-gh"><i class="dot"></i>本页材料</div>
+          <a class="dl-item" href="Harness-Method.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">方法一页纸</span><span class="fs">91 KB</span></a>
+          <a class="dl-item" href="XiaoBan-EvalHarness.zip" download><span class="ft ft-zip">ZIP</span><span class="fn">评测台源码包</span><span class="fs">262 KB</span></a>
+        </div>
+        <div class="dl-group">
+          <div class="dl-gh"><i class="dot"></i>回作品集</div>
+          <a class="dl-item" href="portfolio.html"><span class="ft ft-web">WEB</span><span class="fn">作品集首页</span><span class="fs">↗</span></a>
+          <a class="dl-item" href="xiaoban.html"><span class="ft ft-web">WEB</span><span class="fn">小办详情页</span><span class="fs">↗</span></a>
+        </div>
+      </section>
+    </div>
+    <div class="dock-foot">
+      <button class="dock-top" id="dockTop" type="button">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+        回到顶部
+      </button>
+    </div>
+  </aside>
+
+  <button class="dock-fab" id="dockFab" type="button" aria-controls="dock" aria-expanded="false" aria-label="打开资料与目录">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+  </button>
+  <div class="dock-scrim" id="dockScrim"></div>
+
+<script>
+  /* 主题切换：记忆到 localStorage，并同步 aria-label */
+  (function(){
+    var btn=document.getElementById('themeBtn');
+    var KEY='hx-theme';
+    try{ if(localStorage.getItem(KEY)==='dark') document.body.classList.add('dark'); }catch(e){}
+    function sync(){ var d=document.body.classList.contains('dark');
+      btn.textContent = d ? '◑' : '◐';
+      btn.setAttribute('aria-label', d ? '切换到浅色模式' : '切换到深色模式'); }
+    sync();
+    btn.addEventListener('click', function(){
+      document.body.classList.toggle('dark');
+      try{ localStorage.setItem(KEY, document.body.classList.contains('dark') ? 'dark' : 'light'); }catch(e){}
+      sync();
+    });
+  })();
+
+  /* 滚动揭示：渐进增强，无 JS 或减动效时直接可见 */
+  (function(){
+    var els=document.querySelectorAll('.reveal');
+    if(!('IntersectionObserver' in window)){ els.forEach(function(el){el.classList.add('in');}); return; }
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    },{rootMargin:'0px 0px -8% 0px',threshold:.08});
+    els.forEach(function(el){ io.observe(el); });
+  })();
+
+  /* 侧栏：宽屏可收缩（状态记忆到 localStorage），窄屏由悬浮按钮唤出抽屉 */
+  (function(){
+    var dock=document.getElementById('dock'); if(!dock) return;
+    var fab=document.getElementById('dockFab'), scrim=document.getElementById('dockScrim'),
+        collapse=document.getElementById('dockCollapse'), rail=document.getElementById('dockRail'),
+        topBtn=document.getElementById('dockTop'), topRail=document.getElementById('dockTopRail');
+    var isNarrow=function(){ return window.matchMedia('(max-width:1279px)').matches; };
+
+    /* 宽屏可收缩：收起后正文自动回中（由 body.dock-collapsed 控制位移） */
+    function syncBtn(){
+      if(!collapse) return;
+      var c=dock.classList.contains('collapsed');
+      collapse.setAttribute('aria-expanded',c?'false':'true');
+      var t=c?'展开侧栏':'收起侧栏';
+      collapse.title=t; collapse.setAttribute('aria-label',t);
+    }
+    function setCollapsed(c){
+      dock.classList.toggle('collapsed',c);
+      document.body.classList.toggle('dock-collapsed',c);
+      syncBtn();
+      try{ localStorage.setItem('hx-dock',c?'collapsed':'expanded'); }catch(e){}
+    }
+    if(collapse) collapse.addEventListener('click',function(){
+      setCollapsed(!dock.classList.contains('collapsed'));
+    });
+    /* 收起态图标：点任意一个即展开 */
+    if(rail) Array.prototype.forEach.call(rail.querySelectorAll('[data-expand]'),function(b){
+      b.addEventListener('click',function(){ setCollapsed(false); });
+    });
+    var saved=null; try{ saved=localStorage.getItem('hx-dock'); }catch(e){}
+    if(saved==='collapsed'&&!isNarrow()) setCollapsed(true); else syncBtn();
+
+    function setOpen(open){
+      dock.classList.toggle('open',open);
+      if(scrim) scrim.classList.toggle('show',open&&isNarrow());
+      if(fab){
+        fab.setAttribute('aria-expanded',open?'true':'false');
+        fab.setAttribute('aria-label',open?'关闭资料与目录':'打开资料与目录');
+      }
+    }
+    if(fab) fab.addEventListener('click',function(){ setOpen(!dock.classList.contains('open')); });
+    if(scrim) scrim.addEventListener('click',function(){ setOpen(false); });
+    document.addEventListener('keydown',function(e){
+      if(e.key==='Escape'&&dock.classList.contains('open')){ setOpen(false); if(fab) fab.focus(); }
+    });
+    /* 窄屏下点资料后收起抽屉，避免跳转后浮层仍盖住页面 */
+    dock.addEventListener('click',function(e){
+      if(isNarrow()&&e.target.closest('a')) setOpen(false);
+    });
+    /* 视口变宽时抽屉态复位，交回常显模式 */
+    window.addEventListener('resize',function(){ if(!isNarrow()) setOpen(false); });
+    function toTop(){ window.scrollTo({top:0,behavior:'smooth'}); }
+    if(topBtn) topBtn.addEventListener('click',toTop);
+    if(topRail) topRail.addEventListener('click',toTop);
+  })();
+</script>
+</body>
+</html>

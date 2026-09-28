@@ -552,6 +552,20 @@
 /* 数据卡去居中：圆形印章左置 + 文案左对齐，与章节标题的不对称呼应 */
 .rcard{text-align:left;}
 .rcard .stamp{margin-left:0;margin-right:0;}
+
+  /* ===== 工程方法回链（跨项目 harness 层的落点） ===== */
+  .hxnote{margin-top:10px;padding:20px 0 6px 22px;border-left:3px solid #5B6570;}
+  .hxnote .k{font-size:11px;font-weight:700;letter-spacing:1.8px;color:#8B939E;
+    text-transform:uppercase;margin-bottom:9px;}
+  .hxnote h3{font-size:17.5px;font-weight:700;line-height:1.5;margin-bottom:9px;}
+  .hxnote p{font-size:13.8px;line-height:1.82;max-width:780px;opacity:.9;}
+  .hxnote a{display:inline-block;margin-top:13px;font-size:13.6px;font-weight:650;color:#3E464F;
+    text-decoration:none;border-bottom:1px solid rgba(91,101,112,.45);padding-bottom:2px;
+    transition:border-color .15s ease;}
+  .hxnote a:hover{border-bottom-color:#3E464F;}
+  body.dark .hxnote{border-left-color:#98A3AE;}
+  body.dark .hxnote .k{color:#7B828B;}
+  body.dark .hxnote a{color:#B9C3CD;border-bottom-color:rgba(152,163,174,.5);}
 </style>
 <noscript><style>.reveal{opacity:1!important;transform:none!important;animation:none!important;}</style></noscript>
 </head>
@@ -939,6 +953,15 @@
   </div>
 
   <!-- 页脚 -->
+
+    <!-- 工程方法：本页在 harness 八层里的位置 -->
+    <section class="hxnote">
+      <div class="k">ENGINEERING METHOD</div>
+      <h3>这一页在八层框架里的位置：护栏最标准，但还没被证明</h3>
+      <p>本产品的护栏层是三个项目里最标准的：三条模板兜底加 OCR 降级，页面永不白屏。但它目前只走到闭环的执行层，出场没有逐条记录，也没有测试集，所以护栏到底有没有效，还没有数据能证明。下一步是先补逐条 trace，再补一份 20 至 30 例的报告评测集。这是如实披露的进度，不是已完成项。</p>
+      <a href="harness.html">查看完整工程方法与断点定位 →</a>
+    </section>
+
   <footer class="foot">
     <div class="copy">韩佳雪 · AI 产品作品集</div>
     <div class="contact-line">电话 15693149386 ｜ 邮箱 <a href="mailto:3415703993@qq.com">3415703993@qq.com</a></div>

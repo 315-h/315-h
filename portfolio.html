@@ -455,6 +455,23 @@
 .sec-head h2::before{content:"";position:absolute;left:-16px;top:.14em;bottom:.14em;
   width:2px;border-radius:2px;background:var(--c-jingli);}
 .sec-head p{margin-left:0;margin-right:0;max-width:620px;}
+
+  /* ===== 工程方法横切带（跨项目的 harness 层） ===== */
+  #harness{padding-top:6px;}
+  .strip{display:flex;align-items:center;justify-content:space-between;gap:34px;
+    border:1px solid var(--divider);border-left:3px solid #5B6570;border-radius:var(--radius);
+    background:var(--card);box-shadow:var(--shadow);padding:28px 30px;}
+  .strip .kcap{font-size:11.4px;font-weight:700;letter-spacing:1.8px;color:var(--text-2);
+    text-transform:uppercase;margin-bottom:9px;}
+  .strip h2{font-size:21px;font-weight:750;letter-spacing:-.2px;margin-bottom:10px;}
+  .strip p{font-size:13.8px;color:var(--text-2);max-width:730px;line-height:1.8;}
+  .strip-go{flex:none;display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:650;
+    color:#fff;background:var(--primary-strong);padding:12px 20px;border-radius:999px;
+    text-decoration:none;white-space:nowrap;transition:transform .15s ease;}
+  .strip-go:hover{transform:translateY(-2px);}
+  .strip-go .arr{font-size:15px;line-height:1;}
+  body.dark .strip{border-left-color:#98A3AE;}
+  @media (max-width:860px){.strip{flex-direction:column;align-items:flex-start;gap:20px;}}
 </style>
 <noscript><style>.reveal{opacity:1!important;transform:none!important;animation:none!important;}</style></noscript>
 </head>
@@ -481,6 +498,7 @@
         <div class="anchors">
           <a href="#projects">项目作品</a>
           <a href="#skills">核心能力</a>
+          <a href="#harness">工程方法</a>
           <a href="#about">关于我</a>
           <a href="#contact">联系方式</a>
         </div>
@@ -584,6 +602,19 @@
       </div>
     </section>
 
+
+    <!-- 工程方法：横跨三个项目的一层 -->
+    <section class="sec" id="harness">
+      <div class="strip reveal">
+        <div class="strip-txt">
+          <div class="kcap">ENGINEERING METHOD</div>
+          <h2>三个项目共用的一层：模型之外的工程</h2>
+          <p>三款产品都过了「从 0 到 1 搭功能」，接下来要解决的是「从 1 到 N 保稳定」。这一层不写在提示词里，写在代码里：约束、兜底、逐节点 trace、评测，以及最关键的一步，评测结果回写成约束。小办的 118 条分层测试集已配一份 R1 至 R36 的回写记录，逐轮记下「被哪条 Bad Case 驱动、改前改后各是多少、是否超过噪声上限」。八层里三个项目各缺什么，也一并摊开写清楚了。</p>
+        </div>
+        <a class="strip-go" href="harness.html">查看工程方法 <span class="arr">→</span></a>
+      </div>
+    </section>
+
     <!-- 能力矩阵 -->
     <section class="sec" id="skills">
       <div class="sec-head reveal">
@@ -650,9 +681,9 @@
       <button class="rail-btn" type="button" data-expand title="核心信息与联系方式" aria-label="展开并查看核心信息与联系方式">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       </button>
-      <button class="rail-btn" type="button" data-expand title="资料下载（15 项）" aria-label="展开并查看资料下载，共 15 项">
+      <button class="rail-btn" type="button" data-expand title="资料下载（18 项）" aria-label="展开并查看资料下载，共 18 项">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-        <span class="rail-badge">15</span>
+        <span class="rail-badge">18</span>
       </button>
       <button class="rail-btn" type="button" id="dockTopRail" title="回到顶部" aria-label="回到顶部">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
@@ -690,6 +721,13 @@
         <div class="dl-group g-common">
           <div class="dl-gh"><i class="dot"></i>跨项目通用</div>
           <a class="dl-item" href="Prompt-Method.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">Prompt 方法论（三项目共研）</span><span class="fs">519 KB</span></a>
+        </div>
+
+        <div class="dl-group g-harness">
+          <div class="dl-gh"><i class="dot"></i>工程方法</div>
+          <a class="dl-item" href="Harness-Method.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">Harness 方法一页纸</span><span class="fs">91 KB</span></a>
+          <a class="dl-item" href="XiaoBan-EvalHarness.zip" download><span class="ft ft-zip">ZIP</span><span class="fn">小办评测台源码包</span><span class="fs">262 KB</span></a>
+          <a class="dl-item" href="harness.html"><span class="ft ft-web">WEB</span><span class="fn">工程方法页</span><span class="fs">↗</span></a>
         </div>
 
         <div class="dl-group g-jingli">

@@ -619,6 +619,20 @@
 .sec-head .rule{display:none;}
 /* hero 里的 sec-head 是主标题，不加缩进与竖线 */
 .hero .sec-head{padding-left:0;text-align:left;}
+
+  /* ===== 工程方法回链（跨项目 harness 层的落点） ===== */
+  .hxnote{margin-top:10px;padding:20px 0 6px 22px;border-left:3px solid #5B6570;}
+  .hxnote .k{font-size:11px;font-weight:700;letter-spacing:1.8px;color:#8B939E;
+    text-transform:uppercase;margin-bottom:9px;}
+  .hxnote h3{font-size:17.5px;font-weight:700;line-height:1.5;margin-bottom:9px;}
+  .hxnote p{font-size:13.8px;line-height:1.82;max-width:780px;opacity:.9;}
+  .hxnote a{display:inline-block;margin-top:13px;font-size:13.6px;font-weight:650;color:#3E464F;
+    text-decoration:none;border-bottom:1px solid rgba(91,101,112,.45);padding-bottom:2px;
+    transition:border-color .15s ease;}
+  .hxnote a:hover{border-bottom-color:#3E464F;}
+  body.dark .hxnote{border-left-color:#98A3AE;}
+  body.dark .hxnote .k{color:#7B828B;}
+  body.dark .hxnote a{color:#B9C3CD;border-bottom-color:rgba(152,163,174,.5);}
 </style>
 <noscript><style>.reveal{opacity:1!important;transform:none!important;animation:none!important;}</style></noscript>
   <script src="qa_data.js"></script>
@@ -1294,6 +1308,15 @@
       <div style="margin-top:32px;font-family:var(--mono);font-size:11.5px;color:var(--text-3);letter-spacing:1px">
         ROLE 独立主导 &nbsp;|&nbsp; DURATION 2026.Q1 - Q2 &nbsp;|&nbsp; STATUS 已交付 / 线上运行
       </div>
+    </section>
+
+
+    <!-- 工程方法：本页在 harness 八层里的位置 -->
+    <section class="hxnote">
+      <div class="k">ENGINEERING METHOD</div>
+      <h3>这一页的准确率，是怎么被一轮一轮逼出来的</h3>
+      <p>本页的准确率演进不是一次性跑出来的。118 条分层测试集配套一份回写记录（R1 至 R36）：每一行都要回答同一组问题，这次改动是被哪条 Bad Case 驱动的、改前改后各是多少、是否回归复测过、是否超过噪声上限（全命中 ±0.8pt ／ 50% 口径 ±0.9pt ／ 宽松口径 ±1.7pt）。期间修复 6 个生产缺陷，其中「答案正文输出成一串 Python dict」影响了 67.8% 的请求。评测跑完存档叫机械标注，跑完回写才叫工程闭环。</p>
+      <a href="harness.html">查看完整工程方法与回写记录 →</a>
     </section>
 
     <footer class="foot">
