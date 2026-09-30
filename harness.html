@@ -134,6 +134,21 @@
   .shead h2{font-size:24px;font-weight:750;letter-spacing:-.2px;}
   .slede{font-size:14.4px;color:var(--text-2);max-width:760px;margin-bottom:22px;}
 
+  /* 当前进度：三态清单（已落地／进行中／规划中） */
+  .prog{display:grid;gap:10px;}
+  .prog-row{display:grid;grid-template-columns:104px 1fr;gap:18px;align-items:start;
+    background:var(--card);border:1px solid var(--divider-soft);border-radius:var(--radius-sm);
+    padding:15px 18px;transition:border-color .15s ease,background .4s ease;}
+  .prog-row:hover{border-color:var(--c-hs);}
+  .prog-tag{display:inline-flex;align-items:center;gap:7px;font-size:12.8px;font-weight:750;letter-spacing:.3px;
+    padding-top:2px;white-space:nowrap;}
+  .prog-tag i{width:8px;height:8px;border-radius:50%;flex:none;font-style:normal;}
+  .prog-row.done .prog-tag{color:var(--c-fix);} .prog-row.done .prog-tag i{background:var(--c-fix);}
+  .prog-row.doing .prog-tag{color:var(--c-hs);} .prog-row.doing .prog-tag i{background:var(--c-hs);}
+  .prog-row.plan .prog-tag{color:var(--text-2);} .prog-row.plan .prog-tag i{background:var(--text-3);}
+  .prog-txt{font-size:14px;color:var(--text-2);line-height:1.8;}
+  .prog-txt b{color:var(--text);font-weight:650;}
+
   /* 定义列表（非卡片），用于准则与边界 */
   .deflist{display:grid;grid-template-columns:1fr 1fr;gap:8px 42px;}
   .deflist .item{padding:14px 0;border-top:1px solid var(--divider-soft);}
@@ -344,6 +359,7 @@
     .deflist .item:nth-child(2){border-top:1px solid var(--divider-soft);padding-top:14px;}
     .cols{grid-template-columns:1fr;}
     .gap{grid-template-columns:1fr;gap:10px;}
+    .prog-row{grid-template-columns:1fr;gap:4px;}
     .hero h1{font-size:33px;}
     .hero{padding:52px 0 30px;}
   }
@@ -372,12 +388,36 @@
       <p class="sub">三款 AI 产品都走过「从 0 到 1 搭功能」，接下来要解决的是「从 1 到 N 保稳定」。这一层不写在提示词里，写在代码里：约束、兜底、trace、评测，以及最关键的一步——评测结果回写成约束。</p>
       <div class="sign"><b>韩佳雪</b><span>／ 独立主导 · 2026</span></div>
       <div class="anchors">
+        <a href="#progress">当前进度</a>
         <a href="#frame">八层框架</a>
         <a href="#coverage">现状体检</a>
         <a href="#gaps">断点位置</a>
         <a href="#evidence">已落地实证</a>
         <a href="#principles">判断准则</a>
         <a href="#honest">诚实边界</a>
+      </div>
+    </section>
+
+    <!-- ===== 0. 当前进度 ===== -->
+    <section class="sec" id="progress">
+      <div class="shead">
+        <div class="kcap">00 / Status</div>
+        <h2>先说清楚现在走到哪一步</h2>
+      </div>
+      <p class="slede">下面的八层图是完整的样子，不是三款产品现在的样子。哪一层已经落地、哪一层还在做、哪一层只是写在纸上的方向，逐条摊开在下面——没做完的部分比做完的部分更值得看。</p>
+      <div class="prog">
+        <div class="prog-row done">
+          <span class="prog-tag"><i></i>已落地</span>
+          <div class="prog-txt">评测集构建、分层测试、错误归因、Prompt 回写优化——<b>小办完整跑通</b>。</div>
+        </div>
+        <div class="prog-row doing">
+          <span class="prog-tag"><i></i>进行中</span>
+          <div class="prog-txt">全链路 trace 自动化、评测结果自动回写、多项目统一 harness。</div>
+        </div>
+        <div class="prog-row plan">
+          <span class="prog-tag"><i></i>规划中</span>
+          <div class="prog-txt">数据漂移监控、线上质量看板、AB 实验框架。</div>
+        </div>
       </div>
     </section>
 
@@ -742,6 +782,7 @@
     <div class="dock-inner" id="dockInner">
       <section>
         <div class="dock-h">本页目录</div>
+        <a class="dl-item" href="#progress"><span class="fn">当前进度</span></a>
         <a class="dl-item" href="#frame"><span class="fn">八层框架与闭环</span></a>
         <a class="dl-item" href="#coverage"><span class="fn">现状覆盖矩阵</span></a>
         <a class="dl-item" href="#gaps"><span class="fn">三个项目的断点</span></a>

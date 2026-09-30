@@ -18,7 +18,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI产品叙事集 · 韩佳雪</title>
 <meta property="og:title" content="AI 产品叙事集 · 韩佳雪" />
-<meta property="og:description" content="经历翻译官 · 缓择星球 · 小办——三款 AI 产品作品集：求职诊断工具、多智能体决策助手、企业行政问答 Agent。" />
+<meta property="og:description" content="经历翻译官 · 缓择星球 · 小办：三款 AI 产品作品集，涵盖求职诊断工具、多智能体决策助手、企业行政问答 Agent。" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://315-h.github.io/315-h/" />
 <meta property="og:image" content="https://315-h.github.io/315-h/shots/portfolio-og.png" />
@@ -45,8 +45,13 @@
     /* 三项目主色 */
     --c-jingli:#F5A98A;     /* 经历翻译官 · 珊瑚橙 */
     --c-huanze:#E98A68;     /* 缓择星球 · 暖橙 */
-    --c-xiaoban:#1E3A8A;    /* 小办 · 深靛蓝 */
-    --primary-strong:#C9664A; /* 深陶土：承载白字的 CTA，达 AA 对比度 */
+  --c-xiaoban:#1E3A8A;    /* 小办 · 深靛蓝 */
+  --c-xiaoban-ink:#1E3A8A; /* 小办靛蓝的可读版：用于深底上的文字与图形 */
+    --c-jingli-ink:#C05028;   /* 经历珊瑚可读版：浅色 on 白 4.75 */
+    --c-huanze-ink:#B85A3A;   /* 缓择暖橙可读版：浅色 on 白 4.8 */
+  --primary-strong:#C9664A; /* 深陶土：承载白字的 CTA（实测配白字 3.83，CTA 请用 --cta-bg） */
+    --cta-bg:#B0563C;         /* 首屏 CTA 实心底：配白字 4.95，达 AA（primary-strong 配白字实测 3.83） */
+    --cta-fg:#FFFFFF;
     --hover-soft:rgba(245,169,138,.16);   /* 列表项 hover 底色 */
     --dock-bg:rgba(255,255,255,.88);      /* 侧栏磨砂底色（不依赖 color-mix，兼容老浏览器） */
     /* 文件类型徽章令牌（浅色） */
@@ -66,6 +71,11 @@
     --card:#34302B;
     --card-soft:#2F2B27;
     --primary-strong:#D98A6E; /* 深色模式下的深陶土 */
+    --c-xiaoban-ink:#93B4F8;  /* 小办靛蓝在深底上的可读版本 */
+    --c-jingli-ink:#F5A98A;   /* 深色下保持原品牌色（on 深底已达标 6.8） */
+    --c-huanze-ink:#E98A68;   /* 深色下保持原品牌色（on 深底已达标 5.2） */
+    --cta-bg:#D98A6E;
+    --cta-fg:#2B2724;         /* 深色下浅底配深字：5.42 */
     --hover-soft:rgba(232,160,138,.15);
     --dock-bg:rgba(52,48,43,.88);
     /* 文件类型徽章令牌（深色：整体提亮以保 AA 对比度） */
@@ -76,6 +86,9 @@
     --shadow:0 2px 6px rgba(0,0,0,.30), 0 16px 40px rgba(0,0,0,.40);
     --shadow-sm:0 2px 5px rgba(0,0,0,.26), 0 8px 20px rgba(0,0,0,.32);
   }
+  /* 深色下 c1/c2 标签需深底才能承载白字（ink 变量在深色下保持品牌色供 KPI 文字用） */
+  body.dark .pcard.c1 .tag{background:#C05028;}
+  body.dark .pcard.c2 .tag{background:#B85A3A;}
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
   html{scroll-behavior:smooth;}
   /* 可访问性：焦点环 + 动效降级 */
@@ -123,6 +136,16 @@
   .hero .sign{margin-top:24px;font-weight:700;font-size:15px;}
   .hero .sign b{color:var(--c-jingli);}
   .hero .sign span{color:var(--text-2);font-weight:500;margin-left:8px;}
+  .hero .idline{margin-top:10px;font-size:14.5px;color:var(--text-2);line-height:1.8;}
+  .cta{margin-top:24px;display:flex;gap:12px;flex-wrap:wrap;}
+  .cta a{display:inline-flex;align-items:center;gap:7px;text-decoration:none;font-size:14.5px;font-weight:700;
+    padding:12px 24px;border-radius:999px;
+    transition:transform .15s ease,box-shadow .25s ease,background .4s ease,border-color .15s ease;}
+  .cta a .arr{font-size:15px;line-height:1;}
+  .cta a.primary{background:var(--cta-bg);color:var(--cta-fg);box-shadow:var(--shadow-sm);}
+  .cta a.primary:hover{transform:translateY(-2px);box-shadow:var(--shadow);}
+  .cta a.ghost{border:1px solid var(--divider);background:var(--card);color:var(--text);}
+  .cta a.ghost:hover{transform:translateY(-2px);border-color:var(--primary-strong);}
   .anchors{margin-top:32px;display:flex;gap:10px;flex-wrap:wrap;}
   .anchors a{text-decoration:none;font-size:13.5px;font-weight:600;color:var(--text);
     border:1px solid var(--divider);background:var(--card);padding:9px 17px;border-radius:999px;
@@ -139,7 +162,8 @@
   .badge .lab{margin-top:8px;font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--text-2);}
   .badge.b1{top:6px;left:14%;border-top:4px solid var(--c-jingli);animation-delay:0s;}
   .badge.b2{top:104px;right:6%;border-top:4px solid var(--c-huanze);animation-delay:1.3s;}
-  .badge.b3{bottom:4px;left:30%;border-top:4px solid var(--c-xiaoban);animation-delay:2.6s;}
+  .badge.b3{bottom:4px;left:30%;border-top:4px solid var(--c-xiaoban-ink);animation-delay:2.6s;}
+  .badge.b3 svg{color:var(--c-xiaoban-ink);}  /* 深色下与浅色同值，只保证深底可读 */
   @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
 
   /* ===== Section 通用 ===== */
@@ -162,7 +186,7 @@
   .pcard:hover .accent{transform:scaleX(1);}
   .pcard.c1 .accent{background:var(--c-jingli);}
   .pcard.c2 .accent{background:var(--c-huanze);}
-  .pcard.c3 .accent{background:var(--c-xiaoban);}
+  .pcard.c3 .accent{background:var(--c-xiaoban-ink);}
   /* 项目专属纹理 */
   .pcard .tex{position:absolute;inset:0;opacity:.5;pointer-events:none;z-index:0;}
   .pcard.c1 .tex{background:
@@ -175,23 +199,40 @@
     repeating-linear-gradient(90deg, transparent 0 26px, color-mix(in srgb,var(--c-xiaoban) 8%,transparent) 26px 27px);}
   .pcard>*{position:relative;z-index:1;}
   .pcard .icon{width:56px;height:56px;margin-bottom:18px;transition:transform .25s ease,filter .25s ease;}
+  .pcard.c3 .icon{color:var(--c-xiaoban-ink);}
   .pcard:hover .icon{transform:scale(1.06);}
   .pcard.c1:hover .icon{filter:drop-shadow(0 6px 14px color-mix(in srgb,var(--c-jingli) 45%,transparent));}
   .pcard.c2:hover .icon{filter:drop-shadow(0 6px 14px color-mix(in srgb,var(--c-huanze) 45%,transparent));}
-  .pcard.c3:hover .icon{filter:drop-shadow(0 6px 14px color-mix(in srgb,var(--c-xiaoban) 40%,transparent));}
+  .pcard.c3:hover .icon{filter:drop-shadow(0 6px 14px color-mix(in srgb,var(--c-xiaoban-ink) 40%,transparent));}
   .pcard h3{font-size:19px;font-weight:800;line-height:1.4;}
-  .pcard-kpis{font-size:11.5px;font-weight:700;letter-spacing:.3px;margin:2px 0 -6px;
+  .pcard-kpis{font-size:11.5px;font-weight:700;letter-spacing:.3px;margin:2px 0 0;
     display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
-  .pcard.c1 .pcard-kpis{color:var(--c-jingli);}
-  .pcard.c2 .pcard-kpis{color:var(--c-huanze);}
-  .pcard.c3 .pcard-kpis{color:var(--c-xiaoban);}
+  .pcard.c1 .pcard-kpis{color:var(--c-jingli-ink);}
+  .pcard.c2 .pcard-kpis{color:var(--c-huanze-ink);}
+  .pcard.c3 .pcard-kpis{color:var(--c-xiaoban-ink);}
   .pcard-kpis .kdot{display:inline-block;width:3px;height:3px;border-radius:50%;background:currentColor;opacity:.4;}
   .pcard h3 .role{color:var(--text-2);font-weight:600;font-size:14px;}
   .pcard .desc{color:var(--text-2);font-size:13.5px;line-height:1.85;margin:14px 0 20px;min-height:82px;}
+  /* 数据口径小字：紧跟指标行，把「怎么算的」摊在明处 */
+  .pcard .pnote{font-size:11px;line-height:1.75;color:var(--text-2);letter-spacing:.2px;
+    margin:7px 0 0;padding-left:9px;border-left:2px solid var(--divider);}
+  /* 分层评测条形图：同色系，宽度即差异 */
+  .mlv{display:flex;flex-direction:column;gap:6px;margin:11px 0 8px;}
+  .mlv-row{display:flex;align-items:center;gap:9px;font-size:11.5px;}
+  .mlv-lb{flex:0 0 auto;width:74px;color:var(--text-2);font-weight:600;letter-spacing:.2px;}
+  .mlv-track{flex:1 1 auto;height:6px;border-radius:3px;background:var(--divider);overflow:hidden;}
+  .mlv-track i{display:block;height:100%;border-radius:3px;background:var(--c-xiaoban-ink);}
+  .mlv-v{flex:0 0 auto;min-width:36px;text-align:right;font-weight:700;color:var(--text);
+    font-variant-numeric:tabular-nums;}
+  /* 下载区「推荐先看」标记：窄栏用星形图标 + 淡底，不挤占文件名 */
+  .dl-item .rec{flex:0 0 auto;width:9px;height:9px;color:var(--ft-pdf);}
+  .dl-item.isrec{background:rgba(201,102,74,.075);}
+  .dl-item.isrec .fn{font-weight:700;}
+  body.dark .dl-item.isrec{background:rgba(232,160,138,.09);}
   .pcard .tag{margin-top:auto;align-self:flex-start;font-size:11.5px;font-weight:700;letter-spacing:.5px;
     color:#fff;padding:6px 13px;border-radius:999px;}
-  .pcard.c1 .tag{background:var(--c-jingli);}
-  .pcard.c2 .tag{background:var(--c-huanze);}
+  .pcard.c1 .tag{background:var(--c-jingli-ink);}
+  .pcard.c2 .tag{background:var(--c-huanze-ink);}
   .pcard.c3 .tag{background:var(--c-xiaoban);}
   /* 卡片下角色/周期小字：项目色点 + 关键事实 */
   .pcard .pmeta{font-size:11.5px;color:var(--text-2);margin-top:8px;letter-spacing:.2px;
@@ -199,12 +240,12 @@
   .pcard .pmeta::before{content:"";width:5px;height:5px;border-radius:50%;flex:0 0 auto;}
   .pcard.c1 .pmeta::before{background:var(--c-jingli);}
   .pcard.c2 .pmeta::before{background:var(--c-huanze);}
-  .pcard.c3 .pmeta::before{background:var(--c-xiaoban);}
+  .pcard.c3 .pmeta::before{background:var(--c-xiaoban-ink);}
   .pcard .actions{margin-top:18px;display:flex;gap:16px;flex-wrap:wrap;align-items:center;}
   .pcard .go{font-size:13.5px;font-weight:700;display:inline-flex;align-items:center;gap:6px;text-decoration:none;}
-  .pcard.c1 .go{color:var(--c-jingli);} .pcard.c2 .go{color:var(--c-huanze);} .pcard.c3 .go{color:var(--c-xiaoban);}
+  .pcard.c1 .go{color:var(--c-jingli-ink);} .pcard.c2 .go{color:var(--c-huanze-ink);} .pcard.c3 .go{color:var(--c-xiaoban-ink);}
   .pcard .go.detail{color:var(--text);border-bottom:1.5px solid color-mix(in srgb,var(--text) 30%,transparent);padding-bottom:1px;}
-  .pcard.c1 .go.detail:hover{border-color:var(--c-jingli);} .pcard.c2 .go.detail:hover{border-color:var(--c-huanze);} .pcard.c3 .go.detail:hover{border-color:var(--c-xiaoban);}
+  .pcard.c1 .go.detail:hover{border-color:var(--c-jingli-ink);} .pcard.c2 .go.detail:hover{border-color:var(--c-huanze-ink);} .pcard.c3 .go.detail:hover{border-color:var(--c-xiaoban-ink);}
   .pcard .go.detail.disabled{color:var(--text-2);border-bottom:none;padding-bottom:0;cursor:default;}
   .pcard .go:hover .arr{transform:translateX(4px);}
   .pcard .go.disabled{color:var(--text-2);}
@@ -240,7 +281,7 @@
     border:1px solid var(--divider);background:var(--card);padding:11px 22px;border-radius:999px;
     box-shadow:var(--shadow-sm);cursor:pointer;transition:transform .15s ease,border-color .15s ease,background .4s ease;}
   .foot .contact a:hover,.foot .cv:hover{transform:translateY(-2px);border-color:var(--c-jingli);}
-  .foot .cv{background:var(--primary-strong);color:#fff;border-color:var(--primary-strong);}
+  .foot .contact a.cv{background:var(--cta-bg);color:var(--cta-fg);border-color:var(--cta-bg);}
   .foot .copy{color:var(--text-2);font-size:12.5px;margin-top:18px;}
 
   /* ===== 滚动淡入 ===== */
@@ -276,7 +317,7 @@
   .me-row:hover{background:var(--hover-soft);color:var(--primary-strong);}
   .me-row:hover svg{color:var(--primary-strong);}
   .me-row span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .dock-cv{display:flex;align-items:center;justify-content:center;gap:7px;background:var(--primary-strong);
+  .dock-cv{display:flex;align-items:center;justify-content:center;gap:7px;background:var(--cta-bg);color:var(--cta-fg);
     color:#fff;text-decoration:none;padding:10px 14px;border-radius:11px;font-size:13px;font-weight:700;
     box-shadow:0 4px 12px rgba(201,102,74,.26);
     transition:transform .16s ease,box-shadow .16s ease,background .4s ease;}
@@ -289,7 +330,7 @@
   .dl-gh .dot{width:7px;height:7px;border-radius:50%;flex:0 0 auto;}
   .g-jingli .dot{background:var(--c-jingli);}
   .g-huanze .dot{background:var(--c-huanze);}
-  .g-xiaoban .dot{background:var(--c-xiaoban);}
+  .g-xiaoban .dot{background:var(--c-xiaoban-ink);}
   .g-common .dot{background:var(--text-2);}
   .dl-item{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--text);font-size:12.5px;
     padding:6px 7px;margin:0 -7px;border-radius:8px;transition:background .18s ease;}
@@ -311,8 +352,8 @@
 
   /* 窄屏：右下角悬浮按钮 + 抽屉（宽屏下这两个元素不出现） */
   .dock-fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:62;
-    width:54px;height:54px;border-radius:50%;border:1px solid var(--primary-strong);
-    background:var(--primary-strong);color:#fff;display:none;align-items:center;justify-content:center;
+    width:54px;height:54px;border-radius:50%;border:1px solid var(--cta-bg);
+    background:var(--cta-bg);color:var(--cta-fg);display:none;align-items:center;justify-content:center;
     cursor:pointer;box-shadow:0 6px 20px rgba(51,48,46,.20);
     transition:transform .18s ease,background .4s ease;}
   .dock-fab:hover{transform:translateY(-3px);}
@@ -337,7 +378,7 @@
   .rail-btn:hover{background:var(--hover-soft);color:var(--primary-strong);}
   .rail-btn svg{width:18px;height:18px;}
   .rail-badge{position:absolute;top:2px;right:2px;min-width:15px;height:15px;padding:0 3px;border-radius:8px;
-    background:var(--primary-strong);color:#fff;font-size:9px;font-weight:800;line-height:15px;text-align:center;}
+    background:var(--cta-bg);color:var(--cta-fg);font-size:9px;font-weight:800;line-height:15px;text-align:center;}
   .dock.collapsed{width:58px;}
   .dock.collapsed .dock-hd{padding:9px;justify-content:center;}
   .dock.collapsed .dock-title{display:none;}
@@ -353,7 +394,7 @@
   .is-clickable:focus-visible{outline:2px solid var(--primary-strong);outline-offset:3px;}
 
   /* 锚点当前位置反馈 */
-  .anchors a.active{background:var(--primary-strong);color:#fff;border-color:var(--primary-strong);}
+  .anchors a.active{background:var(--cta-bg);color:var(--cta-fg);border-color:var(--cta-bg);}
   .foot .cmail a{color:var(--text);text-decoration:none;border-bottom:1px solid transparent;
     transition:color .18s ease,border-color .18s ease;}
   .foot .cmail a:hover{color:var(--primary-strong);border-color:var(--primary-strong);}
@@ -466,12 +507,71 @@
   .strip h2{font-size:21px;font-weight:750;letter-spacing:-.2px;margin-bottom:10px;}
   .strip p{font-size:13.8px;color:var(--text-2);max-width:730px;line-height:1.8;}
   .strip-go{flex:none;display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:650;
-    color:#fff;background:var(--primary-strong);padding:12px 20px;border-radius:999px;
+    color:var(--cta-fg);background:var(--cta-bg);padding:12px 20px;border-radius:999px;
     text-decoration:none;white-space:nowrap;transition:transform .15s ease;}
   .strip-go:hover{transform:translateY(-2px);}
   .strip-go .arr{font-size:15px;line-height:1;}
   body.dark .strip{border-left-color:#98A3AE;}
   @media (max-width:860px){.strip{flex-direction:column;align-items:flex-start;gap:20px;}}
+
+  /* ===== P1：设计意图引子 · 项目一句话定位 · 落地故事 · 三件事 · 推荐入口 ===== */
+  /* 项目区引子：沿用 sec-head 那根 2px 短竖线的语汇，改为整段左线引言块 */
+  .intent{margin:-12px 0 36px;padding:17px 22px;max-width:800px;
+    border-left:2px solid var(--primary-strong);background:var(--card-soft);
+    border-radius:0 var(--radius) var(--radius) 0;
+    font-size:14.2px;line-height:1.95;color:var(--text-2);
+    transition:background .4s ease;}
+  .intent b{color:var(--text);font-weight:750;}
+
+  /* 项目一句话定位：左侧项目色短竖线 */
+  .pcard .ploc{position:relative;margin:11px 0 9px;padding-left:13px;
+    font-size:14.2px;font-weight:750;line-height:1.7;letter-spacing:.2px;color:var(--text);}
+  .pcard .ploc::before{content:"";position:absolute;left:0;top:.42em;bottom:.42em;
+    width:2px;border-radius:2px;}
+  .pcard.c1 .ploc::before{background:var(--c-jingli);}
+  .pcard.c2 .ploc::before{background:var(--c-huanze);}
+  .pcard.c3 .ploc::before{background:var(--c-xiaoban-ink);}
+
+  /* 落地场景：三个故事（替代纯关键词堆砌） */
+  .stories{display:flex;flex-direction:column;gap:13px;}
+  .story{padding:15px 17px;border:1px solid var(--divider);border-radius:var(--radius-sm);
+    background:var(--card-soft);transition:background .4s ease,border-color .4s ease;}
+  .story .sl{display:flex;align-items:center;gap:8px;font-size:13.6px;font-weight:750;}
+  .story .sl .sdot{width:8px;height:8px;border-radius:50%;flex:0 0 auto;}
+  .story .sd{font-size:13.1px;color:var(--text-2);line-height:1.8;margin-top:6px;}
+
+  /* 工程方法横切带：一句话 + 三个关键词 */
+  .strip-kw{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px;}
+  .strip-kw span{font-size:12.3px;font-weight:700;letter-spacing:.5px;color:#4C555F;
+    background:rgba(91,101,112,.09);border:1px solid rgba(91,101,112,.22);
+    padding:5px 12px;border-radius:999px;}
+  body.dark .strip-kw span{color:#C6CED6;background:rgba(152,163,174,.15);border-color:rgba(152,163,174,.32);}
+
+  /* 关于我：这三款产品教会我的三件事 */
+  .learned{margin:26px auto 0;max-width:800px;padding:28px 34px;background:var(--card);
+    border:1px solid var(--divider);border-radius:var(--radius);box-shadow:var(--shadow-sm);
+    transition:background .4s ease,border-color .4s ease;}
+  .learned-h{font-size:15.5px;font-weight:750;letter-spacing:.3px;margin-bottom:18px;}
+  .learned ol{list-style:none;counter-reset:ll;}
+  .learned li{counter-increment:ll;position:relative;padding-left:36px;margin-bottom:15px;}
+  .learned li:last-child{margin-bottom:0;}
+  .learned li::before{content:counter(ll,decimal-leading-zero);position:absolute;left:0;top:3px;
+    font-size:11.5px;font-weight:800;letter-spacing:.6px;color:var(--cta-bg);}
+  .learned li b{display:block;font-size:14.4px;font-weight:750;}
+  .learned li span{display:block;font-size:13.4px;color:var(--text-2);line-height:1.85;margin-top:4px;}
+
+  /* 关于我：推荐从哪开始看 */
+  .starthere{margin:20px auto 0;max-width:800px;display:flex;align-items:center;gap:10px;
+    font-size:13.4px;color:var(--text-2);line-height:1.8;}
+  .starthere svg{width:16px;height:16px;flex:0 0 auto;color:var(--cta-bg);}
+  .starthere a{color:var(--text);font-weight:700;text-decoration:none;
+    border-bottom:1.5px solid rgba(201,102,74,.45);padding-bottom:1px;transition:border-color .18s ease;}
+  .starthere a:hover{border-bottom-color:var(--primary-strong);}
+
+  @media (max-width:880px){
+    .learned{padding:24px 20px;}
+    .starthere{align-items:flex-start;}
+  }
 </style>
 <noscript><style>.reveal{opacity:1!important;transform:none!important;animation:none!important;}</style></noscript>
 </head>
@@ -493,8 +593,13 @@
       <div class="reveal">
         <span class="eyebrow">AI PRODUCT PORTFOLIO</span>
         <h1>做有温度的<br>AI 产品</h1>
-        <p class="sub">C 端用户体验 × B 端效率落地 · 3 款从 0 到 1 全链路作品</p>
+        <p class="sub">C 端用户体验 × B 端效率落地 · 求职诊断 / 决策辅助 / 企业问答</p>
         <div class="sign"><b>韩佳雪</b><span>/ 独立主导</span></div>
+        <p class="idline">经济与金融应届生 · 毕业后自学 AI 产品 · 独立主导全部设计与落地</p>
+        <div class="cta">
+          <a class="primary" href="#projects">查看我的作品 <span class="arr">→</span></a>
+          <a class="ghost" href="Resume-HanJiaxue.pdf" target="_blank" rel="noopener">下载简历 <span class="arr">↓</span></a>
+        </div>
         <div class="anchors">
           <a href="#projects">项目作品</a>
           <a href="#skills">核心能力</a>
@@ -525,7 +630,7 @@
         </div>
         <!-- 小办：流程节点 -->
         <div class="badge b3">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="1.5" stroke-linecap="round">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
             <rect x="3" y="9" width="6" height="6" rx="1.5"/><rect x="15" y="9" width="6" height="6" rx="1.5"/>
             <path d="M9 12h6"/>
           </svg>
@@ -539,8 +644,9 @@
       <div class="sec-head reveal">
         <div class="kcap">SELECTED WORK</div>
         <h2>核心项目作品</h2>
-        <p>三款产品，三种温度——从人文求职到治愈决策，再到商务效率</p>
+        <p>三款产品，三种温度：从人文求职到治愈决策，再到商务效率</p>
       </div>
+      <p class="intent reveal">三款产品不是随便选的：<b>经历翻译官</b>练 C 端高敏感场景的信任设计，<b>缓择星球</b>练多 Agent 的产品编排，<b>小办</b>练 B 端概率性系统的质量与成本。我在有意识地补不同的能力短板。</p>
       <div class="cards">
 
         <!-- 经历翻译官 -->
@@ -551,7 +657,9 @@
             <path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9 13l3 3 6-6"/>
           </svg>
           <h3>经历翻译官 <span class="role">· AI求职工具</span></h3>
+          <p class="ploc">让求职者不再猜 HR 想看什么</p>
           <div class="pcard-kpis">85%+ 匹配<span class="kdot"></span>6 大模块<span class="kdot"></span>11 类知识库</div>
+          <p class="pnote">口径：知识库对照 + 抽样评审 + 人工复核，非独立评测集</p>
           <p class="desc">把经历翻译成专业语言。经历拆解、简历优化、面试陪练，温和陪伴、不贩卖焦虑。</p>
           <span class="tag">C端工具 / RAG / 人文向</span>
           <div class="pmeta">独立主导 · 2026</div>
@@ -570,7 +678,9 @@
             <ellipse cx="12" cy="12" rx="11" ry="4.5" transform="rotate(28 12 12)"/>
           </svg>
           <h3>缓择星球 <span class="role">· AI决策助手</span></h3>
+          <p class="ploc">帮你把纠结想清楚，而不是替你做决定</p>
           <div class="pcard-kpis">7 大场景<span class="kdot"></span>4 Agent 架构<span class="kdot"></span>6 核心埋点</div>
+          <p class="pnote">口径：7 类场景需求卡 + 4 Agent 编排方案，尚未做独立评测集</p>
           <p class="desc">理性拆解，减少后悔。多智能体结构化权衡，把纠结慢慢讲清楚，温柔陪你做选择。</p>
           <span class="tag">C端工具 / 多Agent / 情绪向</span>
           <div class="pmeta">独立主导 · 2026</div>
@@ -585,12 +695,19 @@
         <div class="pcard c3 reveal">
           <span class="accent"></span>
           <span class="tex"></span>
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="1.5" stroke-linecap="round">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
             <rect x="3" y="9" width="6" height="6" rx="1.5"/><rect x="15" y="9" width="6" height="6" rx="1.5"/><path d="M9 12h6"/>
           </svg>
           <h3>小办 <span class="role">· 企业行政问答 Agent</span></h3>
+          <p class="ploc">答得出给依据，答不出不硬编</p>
           <div class="pcard-kpis">91.5% 整体通过<span class="kdot"></span>118 例人工核对<span class="kdot"></span>100% L1 直答</div>
-          <p class="desc">把企业知识问答，从「能回答」做成「能办事」—— 答得出给依据，答不出不硬编。</p>
+          <div class="mlv">
+            <div class="mlv-row"><span class="mlv-lb">L1 高频问题</span><span class="mlv-track"><i style="width:100%"></i></span><span class="mlv-v">100%</span></div>
+            <div class="mlv-row"><span class="mlv-lb">L2 正常问题</span><span class="mlv-track"><i style="width:93.1%"></i></span><span class="mlv-v">93.1%</span></div>
+            <div class="mlv-row"><span class="mlv-lb">L0 边界问题</span><span class="mlv-track"><i style="width:75%"></i></span><span class="mlv-v">75%</span></div>
+          </div>
+          <p class="pnote">口径：118 例分层测试集，替代语料，仅作结构诊断</p>
+          <p class="desc">把企业知识问答，从「能回答」做成「能办事」。</p>
           <span class="tag">B端工具 / RAG问答 / 效率向</span>
           <div class="pmeta">独立主导 · 2026.07-2026.08</div>
           <div class="actions">
@@ -609,7 +726,8 @@
         <div class="strip-txt">
           <div class="kcap">ENGINEERING METHOD</div>
           <h2>三个项目共用的一层：模型之外的工程</h2>
-          <p>三款产品都过了「从 0 到 1 搭功能」，接下来要解决的是「从 1 到 N 保稳定」。这一层不写在提示词里，写在代码里：约束、兜底、逐节点 trace、评测，以及最关键的一步，评测结果回写成约束。小办的 118 条分层测试集已配一份 R1 至 R36 的回写记录，逐轮记下「被哪条 Bad Case 驱动、改前改后各是多少、是否超过噪声上限」。八层里三个项目各缺什么，也一并摊开写清楚了。</p>
+          <p>三款产品都不止于「能跑通」：评测集、兜底机制、错误恢复，缺哪一环都摊开标在明处；小办已经走到「评测结果回写成约束」这一步。</p>
+          <div class="strip-kw"><span>分层评测</span><span>约束兜底</span><span>错误归因</span></div>
         </div>
         <a class="strip-go" href="harness.html">查看工程方法 <span class="arr">→</span></a>
       </div>
@@ -631,12 +749,20 @@
           <div class="item"><div class="t">数据驱动迭代</div><div class="d">埋点指标体系、自动化评测闭环、灰度优化</div></div>
         </div>
         <div class="mcol reveal">
-          <h3><span class="dot" style="background:var(--c-xiaoban)"></span>落地场景</h3>
-          <div class="chips">
-            <span>求职诊断</span><span>简历优化</span><span>面试陪练</span>
-            <span>生活决策</span><span>多Agent权衡</span><span>企业知识问答</span>
-            <span>办事流程自动化</span><span>HR 减负</span><span>风控合规</span>
-            <span>小程序</span><span>Coze 工作流</span><span>Web 工具</span>
+          <h3><span class="dot" style="background:var(--c-xiaoban-ink)"></span>落地场景</h3>
+          <div class="stories">
+            <div class="story">
+              <div class="sl"><span class="sdot" style="background:var(--c-jingli)"></span>C 端求职场景</div>
+              <div class="sd">经历翻译官：帮用户把模糊的经历，翻译成岗位看得懂的能力证据</div>
+            </div>
+            <div class="story">
+              <div class="sl"><span class="sdot" style="background:var(--c-huanze)"></span>C 端决策场景</div>
+              <div class="sd">缓择星球：用多 Agent 帮用户拆解选择的代价，而不是替他选</div>
+            </div>
+            <div class="story">
+              <div class="sl"><span class="sdot" style="background:var(--c-xiaoban-ink)"></span>B 端效率场景</div>
+              <div class="sd">小办：企业制度问答，答得出给依据，答不出不硬编</div>
+            </div>
           </div>
           <div class="item" style="margin-top:18px"><div class="t">载体覆盖</div><div class="d">网站 · 微信小程序 · Coze 工作流 / 智能体，三种形态均可交付</div></div>
         </div>
@@ -651,10 +777,25 @@
         <p>让 AI 真正帮到人，而不是制造焦虑</p>
       </div>
       <div class="about-card reveal">
-        <p>我是韩佳雪，一名专注 AI 产品的设计师。我相信好的 AI 产品应当既有温度也有边界——
+        <p>我是韩佳雪，经济与金融专业应届生，毕业后自学 AI 产品，独立完成了这三款产品。
+        我相信好的 AI 产品应当既有温度也有边界：
         它帮人把经历讲清楚、把选择想明白、把琐事办利落，而不是替人做决定或贩卖焦虑。
         上面三款作品，是我对「C 端体验」与「B 端效率」两种产品思维的持续练习。</p>
       </div>
+
+      <div class="learned reveal">
+        <div class="learned-h">这三款产品教会我的三件事</div>
+        <ol>
+          <li><b>问题比方案重要</b><span>先确认用户真的有这个问题，再讨论用什么技术</span></li>
+          <li><b>概率性系统需要概率性验收</b><span>不能只看「整体准确率」，要看分层表现和错误代价</span></li>
+          <li><b>用户信任是慢慢建的</b><span>答不出时说「不知道」，比硬编一个答案更有价值</span></li>
+        </ol>
+      </div>
+
+      <p class="starthere reveal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5.9 1.2.9 1.9V16h5.2v-.2c0-.7.3-1.4.9-1.9A6 6 0 0 0 12 3z"/></svg>
+        <span>如果时间有限，推荐从 <a href="xiaoban.html">小办项目复盘</a> 开始看，5 分钟了解我做产品的完整思路。</span>
+      </p>
     </section>
 
   </div>
@@ -706,6 +847,10 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg>
             <span>3415703993@qq.com</span>
           </a>
+          <a class="me-row" href="https://github.com/315-h" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3"/><path d="M16 22v-3.9a3.4 3.4 0 0 0-.9-2.6c3.1-.3 6.4-1.5 6.4-7A5.4 5.4 0 0 0 20 4.8 5.1 5.1 0 0 0 19.9 1S18.7.7 16 2.5a13.4 13.4 0 0 0-7 0C6.3.7 5.1 1 5.1 1A5.1 5.1 0 0 0 5 4.8a5.4 5.4 0 0 0-1.5 3.7c0 5.5 3.3 6.7 6.4 7A3.4 3.4 0 0 0 9 18.1V22"/></svg>
+            <span>github.com/315-h</span>
+          </a>
         </div>
         <a class="dock-cv" href="Resume-HanJiaxue.pdf" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
@@ -720,7 +865,7 @@
 
         <div class="dl-group g-common">
           <div class="dl-gh"><i class="dot"></i>跨项目通用</div>
-          <a class="dl-item" href="Prompt-Method.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">Prompt 方法论（三项目共研）</span><span class="fs">519 KB</span></a>
+          <a class="dl-item" href="Prompt-Method.pdf" download title="Prompt 方法论（三项目共研）"><span class="ft ft-pdf">PDF</span><span class="fn">Prompt 方法论</span><span class="fs">519 KB</span></a>
         </div>
 
         <div class="dl-group g-harness">
@@ -733,15 +878,15 @@
         <div class="dl-group g-jingli">
           <div class="dl-gh"><i class="dot"></i>经历翻译官</div>
           <a class="dl-item" href="PRD-Experience.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">产品需求文档</span><span class="fs">1.3 MB</span></a>
-          <a class="dl-item" href="jingli-app.html" target="_blank" rel="noopener"><span class="ft ft-web">WEB</span><span class="fn">在线体验</span><span class="fs">↗</span></a>
+          <a class="dl-item isrec" href="jingli-app.html" target="_blank" rel="noopener" title="推荐先看：直接体验产品，5 分钟了解全貌"><span class="ft ft-web">WEB</span><span class="fn">在线体验</span><svg class="rec" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2.6 2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.3 6.2 20.5l1.1-6.5L2.6 9.4l6.5-.9z"/></svg><span class="fs">↗</span></a>
           <a class="dl-item" href="Jingli-Cost.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">单次问答成本账</span><span class="fs">191 KB</span></a>
         </div>
 
         <div class="dl-group g-huanze">
           <div class="dl-gh"><i class="dot"></i>缓择星球</div>
           <a class="dl-item" href="PRD-HuanZe.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">产品需求文档</span><span class="fs">2.5 MB</span></a>
-          <a class="dl-item" href="HuanZe-TestSet.pdf" download><span class="ft ft-xlsx">PDF</span><span class="fn">评测测试集</span><span class="fs">263 KB</span></a>
-          <a class="dl-item" href="HuanZe-Review.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">项目复盘</span><span class="fs">13 KB</span></a>
+          <a class="dl-item" href="HuanZe-TestSet.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">评测测试集</span><span class="fs">263 KB</span></a>
+          <a class="dl-item isrec" href="HuanZe-Review.pdf" download title="推荐先看：项目复盘，5 分钟了解全貌"><span class="ft ft-pdf">PDF</span><span class="fn">项目复盘</span><svg class="rec" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2.6 2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.3 6.2 20.5l1.1-6.5L2.6 9.4l6.5-.9z"/></svg><span class="fs">13 KB</span></a>
           <a class="dl-item" href="huanzexingqiu-web/index.html" target="_blank" rel="noopener"><span class="ft ft-web">WEB</span><span class="fn">网页版体验</span><span class="fs">↗</span></a>
           <a class="dl-item" href="HuanZe-CostCloud.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">成本账与腾讯云部署</span><span class="fs">234 KB</span></a>
         </div>
@@ -749,8 +894,8 @@
         <div class="dl-group g-xiaoban">
           <div class="dl-gh"><i class="dot"></i>小办</div>
           <a class="dl-item" href="PRD-XiaoBan.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">产品需求文档</span><span class="fs">1.7 MB</span></a>
-          <a class="dl-item" href="XiaoBan-TestSet.pdf" download><span class="ft ft-xlsx">PDF</span><span class="fn">评测测试集</span><span class="fs">194 KB</span></a>
-          <a class="dl-item" href="XiaoBan-Retro.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">项目复盘（含 V2 规划）</span><span class="fs">498 KB</span></a>
+          <a class="dl-item" href="XiaoBan-TestSet.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">评测测试集</span><span class="fs">194 KB</span></a>
+          <a class="dl-item isrec" href="XiaoBan-Retro.pdf" download title="推荐先看：项目复盘（含 V2 规划），5 分钟了解全貌"><span class="ft ft-pdf">PDF</span><span class="fn">项目复盘（V2）</span><svg class="rec" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2.6 2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.3 6.2 20.5l1.1-6.5L2.6 9.4l6.5-.9z"/></svg><span class="fs">498 KB</span></a>
           <a class="dl-item" href="XiaoBan-WorkflowSrc.zip" download><span class="ft ft-zip">ZIP</span><span class="fn">工作流源码</span><span class="fs">122 KB</span></a>
           <a class="dl-item" href="XiaoBan-EvalOnePager.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">评测体系一页纸</span><span class="fs">270 KB</span></a>
           <a class="dl-item" href="XiaoBan-CostCache.pdf" download><span class="ft ft-pdf">PDF</span><span class="fn">单次问答成本账与缓存</span><span class="fs">258 KB</span></a>
