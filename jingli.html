@@ -568,6 +568,52 @@
   body.dark .hxnote a{color:#B9C3CD;border-bottom-color:rgba(152,163,174,.5);}
 </style>
 <noscript><style>.reveal{opacity:1!important;transform:none!important;animation:none!important;}</style></noscript>
+<style>
+/* ==== jingli 皮肤：项目身份色 --c1 系 + 背景降噪（v2 纸系） ==== */
+:root{
+  --maxw:1180px;
+  --bg:#FAF6EF; --paper:#FBF8F3; --paper-soft:#F4EFE6;
+  --text:#241F1C; --text-2:#665C54; --text-3:#8E8279;
+  --divider:rgba(36,31,28,.16); --divider-strong:rgba(36,31,28,.30);
+  --c:#C2704F; --c-ink:#9C3F26; --on-c:#FFF8F4; --doc-c:#8C4B2A;
+}
+body.dark{
+  --bg:#1E1A17; --paper:#26211D; --paper-soft:#2C2621;
+  --text:#F3ECE1; --text-2:#B0A398; --text-3:#8E8279;
+  --divider:rgba(243,236,225,.18); --divider-strong:rgba(243,236,225,.32);
+  --c:#EBA184; --c-ink:#F0A184; --on-c:#211C18; --doc-c:#D9A98C;
+}
+.btn-primary{background:var(--c-ink)!important;}
+body.dark .btn-primary{background:var(--c)!important;color:var(--on-c)!important;}
+/* 横格信纸线 → v2 式竖栏线；噪点减半 */
+body::before{opacity:.04!important;}
+body.dark::before{opacity:.03!important;}
+body::after{
+  background-image:repeating-linear-gradient(90deg,transparent 0 86px,
+    color-mix(in srgb,var(--divider) 60%,transparent) 86px 87px)!important;
+  opacity:.55!important;
+}
+body.dark::after{opacity:.3!important;}
+/* 便签去旋转角 */
+.note,.note:nth-child(2),.note:nth-child(3),.note:nth-child(4){transform:none!important;}
+.note:hover{transform:translateY(-4px)!important;}
+/* 封面已交给版面层排成杂志跨页，这里去掉原来的居中约束与卡片外观 */
+.cover .cover-inner{
+  text-align:left;background:none;border:0;border-radius:0;box-shadow:none;overflow:visible;
+}
+.cover .cover-inner::before,.cover .cover-inner::after{content:none!important;}
+.cover{background:none;}
+/* 小屏时原页面把 CTA 居中的覆盖，统一回左对齐（与全站版面一致） */
+@media (max-width:900px){.cover .cta{text-align:left!important;}}
+/* 右栏（≈600px）里按比例写的多列网格：换成等宽列，避免 fr 的 auto 最小值把某列挤瘪 */
+.sec .vgrid,.sec .sgrid,.sec .res{grid-template-columns:repeat(3,minmax(0,1fr));}
+/* 但这行是后加载的皮肤块，会盖掉页面自己在 ≤860 写下的 .res 单列回退 →
+   窄屏仍排 3 列，而 .rcard 里的圆形虚线章固定 158px，三列在 430px 下必然溢出。
+   所以在这里把窄屏回退补回来。 */
+@media (max-width:860px){.sec .vgrid,.sec .sgrid,.sec .res{grid-template-columns:1fr;}}
+</style>
+<link rel="stylesheet" href="v2/subpage-v2.css">
+<link rel="stylesheet" href="v2/layout-detail.css">
 </head>
 <body>
   <a class="skip-link" href="#main-content">跳到主内容</a>
@@ -583,17 +629,30 @@
 
   <div class="wrap" id="main-content" tabindex="-1">
 
+    <div class="masthead">
+      <span>Portfolio</span><span class="r"></span>
+      <b>专题 01 · 经历翻译官</b>
+      <span class="r"></span><span>Han Jiaxue</span>
+    </div>
+
     <!-- (1) 档案封面首屏 -->
     <section class="cover" id="cover">
       <div class="cover-inner reveal">
         <span class="tagline">AI 求职工具 · RAG 架构</span>
-        <div class="seals">
-          <span class="seal-chip">档</span>
-          <span class="seal-chip r">案</span>
-        </div>
-        <h1>经历翻译官</h1>
+        <h1>经历翻译官<span class="seals" aria-hidden="true"><span class="seal-chip">已归档</span></span></h1>
         <p class="sub">把零散的职业过往，翻译成面试官听得懂的专业语言</p>
         <div class="base-label">全链路求职能力迁移诊断工具</div>
+        <div class="pmeta">
+          <div class="pfile-h">本页档案</div>
+          <div class="pf-row"><span class="pf-k">角色</span><span class="pf-v">独立主导</span></div>
+          <div class="pf-row"><span class="pf-k">周期</span><span class="pf-v">2026</span></div>
+          <div class="pf-row"><span class="pf-k">载体</span><span class="pf-v">单页 HTML · 本地存储</span></div>
+        </div>
+        <div class="pfigs">
+          <div><b>85%+</b><span>岗位内容匹配度</span></div>
+          <div><b>6</b><span>大诊断模块</span></div>
+          <div><b>11</b><span>类岗位知识库</span></div>
+        </div>
         <div class="seam"><span class="stamp">译</span></div>
         <div class="cta">
           <a class="btn btn-primary" href="jingli-app.html" target="_blank" rel="noopener">在线体验 ↗</a>
@@ -604,7 +663,7 @@
     <!-- (2) 项目背景与用户痛点 -->
     <section class="sec" id="pain">
       <div class="sec-head reveal">
-        <div class="kcap">BACKGROUND</div>
+        <div class="kcap"><span class="arc">档案</span><span class="en">BACKGROUND</span></div>
         <h2>项目背景与用户痛点</h2>
         <p>通用 AI 改写千篇一律，而真实的求职陪伴需要温度与边界</p>
       </div>
@@ -636,7 +695,7 @@
     <!-- (3) 产品定位与核心价值 -->
     <section class="sec" id="value">
       <div class="sec-head reveal">
-        <div class="kcap">POSITIONING</div>
+        <div class="kcap"><span class="arc">卷宗</span><span class="en">POSITIONING</span></div>
         <h2>产品定位与核心价值</h2>
         <p>主打「温和求职、能力转译」的求职陪练，不贩卖焦虑</p>
       </div>
@@ -662,7 +721,7 @@
     <!-- (4) 全链路功能闭环 -->
     <section class="sec" id="loop">
       <div class="sec-head reveal">
-        <div class="kcap">WORKFLOW</div>
+        <div class="kcap"><span class="arc">审阅</span><span class="en">WORKFLOW</span></div>
         <h2>全链路功能闭环</h2>
         <p>从录入到成长规划，一条温和不焦虑的求职陪伴路径</p>
       </div>
@@ -682,7 +741,7 @@
     <!-- (5) 核心功能模块详解 -->
     <section class="sec" id="features">
       <div class="sec-head reveal">
-        <div class="kcap">MODULES</div>
+        <div class="kcap"><span class="arc">条目</span><span class="en">MODULES</span></div>
         <h2>核心功能模块详解</h2>
         <p>六大模块，对应报告的不同章节——点击卡片查看设计思路</p>
       </div>
@@ -757,7 +816,7 @@
     <!-- (5.4) 报告产出示例 -->
     <section class="sec" id="sample">
       <div class="sec-head reveal">
-        <div class="kcap">SAMPLE</div>
+        <div class="kcap"><span class="arc">样张</span><span class="en">SAMPLE</span></div>
         <h2>报告产出示例</h2>
         <p>输入一段经历，输出六模块诊断——以下为「岗位匹配度」模块的示例片段</p>
       </div>
@@ -775,7 +834,7 @@
     <!-- (5.5) 界面与工作流实录 -->
     <section class="sec" id="screens">
       <div class="sec-head reveal">
-        <div class="kcap">SCREENS</div>
+        <div class="kcap"><span class="arc">实录</span><span class="en">SCREENS</span></div>
         <h2>界面与工作流实录</h2>
         <p>网页端交互 × Coze 智能体与深度模式工作流的真实落地</p>
       </div>
@@ -792,7 +851,7 @@
     <!-- (6) 技术架构说明 -->
     <section class="sec" id="arch">
       <div class="sec-head reveal">
-        <div class="kcap">ARCHITECTURE</div>
+        <div class="kcap"><span class="arc">附录</span><span class="en">ARCHITECTURE</span></div>
         <h2>技术架构说明</h2>
         <p>前端轻、原型快、自研准——三层各司其职</p>
       </div>
@@ -815,7 +874,7 @@
     <!-- (6.2) 技术链路，说人话 -->
     <section class="sec" id="how">
       <div class="sec-head reveal">
-        <div class="kcap">HOW IT WORKS</div>
+        <div class="kcap"><span class="arc">释读</span><span class="en">HOW IT WORKS</span></div>
         <h2>技术链路，说人话</h2>
         <p>不用懂代码，也能看懂它是怎么工作的</p>
       </div>
@@ -841,7 +900,7 @@
     <!-- (6.5) 我的角色与贡献 -->
     <section class="sec" id="role">
       <div class="sec-head reveal">
-        <div class="kcap">MY ROLE</div>
+        <div class="kcap"><span class="arc">署名</span><span class="en">MY ROLE</span></div>
         <h2>我的角色与贡献</h2>
         <p>独立主导（2026）</p>
       </div>
@@ -857,7 +916,7 @@
     <!-- (7) 核心成果数据 -->
     <section class="sec" id="result">
       <div class="sec-head reveal">
-        <div class="kcap">RESULTS</div>
+        <div class="kcap"><span class="arc">台账</span><span class="en">RESULTS</span></div>
         <h2>核心成果数据</h2>
         <p>用可量化的指标，替代「感觉好像有用」</p>
       </div>
@@ -875,7 +934,7 @@
     <!-- (8) 设计亮点总结 -->
     <section class="sec" id="highlights">
       <div class="sec-head reveal">
-        <div class="kcap">HIGHLIGHTS</div>
+        <div class="kcap"><span class="arc">批注</span><span class="en">HIGHLIGHTS</span></div>
         <h2>设计亮点总结</h2>
         <p>四个贯穿全程的产品取舍</p>
       </div>
@@ -890,7 +949,7 @@
     <!-- (8.5) 资产沉淀 -->
     <section class="sec" id="assets">
       <div class="sec-head reveal">
-        <div class="kcap">ASSETS</div>
+        <div class="kcap"><span class="arc">交付</span><span class="en">ASSETS</span></div>
         <h2>从「我做过什么」到「我能解决什么」</h2>
         <p>两份可交付物：单次问答成本账 / Prompt 方法论（与「小办」共研）。点击预览。</p>
       </div>

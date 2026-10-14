@@ -637,6 +637,119 @@
 <noscript><style>.reveal{opacity:1!important;transform:none!important;animation:none!important;}</style></noscript>
   <script src="qa_data.js"></script>
   <script src="xiaoban_docs.js"></script>
+<style>
+/* ==== 小办皮肤：靛蓝（本身已达 AA）+ 工程网格降噪 ==== */
+:root{
+  --bg:#F6F6F4; --card:#FCFCFB; --card-soft:#EFEFEC;
+  --text:#1F2937; --text-2:#4B5563; --text-3:#8A9099;
+  --divider:rgba(31,41,55,.16); --divider-strong:rgba(31,41,55,.30);
+  --c:#1E3A8A; --c-2:#3B82F6; --c-tint:#EEF2FF; --c-edge:#DBE4F5; --on-c:#FFFFFF;
+  --acc:#B24428; --acc-tint:#FBF0EB; --c-ink:#1E3A8A;
+}
+body.dark{
+  --bg:#1D1B19; --card:#252321; --card-soft:#2B2825;
+  --text:#F2ECE2; --text-2:#B2A89C; --text-3:#8C8377;
+  --divider:rgba(242,236,226,.18); --divider-strong:rgba(242,236,226,.32);
+  --c:#93B4F8; --c-2:#93B4F8; --c-tint:#22283A; --c-edge:#2E3446; --on-c:#15181F;
+  --acc:#E0956F; --acc-tint:#33261F; --c-ink:#93B4F8;
+}
+/* 工程网格降噪：34px 双向格 → v2 式竖栏线 */
+body::before{
+  background-image:repeating-linear-gradient(90deg,transparent 0 86px,
+    color-mix(in srgb,var(--divider) 70%,transparent) 86px 87px)!important;
+  background-size:auto!important;
+  mask-image:none!important;-webkit-mask-image:none!important;
+  opacity:.5!important;
+}
+body.dark::before{opacity:.28!important;}
+
+/* ---- v3 封面：左标题 / 右本页档案 / 通栏数据带 ---- */
+.hero{padding:22px 0 54px;display:grid;
+  grid-template-columns:repeat(12,minmax(0,1fr));
+  column-gap:var(--gutter);align-items:start;}
+.hero > div:first-child{grid-column:1 / span 7;grid-row:1;}
+/* 右栏只留短信息（角色 / 周期 / 负责），用和另外三页同一套 .pmeta；
+   原来那三行 hero-note 里最长的一句"数据口径"移到数据带下面的 .pnote 通栏去 */
+.hero > .pmeta{grid-column:8 / -1;grid-row:1;margin-top:37px;}
+.hero > .pnote{grid-column:1 / -1;grid-row:3;margin-top:16px;}
+/* 小办的行头比另外两页矮一档（行头→h2 实测 36px），单独把右栏对齐边距压回 37px。
+   必须 !important：皮肤 <style> 排在 layout-detail.css 的 <link> **之前**，
+   同特异性的话会被通用值（74px）盖掉。 */
+.sec:has(> :is(.sec-head,.shead) :is(.kcap,.eyebrow,.num)) > :nth-child(2){margin-top:37px!important;}
+.hero > .mgrid{grid-column:1 / -1;grid-row:2;margin-top:36px;
+  grid-template-columns:repeat(3,minmax(0,1fr));gap:0;
+  border-top:1px solid var(--ink);border-bottom:1px solid var(--rule);}
+/* 左侧那根 3px 品牌标记线留在原地（品牌色只做标记），
+   内容左缩 12px 让开它 —— 否则首字会被压在色条下面 */
+.hero .mcard{background:none;border:0;border-radius:0;box-shadow:none;
+  padding:20px 22px 18px 12px;}
+.hero .mcard + .mcard{padding-left:26px;border-left:1px solid var(--rule);}
+.hero .mcard:hover{transform:none;box-shadow:none;}
+/* 数字一律走墨色：品牌色只留左侧色条做标记 */
+.hero .mcard .num{font-family:var(--v2-latin);font-weight:400;
+  font-size:clamp(30px,3.4vw,42px);line-height:1;letter-spacing:-.01em;
+  color:var(--ink);}
+.hero .mcard .lab{margin-top:9px;font-size:11.5px;letter-spacing:.1em;color:var(--ink-2);}
+.hero .mcard .delta{margin-top:6px;font-size:11px;color:var(--ink-2);opacity:.85;}
+/* 首屏文案：与 jingli / huanze 同一套语气（标题统一 60–72px） */
+.hero h1{font-family:var(--v2-serif);font-weight:700;
+  font-size:clamp(38px,5.2vw,72px);line-height:1.08;letter-spacing:-.02em;margin:0 0 20px;}
+.hero .sub{max-width:none;font-size:16.5px;line-height:1.9;}
+.hero .sec-head .num{display:inline-block;font-family:var(--v2-serif);font-size:11.5px;
+  font-weight:400;letter-spacing:.22em;color:var(--c-ink);margin:0 0 22px;}
+.hero .sec-head .num::before{content:"";display:inline-block;width:22px;height:1px;
+  background:currentColor;vertical-align:.3em;margin-right:10px;opacity:.75;}
+.hero .tags span{font-family:var(--v2-serif);border-radius:var(--f2-radius-sm);}
+/* 小屏：首屏退回单列，数据带拆成三行 */
+@media (max-width:1040px){
+  .hero{grid-template-columns:1fr;}
+  .hero > div:first-child,.hero > .pmeta,.hero > .mgrid,.hero > .pnote{grid-column:1;grid-row:auto;}
+  .hero > .pmeta{margin-top:32px;}
+  .hero > .mgrid{margin-top:38px;}
+}
+@media (max-width:640px){
+  .hero > .mgrid{grid-template-columns:1fr;}
+  .hero .mcard + .mcard{padding-left:12px;border-left:0;border-top:1px solid var(--rule);
+    margin-top:16px;padding-top:16px;}
+}
+
+/* ---- 右栏（≈600px）内层网格列数修正 ----
+   页面自己的断点是按"视口宽度"写的（≤760 / ≤880），但现在这些网格住在 8 栏右栏里：
+   视口 1414 触发不了任何断点，容器却只有 ~600px。
+   `.dash{1fr 1.3fr 1fr}` 这种比例在窄容器里会被 fr 的 auto 最小值把中间列挤成 52px。 */
+.sec .qa{grid-template-columns:1fr;row-gap:34px;}
+.sec .dash{grid-template-columns:repeat(3,minmax(0,1fr));}
+.sec .ovgrid{grid-template-columns:repeat(2,minmax(0,1fr));}
+.sec .pain{grid-template-columns:1fr;}     /* 里面还有 2×2 小格，左文右图在窄栏里放不下 */
+.sec .evolve{max-width:none;}
+/* 宽表若留在两栏里，宁可在窄容器内横滚，也不把每列挤成一条 */
+.sec:not(.sec-full) .casetable{min-width:680px;}
+@media (max-width:1040px){          /* 内容通栏时还原页面的原始比例 */
+  .sec .qa{grid-template-columns:1fr 1fr;row-gap:0;}
+  .sec .dash{grid-template-columns:1fr 1.3fr 1fr;}
+  .sec .ovgrid{grid-template-columns:repeat(4,1fr);}
+  .sec .pain{grid-template-columns:1fr .9fr;}
+  .sec:not(.sec-full) .casetable{min-width:0;}
+}
+/* 质检节的「循环图 220px + 文字」两列，最小宽度约 560px：视口 760 以下（内容 526px）
+   放不下会顶出 10px 横向滚动 → 跟页面自己的 ≤760 断点对齐退回单列。
+   （必须写在上面那个 1040 块之后，否则同断点下被它覆盖） */
+@media (max-width:760px){
+  .sec .qa{grid-template-columns:1fr;row-gap:30px;}
+}
+/* 极窄屏：上面那个 ≤1040 块会把 ovgrid 提到 4 列，390px 视口下每列只剩 ~85px，
+   「四个词看懂它」卡的最小内容宽把整页顶到 405px（docSW > 视口，横向滚动）→ 回到两列。
+   顺序必须在 1040 块之后。 */
+@media (max-width:640px){
+  .sec .ovgrid{grid-template-columns:1fr 1fr;}
+  /* 三列仪表盘与「设备面板 + 图标网格」在 360 这类极窄屏同样放不下（docSW 374 > 360） */
+  .sec .dash{grid-template-columns:1fr;}
+  .sec .paivis{padding:20px;}
+  .sec .paivis .grid2{grid-template-columns:1fr;}
+}
+</style>
+<link rel="stylesheet" href="v2/subpage-v2.css">
+<link rel="stylesheet" href="v2/layout-detail.css">
 </head>
 <body>
   <a class="skip-link" href="#main-content">跳到主内容</a>
@@ -651,6 +764,12 @@
   </div>
 
   <div class="wrap" id="main-content" tabindex="-1">
+
+    <div class="masthead">
+      <span>Portfolio</span><span class="r"></span>
+      <b>专题 03 · 小办</b>
+      <span class="r"></span><span>Han Jiaxue</span>
+    </div>
 
     <!-- (1) Hero -->
     <section class="hero">
@@ -667,6 +786,11 @@
           <span><b>Coze</b> → LangChain 自研</span>
         </div>
         <a class="btn btn-primary" href="PRD-XiaoBan.pdf" target="_blank" rel="noopener">查看完整 PRD ↗</a>
+      </div>
+      <div class="pmeta reveal">
+        <div class="pfile-h">本页档案</div>
+        <div class="pf-row"><span class="pf-k">角色</span><span class="pf-v">独立主导</span></div>
+        <div class="pf-row"><span class="pf-k">负责</span><span class="pf-v">制度 QA · 63 条标准库 · 118 条分层评测 · RAG 检索链路</span></div>
       </div>
       <div class="mgrid reveal">
         <div class="mcard">
@@ -685,11 +809,7 @@
           <div class="delta">追问-打开-细读-验证（演进中）</div>
         </div>
       </div>
-      <div class="hero-note reveal">
-        <span><b>我的角色：</b>独立主导（2026.07-2026.08）</span>
-        <span><b>负责：</b>制度 QA 梳理 · 63 条标准库 · 118 条分层评测 · RAG 检索链路 · 迭代修复</span>
-        <span><b>数据口径：</b>118 条人工逐条核对，按 L0 极端边界 / L1 库内高频 / L2 全量正常分层 —— L1 100% / L2 93.1% / L0 75-81% / 整体 91.5%。「整体准确率」是虚荣指标，分层才能暴露短板，详见「07 / 质量评测」</span>
-      </div>
+      <div class="pnote reveal">数据口径：118 条人工逐条核对，按 L0 极端边界 / L1 库内高频 / L2 全量正常分层 —— L1 100% / L2 93.1% / L0 75-81% / 整体 91.5%。「整体准确率」是虚荣指标，分层才能暴露短板，详见「质量评测」一节。</div>
     </section>
 
     <!-- (1.5) 项目概览 -->
@@ -773,7 +893,7 @@
     </section>
 
     <!-- (3.5) 工作流实录 -->
-    <section class="sec">
+    <section class="sec sec-full">
       <div class="sec-head reveal">
         <div class="num">工作流实录</div>
         <h2>Coze 工作流落地实拍</h2>
@@ -786,7 +906,7 @@
     </section>
 
     <!-- (4) 部分命中 · 真实问题攻坚 -->
-    <section class="sec">
+    <section class="sec sec-full">
       <div class="sec-head reveal">
         <div class="num">问题攻坚</div>
         <h2>「部分命中」是怎么被我揪出来修好的</h2>

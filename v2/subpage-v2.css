@@ -1,0 +1,315 @@
+/* =====================================================================
+   作品集子页 · 共享骨架 v2（编辑刊物 Editorial Print）
+   ---------------------------------------------------------------------
+   引入方式（放在子页自己的 <style> 之后）：
+       <link rel="stylesheet" href="v2/subpage-v2.css">
+   字体（放在最前，或由本文件已内联的 @font-face 提供）：
+       fonts/noto-serif-sc-all-700.woff2 / instrument-serif-latin-400.woff2
+
+   设计原理：
+     ① 不重写组件，只做「令牌桥接」——把子页原有令牌（--bg/--card/--text/
+        --divider/--c/--on-c/--radius）桥接到 v2 令牌名（--paper/--ink/--rule/
+        --accent/--on-accent）。
+     ② 骨架样式只写 v2 令牌名 → 每个项目的「皮肤色」自动流过来，骨架统一。
+     ③ 桥接必须写在 body 上，不能写 :root —— 否则 --paper:var(--bg) 会在
+        :root 上就把浅色值定死，深色模式失效。
+
+   覆盖原则：只改字体/圆角/阴影/边框/间距/动效；不动各页的特色元素
+   （档案袋、印章、图钉便签、星轨、手机 mockup、表格、三态清单、断点卡）。
+   ===================================================================== */
+
+/* ---------- 字体：自托管子集（与首页同一份文件，浏览器只需下载一次） ---------- */
+@font-face{font-family:'Noto Serif SC';src:url('../fonts/noto-serif-sc-all-700.woff2') format('woff2');
+  font-weight:700;font-style:normal;font-display:swap;}
+@font-face{font-family:'Noto Serif SC';src:url('../fonts/noto-serif-sc-all-400.woff2') format('woff2');
+  font-weight:400;font-style:normal;font-display:swap;}
+@font-face{font-family:'Instrument Serif';src:url('../fonts/instrument-serif-latin-400.woff2') format('woff2');
+  font-weight:400;font-style:normal;font-display:swap;}
+
+/* =====================  一、令牌桥接 + 骨架令牌  ===================== */
+body{
+  /* 展示字 / 拉丁小标 */
+  --v2-serif:'Noto Serif SC','Songti SC','STZhongsong',Georgia,serif;
+  --v2-latin:'Instrument Serif','Noto Serif SC',Georgia,serif;
+
+  /* ① 桥接：子页老令牌 → v2 令牌名（皮肤色从这里进来） */
+  --paper:var(--bg);
+  --paper-2:var(--card-soft,var(--card));
+  --ink:var(--text);
+  --ink-2:var(--text-2);
+  --ink-3:var(--text-3,var(--text-2));
+  --rule:var(--divider);
+  --rule-soft:var(--divider-soft,var(--divider));
+  --accent:var(--c);
+  --on-accent:var(--on-c,#fff);
+  --accent-soft:var(--c-tint,var(--c-hs-soft,rgba(80,70,60,.06)));
+
+  /* ② 骨架令牌：全站一套，不再各页各写 */
+  --shadow-card:0 1px 2px rgba(36,31,28,.05), 0 18px 44px -22px rgba(36,31,28,.26);
+  --ease:cubic-bezier(.16,1,.3,1);
+  --dur-fast:160ms; --dur:320ms; --dur-slow:640ms;
+  --gutter:24px;
+  --f2-radius:3px;          /* 卡片 */
+  --f2-radius-sm:2px;       /* 按钮 / 小元件 */
+
+  /* ③ 压掉子页原来的圆角与阴影（组件不必逐个改） */
+  --radius:var(--f2-radius);
+  --radius-sm:var(--f2-radius-sm);
+  --radius-btn:var(--f2-radius-sm);
+  --shadow:var(--shadow-card);
+  --shadow-sm:var(--shadow-card);
+  --shadow-lg:var(--shadow-card);
+
+  /* ④ 标题字体走衬线：子页的 --font-head 大都已指向它，个别页面再单独兜 */
+  --font-head:var(--v2-serif);
+
+  /* ⑤ 废掉子页原来的「translateX 位移让位」机制 —— 改用 body 预留宽度，
+        两者同时生效会把正文推出左边界（harness/jingli 等都有 .wrap{transform:translateX(--shift)}） */
+  --shift:0px;
+}
+/* 位移机制彻底关掉（含它带来的 fixed 定位包含块问题） */
+.wrap,.topbar .row,main{transform:none!important;}
+/* 深色模式：骨架令牌跟着翻（页面自己的 body.dark 已翻过颜色，这里只补 v2 部分） */
+body.dark{
+  --shadow-card:0 1px 2px rgba(0,0,0,.4), 0 22px 50px -24px rgba(0,0,0,.72);
+}
+/* 分割线：强/弱两档。有 divider-strong 的页面直接桥接，没有的按墨色计算 */
+body{--rule-strong:var(--divider-strong,var(--divider));
+  --rule-soft:var(--divider-soft,var(--divider));}
+@supports (color:color-mix(in srgb,red 50%,blue)){
+  body{--rule-strong:color-mix(in srgb,var(--ink) 30%,transparent);}
+  body.dark{--rule-strong:color-mix(in srgb,var(--ink) 32%,transparent);}
+}
+
+/* =====================  二、排版  ===================== */
+/* 标题：思源宋体 700，收紧字距（子页原来是无衬线 750~800 字重，需逐个压掉） */
+h1,h2,h3,h4,
+.hero h1,.cover h1,
+.sec-head h2,.shead h2,
+.ro h2,.gaps h2,
+.dock .me .n,.dock .pdt{
+  font-family:var(--v2-serif);font-weight:700;letter-spacing:-.015em;
+}
+.sec-head h2,.shead h2{line-height:1.28;}
+
+/* 小标（英文眉标 / 编号 / 章节名）：拉丁用 Instrument Serif，中文自动落到思源宋体 */
+.kcap,.eyebrow,.num,.ploc,.slede + .kcap,
+.dock-h,.dl-gh,.dock-title,.rail-badge,.ft{
+  font-family:var(--v2-latin);
+}
+/* v2 规矩：品牌色只做标记，文字位一律走 ink —— 顺带解决彩色小字不达 AA 的老问题 */
+.kcap,.eyebrow,.num{color:var(--ink-2);letter-spacing:.22em;font-size:12.5px;text-transform:uppercase;}
+
+/* 大号衬线数字（各页的关键读数）：对齐首页 .stat b / .figs b 的 27–30px 视觉 */
+.kpi,.kpi b,.ro b,.mcard .num,.dk .n,.stat b,.ev-row b{
+  font-family:var(--v2-latin);font-weight:400;font-variant-numeric:tabular-nums;
+}
+.ro .v,.ro b{
+  font-family:var(--v2-latin);font-weight:400;font-size:30px;line-height:1.15;
+  letter-spacing:-.01em;font-variant-numeric:tabular-nums;
+}
+
+/* =====================  三、章节头：编号 + 拉丁小标 + 发丝线  ===================== */
+body{counter-reset:v2sec;}
+.sec-head,.shead{
+  counter-increment:v2sec;position:relative;padding-top:52px;border-top:1px solid var(--ink);
+}
+.sec-head::before,.shead::before{
+  content:counter(v2sec,decimal-leading-zero);
+  position:absolute;left:0;top:22px;
+  font-family:var(--v2-latin);font-size:12.5px;letter-spacing:.08em;color:var(--ink-2);
+}
+.sec-head::after,.shead::after{
+  content:"";position:absolute;left:34px;right:0;top:31px;height:1px;background:var(--rule);
+}
+/* 小办原来的「左侧 2px 竖线」与 v2 编号重复，去掉 */
+.sec-head h2::before{display:none;}
+.sec-head .rule{display:none;}
+/* 各个页面原有的居中/间距差异，统一成 v2 的左对齐 + 非对称两栏 */
+.sec-head,.shead{text-align:left;align-items:center;}
+.sec-head{margin-bottom:38px;padding-left:0;}
+
+/* =====================  四、按钮  ===================== */
+.btn,.btn-primary,.btn-ghost,.btn-doc,.back,.backlink,.tab,.chip,.engine-btn{
+  border-radius:var(--f2-radius-sm);
+}
+.btn,.btn-primary,.btn-ghost,.btn-doc{
+  position:relative;overflow:hidden;padding:13px 24px;font-weight:700;
+  transition:transform var(--dur-fast) var(--ease),color var(--dur) ease,border-color var(--dur) ease;
+}
+/* 主按钮：强调色填充 + 墨色自下而上填充（与首页同款） */
+.btn-primary::after{
+  content:"";position:absolute;inset:0;background:var(--ink);
+  transform:translateY(101%);transition:transform var(--dur) var(--ease);
+}
+.btn-primary:hover{color:var(--paper);transform:none;}
+.btn-primary:hover::after{transform:none;}
+.btn-primary > *{position:relative;z-index:1;}
+.btn-ghost{border:1px solid var(--rule);background:transparent;}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);transform:none;}
+/* 返回入口：从胶囊压成直角小标，和顶栏同高 */
+.back{border:1px solid var(--rule);background:transparent;padding:7px 14px;font-size:13px;}
+.back:hover{border-color:var(--accent);color:var(--accent);}
+.backlink{text-decoration:none;border-bottom:1px solid transparent;font-size:13px;}
+.backlink:hover{border-bottom-color:var(--accent);color:var(--accent);}
+
+/* =====================  五、顶栏：不透明纸底 + 发丝线（不用磨砂） ===================== */
+.topbar{
+  background:var(--paper)!important;
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+  border-bottom:1px solid var(--rule-strong);
+}
+.brand,.brand span{font-family:var(--v2-serif);letter-spacing:.01em;}
+.theme-btn{border-radius:999px;border:1px solid var(--rule);background:transparent;}
+.theme-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+/* =====================  六、卡片：直角 + 一套阴影  ===================== */
+.afile,.vcard,.fcard,.note,.flow,.layer,.sample,.ovc,.ideac,.panel,.colbox,.datac,
+.mcard,.ovcell,.scard,.alayer,.dk,.casetable,.chat,.dir-step,.dir-perms,
+.formula div,.tbl-wrap,.prog-row,.gaps,.ro,.proof,.sgrid figure{
+  border-radius:var(--f2-radius);
+  border-color:var(--rule);
+  box-shadow:var(--shadow-card);
+  transition:transform var(--dur) var(--ease),box-shadow var(--dur) var(--ease),border-color var(--dur) ease;
+}
+.afile:hover,.fcard:hover,.scard:hover,.alayer:hover{
+  transform:translateY(-4px);border-color:var(--rule-strong);
+}
+/* 表格：表头换成 v2 的纸底 + 墨色底线 + 衬线小字（更有杂志感） */
+.tbl-wrap table thead th{
+  background:var(--paper-2);color:var(--ink);
+  font-family:var(--v2-serif);font-size:13px;font-weight:700;letter-spacing:.06em;
+  border-bottom:1px solid var(--ink);
+}
+.tbl-wrap table thead th.mono,.tbl-wrap table thead th.num{
+  font-family:var(--v2-latin);letter-spacing:.04em;
+}
+.tbl-wrap table tbody tr{border-bottom:1px solid var(--rule-soft);}
+
+/* =====================  七、动效：统一到 v2 的缓动与位移  ===================== */
+.js .reveal,html.js .reveal{
+  opacity:0;transform:translateY(20px);
+  transition:opacity .8s var(--ease),transform .8s var(--ease);
+}
+.js .reveal.in,html.js .reveal.in{opacity:1;transform:none;}
+@media (prefers-reduced-motion:reduce){
+  .js .reveal,html.js .reveal{opacity:1!important;transform:none!important;transition:none!important;}
+  *{animation-duration:.001ms!important;animation-iteration-count:1!important;}
+}
+
+/* =====================  八、侧栏 dock：沿用首页的一套（含三档断点）  ===================== */
+.dock{
+  position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:60;
+  width:var(--dock-w,260px);max-height:calc(100vh - 96px);display:flex;flex-direction:column;
+  background:var(--paper);border:1px solid var(--ink);border-radius:var(--f2-radius);
+  box-shadow:0 30px 70px -34px rgba(36,31,28,.5);
+  transition:width var(--dur) var(--ease),background var(--dur-slow) ease;
+}
+body.dark .dock{background:var(--paper-2);box-shadow:0 30px 70px -30px rgba(0,0,0,.8);}
+.dock-inner{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:15px 15px 11px;}
+.dock-hd{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:11px 14px;border-bottom:1px solid var(--ink);}
+.dock-title{font-size:11px;font-weight:700;letter-spacing:.2em;color:var(--ink);}
+.dock-btn{border:0;background:none;color:var(--ink-2);cursor:pointer;padding:4px;border-radius:var(--f2-radius-sm);line-height:0;}
+.dock-btn:hover{color:var(--accent);background:var(--accent-soft);}
+.dock-btn svg{width:15px;height:15px;display:block;transition:transform var(--dur) var(--ease);}
+.dock.collapsed .dock-btn svg{transform:rotate(180deg);}
+.dock-h{display:flex;align-items:center;gap:10px;font-size:11px;font-weight:700;
+  letter-spacing:.16em;color:var(--ink);}
+.dock-h::after{content:"";flex:1;height:1px;background:var(--rule);}
+.dock-sep{height:1px;background:var(--ink);opacity:.28;margin:15px 0 13px;}
+.dock .dl-group{margin-top:14px;}
+.dock .dl-gh{display:flex;align-items:center;gap:8px;font-size:11.5px;font-weight:700;
+  letter-spacing:.06em;color:var(--ink);margin-bottom:4px;}
+.dock .dl-gh .dot{width:6px;height:6px;border-radius:50%;flex:0 0 auto;background:var(--dot,var(--ink-2));}
+/* 资料项：用 flex 而不是 grid —— 子页的目录锚点只有 .fn 一个子元素，
+   固定三列的 grid 会把它压进第一列（32px），文件名被截成一两个字。 */
+.dock .dl-item{position:relative;display:flex;align-items:center;gap:8px;
+  padding:7px 6px 7px 0;border-bottom:1px solid var(--rule-soft);
+  text-decoration:none;color:var(--ink);font-size:12.5px;transition:padding-left var(--dur) var(--ease);}
+.dock .dl-item::before{content:"";position:absolute;left:0;top:0;bottom:0;width:0;
+  background:var(--accent-soft);transition:width var(--dur) var(--ease);}
+.dock .dl-item:hover{padding-left:8px;}
+.dock .dl-item:hover::before{width:100%;}
+.dock .dl-item > *{position:relative;}
+.dock .ft{flex:0 0 32px;font-size:9.5px;letter-spacing:.1em;text-align:center;padding:3px 0;
+  line-height:1.2;border:1px solid var(--rule);border-radius:var(--f2-radius-sm);color:var(--ink-2);}
+.dock .ft-pdf{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 46%,transparent);}
+.dock .ft-zip{color:var(--ink);border-color:color-mix(in srgb,var(--ink) 30%,transparent);}
+.dock .fn{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.dock .fs{flex:0 0 auto;font-family:var(--v2-latin);font-size:11px;color:var(--ink-2);
+  font-variant-numeric:tabular-nums;letter-spacing:.02em;}
+.dock .dl-item.isrec .fn{font-weight:700;}
+.dock .rec{flex:0 0 12px;width:12px;height:12px;color:var(--accent);}
+.dock-foot{border-top:1px solid var(--ink);padding:7px;display:flex;justify-content:center;}
+.dock-top{display:inline-flex;align-items:center;gap:6px;border:0;background:none;cursor:pointer;
+  padding:6px 10px;border-radius:var(--f2-radius-sm);color:var(--ink-2);font-size:11.5px;font-weight:600;}
+.dock-top:hover{color:var(--accent);background:var(--accent-soft);}
+.dock-rail{display:none;flex-direction:column;align-items:center;gap:6px;padding:10px 0 12px;}
+.rail-btn{position:relative;width:36px;height:36px;display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--rule);background:none;color:var(--ink-2);border-radius:var(--f2-radius-sm);cursor:pointer;}
+.rail-btn:hover{border-color:var(--accent);color:var(--accent);}
+.rail-btn svg{width:16px;height:16px;}
+.rail-badge{position:absolute;top:-6px;right:-6px;min-width:15px;padding:1px 4px;border-radius:999px;
+  background:var(--accent);color:var(--on-accent);font-size:9px;font-weight:700;font-variant-numeric:tabular-nums;}
+.dock.collapsed{--dock-w:58px;}
+.dock.collapsed .dock-hd{padding:10px;justify-content:center;}
+.dock.collapsed .dock-title{display:none;}
+.dock.collapsed .dock-inner,.dock.collapsed .dock-foot{display:none;}
+.dock.collapsed .dock-rail{display:flex;}
+.dock-scrim{position:fixed;inset:0;z-index:59;background:rgba(36,31,28,.36);
+  display:none;opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity var(--dur) var(--ease),visibility var(--dur) var(--ease);}
+
+/* --- 三档尺寸：所有宽度都能看到并展开侧栏 --- */
+.dock-fab{display:none;}   /* 胶囊本身就是入口，右下角圆钮作废 */
+@media (min-width:1280px){
+  body{--dock-w:clamp(200px,18vw,260px);--dock-reserve:calc(var(--dock-w) + 44px);
+    padding-right:var(--dock-reserve);}
+  body.dock-collapsed{--dock-w:58px;}
+  .topbar{margin-right:calc(-1 * var(--dock-reserve));}
+  .topbar .row{max-width:calc(var(--maxw,1120px) + var(--dock-reserve));
+    padding-right:calc(var(--dock-reserve) + var(--gutter));}
+}
+@media (max-width:1279px){
+  body{--dock-w:56px;--dock-reserve:72px;padding-right:var(--dock-reserve);}
+  .topbar{margin-right:calc(-1 * var(--dock-reserve));}
+  .topbar .row{max-width:calc(var(--maxw,1120px) + var(--dock-reserve));
+    padding-right:calc(var(--dock-reserve) + var(--gutter));}
+  .dock{right:12px;}
+  .dock .dock-title{display:none;}
+  .dock .dock-hd{padding:10px;justify-content:center;}
+  .dock .dock-rail{display:flex;}
+  .dock .dock-inner,.dock .dock-foot{display:none;}
+  .dock.open{--dock-w:min(368px,calc(100vw - 24px));max-height:min(78vh,680px);}
+  .dock.open .dock-hd{padding:11px 14px;justify-content:space-between;}
+  .dock.open .dock-title{display:block;}
+  .dock.open .dock-inner{display:block;}
+  .dock.open .dock-foot{display:flex;}
+  .dock.open .dock-rail{display:none;}
+  .dock-scrim{display:block;}
+  .dock-scrim.show{opacity:1;visibility:visible;pointer-events:auto;}
+  .dock-fab{display:none;}   /* 胶囊本身就是入口，不再需要右下角圆钮 */
+}
+@media (max-width:767px){
+  body{--dock-w:46px;--dock-reserve:0px;padding-right:0;}
+  .topbar{margin-right:0;}
+  .topbar .row{padding-right:var(--gutter);}
+  .dock{right:12px;top:auto;bottom:calc(18px + env(safe-area-inset-bottom,0px));
+    transform:none;max-height:min(78vh,680px);}
+  .dock .dock-hd{display:none;}
+  .dock .dock-rail{gap:0;padding:0;}
+  .dock .dock-rail .rail-btn:nth-child(1){display:none;}
+  .dock .dock-rail #dockTopRail{display:none;}
+  .dock .dock-rail .rail-btn{width:44px;height:44px;border:0;border-radius:var(--f2-radius);}
+  .dock.open .dock-hd{display:flex;}
+  .dock.open .dock-rail{display:none;}
+  .dock.open .dock-inner{display:block;}
+  .dock.open .dock-foot{display:flex;}
+}
+/* 侧栏变窄时省掉体积列，把宽度让给文件名 */
+@media (min-width:768px) and (max-width:1199px){
+  .dock .fs{display:none;}
+  .dock .dl-item{grid-template-columns:30px 1fr;}
+  .dock .dl-item.isrec{grid-template-columns:30px 1fr 12px;}
+}

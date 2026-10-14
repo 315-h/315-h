@@ -607,6 +607,101 @@
   body.dark .hxnote a{color:#B9C3CD;border-bottom-color:rgba(152,163,174,.5);}
 </style>
 <noscript><style>.reveal{opacity:1!important;transform:none!important;animation:none!important;}</style></noscript>
+<style>
+/* ==== 缓择星球皮肤：偏橙陶土（延续首页 --c2 项目身份色）+ 星云降噪 ==== */
+:root{
+  --bg:#FAF6EF; --card:#FBF8F3; --card-soft:#F4EFE6;
+  --text:#241F1C; --text-2:#665C54; --text-3:#8E8279;
+  --divider:rgba(36,31,28,.16); --divider-strong:rgba(36,31,28,.30);
+  --c:#D97A55; --c-ink:#A5522E; --primary-strong:#A5522E; --on-c:#FFF8F4;
+  --purple:#E7DDF0; --c-edge:#F0E7DC;
+}
+body.dark{
+  --bg:#1E1A17; --card:#26211D; --card-soft:#2C2621;
+  --text:#F3ECE1; --text-2:#B0A398; --text-3:#8E8279;
+  --divider:rgba(243,236,225,.18); --divider-strong:rgba(243,236,225,.32);
+  --c:#EE9B77; --c-ink:#EE9B77; --primary-strong:#EE9B77; --on-c:#211C18;
+  --purple:#3A3346; --c-edge:#332C27;
+}
+.btn-primary{background:var(--c-ink)!important;}
+body.dark .btn-primary{background:var(--c)!important;color:var(--on-c)!important;}
+.tab.active{background:var(--c-ink)!important;background-image:none!important;
+  border-color:var(--c-ink)!important;color:#FFF8F4!important;}
+/* 星云降噪：4 个径向渐变 → 1 个柔光；满天星关掉；流星去掉 */
+body::before{opacity:1!important;
+  background:radial-gradient(52% 44% at 82% 12%,color-mix(in srgb,var(--c) 26%,transparent),
+    transparent 70%)!important;}
+body.dark::before{opacity:.5!important;}
+body::after{display:none!important;}
+.kv .meteor{display:none!important;}
+
+/* ---- v3 封面：左标题 / 右手机 mockup ---- */
+.kv{padding:22px 0 54px;text-align:left;}
+.kv-inner{max-width:none;margin:0;display:grid;
+  grid-template-columns:repeat(12,minmax(0,1fr));
+  column-gap:var(--gutter);align-items:start;text-align:left;}
+.kv-inner > .label{grid-column:1 / span 7;grid-row:1;justify-self:start;
+  margin:0 0 22px;font-size:11.5px;font-weight:400;letter-spacing:.22em;color:var(--c-ink);}
+.kv-inner > .label::before{content:"";display:inline-block;width:22px;height:1px;
+  background:currentColor;vertical-align:.3em;margin-right:10px;opacity:.75;}
+.kv-inner > h1{grid-column:1 / span 8;grid-row:2;
+  font-family:var(--v2-serif);font-weight:700;font-size:clamp(38px,5.2vw,72px);
+  line-height:1.06;letter-spacing:-.02em;margin:0 0 20px;}
+.kv-inner > .sub{grid-column:1 / span 7;grid-row:3;margin:0;max-width:34em;
+  font-size:16.5px;line-height:1.9;color:var(--ink-2);}
+.kv-inner > .cta{grid-column:1 / span 7;grid-row:4;margin-top:28px;justify-content:flex-start;}
+/* 左栏补一段「本页档案」（角色 / 负责）：原来标签→标题→副文→按钮下面直接挂数据带，
+   左栏下半截整片空着。用和另外三页同一套 .pmeta（border-top + 键/值行），不加卡片。 */
+.kv-inner > .pmeta{grid-column:1 / span 7;grid-row:5;margin-top:34px;}
+/* 右栏：二维码去掉后（小程序未上线，码也没有实际功能）手机放大一档 206×412 → 238×476，
+   剩下的空间就留白，别再拿占位图去填。 */
+.kv-inner > .phone{grid-column:9 / span 4;grid-row:1 / span 4;justify-self:center;
+  width:238px;height:476px;margin:0;}
+/* 星轨气泡里的加粗文字：原来是 var(--c)（浅色下 2.7:1 不达 AA）→ 走文字色变体 */
+.planet .bubble b{color:var(--c-ink);}
+.kv-inner > .pfigs{grid-column:1 / -1;grid-row:6;margin-top:36px;}
+/* 星轨跟着手机走（原来居中在整页正中） */
+.kv .rings,.kv .rings2,.kv .rings3{left:79%;top:40%;}
+/* 小屏：首屏退回单列。
+   注意：DOM 里 .phone 排在 h1 前面（宽屏靠 grid-row 把它放到右栏），
+   单列后如果只靠 DOM 顺序，手机会跑到标题上面、标签会掉到副标题下面 →
+   用 order 重排成「标签 → 标题 → 副文 → 手机 → 按钮 → 档案 → 数据带」，
+   7 个子项都要给 order，否则没给的那个（默认 0）会跑到最前。 */
+@media (max-width:1040px){
+  .kv-inner{grid-template-columns:1fr;}
+  .kv-inner > .label,.kv-inner > h1,.kv-inner > .sub,.kv-inner > .cta,
+  .kv-inner > .phone,.kv-inner > .pmeta,.kv-inner > .pfigs{grid-column:1;grid-row:auto;}
+  .kv-inner > .label{order:1;}
+  .kv-inner > h1{order:2;}
+  .kv-inner > .sub{order:3;}
+  .kv-inner > .phone{order:4;margin:28px auto 0;width:206px;height:412px;}
+  .kv-inner > .cta{order:5;}
+  .kv-inner > .pmeta{order:6;margin-top:30px;}
+  .kv-inner > .pfigs{order:7;margin-top:30px;}
+  .kv .rings,.kv .rings2,.kv .rings3{left:50%;top:26%;}
+}
+
+/* ---- 右栏（≈600px）内层网格列数修正（同小办：页面断点按视口写的，容器里触发不了）---- */
+.sec .ov{grid-template-columns:repeat(2,minmax(0,1fr));}
+.sec .ass{grid-template-columns:repeat(2,minmax(0,1fr));}
+.sec .fgrid{grid-template-columns:repeat(3,minmax(0,1fr));}
+.sec .fgrid:has(> :nth-child(4)){grid-template-columns:repeat(2,minmax(0,1fr));}  /* 4 张 → 2+2，别排成 3+1 */
+.sec .data{grid-template-columns:repeat(3,minmax(0,1fr));}
+@media (max-width:1040px){
+  /* 星轨图：4 个圆球按 6%/33%/60%/88% 定位 + 92px 直径，窄容器里最左那个会甩出去；
+     每个球身上的 hover 气泡还有 210px 宽，同样越界（整页被顶出 18–42px 横向滚动）。
+     窄屏处理：缩球径 + 整体缩 6% + 裁掉越界部分（气泡是悬停提示，触屏本来也悬停不了）。 */
+  .sec .orbit-wrap{overflow:clip;transform:scale(.94);}
+  .sec .orbit-wrap .planet{width:74px;height:74px;}
+  .sec .orbit-wrap .planet .pn{font-size:11px;}
+  .sec .orbit-wrap .planet .ps{font-size:8.5px;}
+  .sec .ov,.sec .ass{grid-template-columns:repeat(4,1fr);}
+  .sec .fgrid{grid-template-columns:1.26fr 1fr 1.1fr;}
+  .sec .data{grid-template-columns:1fr 1.34fr 1fr;}
+}
+</style>
+<link rel="stylesheet" href="v2/subpage-v2.css">
+<link rel="stylesheet" href="v2/layout-detail.css">
 </head>
 <body>
   <a class="skip-link" href="#main-content">跳到主内容</a>
@@ -622,6 +717,12 @@
 
   <div class="wrap" id="main-content" tabindex="-1">
 
+    <div class="masthead">
+      <span>Portfolio</span><span class="r"></span>
+      <b>专题 02 · 缓择星球</b>
+      <span class="r"></span><span>Han Jiaxue</span>
+    </div>
+
     <!-- (1) 首屏 KV -->
     <section class="kv" id="kv">
       <svg class="rings" viewBox="0 0 680 680"><ellipse cx="340" cy="340" rx="330" ry="200" transform="rotate(28 340 340)"/><ellipse cx="340" cy="340" rx="250" ry="150" transform="rotate(-18 340 340)"/></svg>
@@ -632,7 +733,7 @@
         <div class="phone">
           <span class="notch"></span>
           <div class="scr">
-            <img src="shots/hz-mp-home.png" alt="缓择星球小程序首页" width="355" height="762">
+            <img src="shots/hz-mp-home.png" alt="缓择星球小程序首页" width="347" height="753">
           </div>
         </div>
         <h1>缓择星球</h1>
@@ -641,14 +742,15 @@
         <div class="cta">
           <a class="btn disabled" href="#" aria-disabled="true" tabindex="-1">小程序敬请期待</a>
         </div>
-        <div class="mpcode">
-          <div class="qr">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="3" width="7" height="7" rx="1.4"/><rect x="14" y="3" width="7" height="7" rx="1.4"/>
-              <rect x="3" y="14" width="7" height="7" rx="1.4"/><path d="M14 14h3v3M21 14v7M14 21h7"/>
-            </svg>
-          </div>
-          <div class="cap">小程序待发布 · 上线后开放体验</div>
+        <div class="pmeta reveal">
+          <div class="pfile-h">本页档案</div>
+          <div class="pf-row"><span class="pf-k">角色</span><span class="pf-v">独立主导</span></div>
+          <div class="pf-row"><span class="pf-k">负责</span><span class="pf-v">需求采集卡 · 四 Agent 架构 · 反事实预演卡 · 知识库测试体系</span></div>
+        </div>
+        <div class="pfigs">
+          <div><b>6 项</b><span>核心埋点指标</span></div>
+          <div><b>&lt;5%</b><span>交互负面率</span></div>
+          <div><b>&gt;70%</b><span>纠偏触发率</span></div>
         </div>
       </div>
     </section>
@@ -656,7 +758,7 @@
     <!-- (2) 项目概览 -->
     <section class="sec" id="overview">
       <div class="sec-head reveal">
-        <div class="kcap">OVERVIEW</div>
+        <div class="kcap"><span class="arc">星图</span><span class="en">OVERVIEW</span></div>
         <h2>项目概览</h2>
         <p>温柔陪伴、理性决策——一颗帮你把纠结讲清楚的星球</p>
       </div>
@@ -684,7 +786,7 @@
     <!-- (3) 设计理念 -->
     <section class="sec" id="idea">
       <div class="sec-head reveal">
-        <div class="kcap">PHILOSOPHY</div>
+        <div class="kcap"><span class="arc">理念</span><span class="en">PHILOSOPHY</span></div>
         <h2>设计理念</h2>
         <p>不替你做决定，只帮你把选择想得更清楚</p>
       </div>
@@ -703,9 +805,9 @@
     </section>
 
     <!-- (4) 四Agent 星轨流转 -->
-    <section class="sec" id="agents">
+    <section class="sec sec-full" id="agents">
       <div class="sec-head reveal">
-        <div class="kcap">AGENTS</div>
+        <div class="kcap"><span class="arc">引航</span><span class="en">AGENTS</span></div>
         <h2>四 Agent 核心架构</h2>
         <p>需求挖掘 → 方案检索 → 反向纠偏 → 代价预演，形成完整决策闭环</p>
       </div>
@@ -734,7 +836,7 @@
     <!-- (4.5) 四个 Agent 是怎么配合的 -->
     <section class="sec" id="how">
       <div class="sec-head reveal">
-        <div class="kcap">HOW IT WORKS</div>
+        <div class="kcap"><span class="arc">路径</span><span class="en">HOW IT WORKS</span></div>
         <h2>四个 Agent 是怎么配合的</h2>
         <p>不用懂代码，也能看懂它是怎么工作的</p>
       </div>
@@ -769,7 +871,7 @@
     <!-- (5) 核心功能模块 -->
     <section class="sec" id="features">
       <div class="sec-head reveal">
-        <div class="kcap">FEATURES</div>
+        <div class="kcap"><span class="arc">功能</span><span class="en">FEATURES</span></div>
         <h2>核心功能模块</h2>
         <p>三个星球卡片，对应决策旅程里的关键一步</p>
       </div>
@@ -798,7 +900,7 @@
     <!-- (6) 全场景知识库 -->
     <section class="sec" id="scenes">
       <div class="sec-head reveal">
-        <div class="kcap">SCENARIOS</div>
+        <div class="kcap"><span class="arc">场景</span><span class="en">SCENARIOS</span></div>
         <h2>全场景知识库</h2>
         <p>7 大高频生活场景，覆盖你最容易纠结的地方</p>
       </div>
@@ -822,20 +924,20 @@
     <!-- (6.5) 界面实录 双端 -->
     <section class="sec" id="screens">
       <div class="sec-head reveal">
-        <div class="kcap">SCREENS</div>
+        <div class="kcap"><span class="arc">实拍</span><span class="en">SCREENS</span></div>
         <h2>双端界面实录</h2>
         <p>微信小程序 + 网页版，同一套「温柔陪伴、理性决策」体验</p>
       </div>
       <div class="sgroup">
         <div class="sgt reveal"><b>微信小程序端</b><span>7 个核心页面</span></div>
         <div class="sgrid">
-          <figure class="reveal"><img src="shots/hz-mp-home.png" alt="小程序首页" width="355" height="762"><figcaption>首页 · 场景入口</figcaption></figure>
-          <figure class="reveal"><img src="shots/hz-mp-chat.png" alt="小程序聊天" width="348" height="758" loading="lazy"><figcaption>决策对话 · 需求采集</figcaption></figure>
-          <figure class="reveal"><img src="shots/hz-mp-toolbox.png" alt="小程序抉择工具箱" width="351" height="759" loading="lazy"><figcaption>抉择工具箱</figcaption></figure>
-          <figure class="reveal"><img src="shots/hz-mp-compare.png" alt="小程序对比表格" width="350" height="757" loading="lazy"><figcaption>权衡官 · 中立对比</figcaption></figure>
-          <figure class="reveal"><img src="shots/hz-mp-bottom.png" alt="小程序底线" width="348" height="757" loading="lazy"><figcaption>我的底线 · 代价预演</figcaption></figure>
-          <figure class="reveal"><img src="shots/hz-mp-history.png" alt="小程序历史" width="350" height="758" loading="lazy"><figcaption>历史决策</figcaption></figure>
-          <figure class="reveal"><img src="shots/hz-mp-mine.png" alt="小程序我的" width="351" height="758" loading="lazy"><figcaption>我的 · 偏好设置</figcaption></figure>
+          <figure class="reveal"><img src="shots/hz-mp-home.png" alt="小程序首页" width="347" height="753"><figcaption>首页 · 场景入口</figcaption></figure>
+          <figure class="reveal"><img src="shots/hz-mp-chat.png" alt="小程序聊天" width="349" height="752" loading="lazy"><figcaption>决策对话 · 需求采集</figcaption></figure>
+          <figure class="reveal"><img src="shots/hz-mp-toolbox.png" alt="小程序抉择工具箱" width="348" height="751" loading="lazy"><figcaption>抉择工具箱</figcaption></figure>
+          <figure class="reveal"><img src="shots/hz-mp-compare.png" alt="小程序对比表格" width="348" height="752" loading="lazy"><figcaption>权衡官 · 中立对比</figcaption></figure>
+          <figure class="reveal"><img src="shots/hz-mp-bottom.png" alt="小程序底线" width="349" height="754" loading="lazy"><figcaption>我的底线 · 代价预演</figcaption></figure>
+          <figure class="reveal"><img src="shots/hz-mp-history.png" alt="小程序历史" width="348" height="752" loading="lazy"><figcaption>历史决策</figcaption></figure>
+          <figure class="reveal"><img src="shots/hz-mp-mine.png" alt="小程序我的" width="347" height="752" loading="lazy"><figcaption>我的 · 偏好设置</figcaption></figure>
         </div>
       </div>
       <div class="sgroup">
@@ -855,7 +957,7 @@
     <!-- (7) 迭代优化与体验升级 -->
     <section class="sec" id="iterate">
       <div class="sec-head reveal">
-        <div class="kcap">ITERATION</div>
+        <div class="kcap"><span class="arc">打磨</span><span class="en">ITERATION</span></div>
         <h2>迭代优化与体验升级</h2>
         <p>每一次迭代，都让决策收口更轻、更准</p>
       </div>
@@ -887,7 +989,7 @@
     <!-- (8) 质量与风控 -->
     <section class="sec" id="quality">
       <div class="sec-head reveal">
-        <div class="kcap">QUALITY</div>
+        <div class="kcap"><span class="arc">校验</span><span class="en">QUALITY</span></div>
         <h2>质量与风控体系</h2>
         <p>多维度测试 + 全流程风控，保障稳定合规</p>
       </div>
@@ -915,7 +1017,7 @@
     <!-- (9) 资产沉淀 -->
     <section class="sec" id="assets">
       <div class="sec-head reveal">
-        <div class="kcap">ASSETS</div>
+        <div class="kcap"><span class="arc">交付</span><span class="en">ASSETS</span></div>
         <h2>不替你做决定，只把纠结摊开</h2>
         <p>四份可交付物：分层全场景测试集 / 迭代方案与复盘 / 成本账与腾讯云部署 / Prompt 方法论（跨项目共研）。点击预览。</p>
       </div>
@@ -970,7 +1072,7 @@
     <!-- (10) 数据迭代与收尾 -->
     <section class="sec end" id="end">
       <div class="sec-head reveal">
-        <div class="kcap">DATA & CLOSE</div>
+        <div class="kcap"><span class="arc">结语</span><span class="en">DATA & CLOSE</span></div>
         <h2>数据迭代与收尾</h2>
         <p>6 项核心埋点指标，驱动「数据 → 反馈 → 迭代」闭环</p>
       </div>

@@ -1,0 +1,348 @@
+/* =====================================================================
+   详情页 · v2 版面模板（layout layer）
+   ---------------------------------------------------------------------
+   引入：在 v2/subpage-v2.css 之后
+       <link rel="stylesheet" href="v2/layout-detail.css">
+
+   解决的问题：上一轮只统一了令牌（字体/圆角/按钮），版面还是四套老逻辑
+   （居中主视觉 + 等宽卡片阵 + 居中两列），所以看着"换了字体的旧页面"。
+   本层把版面本身换成杂志跨页结构：
+
+     报头 → 封面（左 7 栏标题 / 右 5 栏本页档案）→ 通栏墨线
+     → 章节序列（左 4 栏钉住 + 右 8 栏内容，重复 N 次，不换花样）→ 版权页
+
+   关键：子页的 section 恰好是「.sec-head + 一个内容容器」，
+   所以两栏骨架**纯 CSS 就能做，不需要搬动任何内部 DOM**。
+   ===================================================================== */
+
+/* ---------------- 报头 ---------------- */
+.masthead{
+  display:flex;align-items:center;gap:18px;
+  padding:26px 0 0;
+  font-family:var(--v2-latin);font-size:12.5px;letter-spacing:.26em;
+  text-transform:uppercase;color:var(--ink-2);
+}
+.masthead .r{flex:1;height:1px;background:var(--ink);opacity:.5;}
+.masthead b{font-family:var(--v2-serif);font-weight:700;letter-spacing:.08em;color:var(--ink);}
+
+/* ---------------- 封面：杂志跨页（无卡片，直接落在栏线网格上）----------------
+   档案感不再靠"画一个档案袋"，而是靠排版细节：
+   期号小章（标题右上）+ 剪报斜条（标题左上）+ 验讫圆章（与 CTA 对位）+ 通栏数据带。
+   原来的封口胶带与左侧装订线整段撤掉——背景已有竖栏线。 */
+.cover{padding:22px 0 54px;text-align:left;}
+.cover .cover-inner{
+  max-width:none;margin:0;padding:0;
+  background:none;border:0;border-radius:0;box-shadow:none;overflow:visible;
+  display:grid;grid-template-columns:repeat(12,minmax(0,1fr));
+  column-gap:var(--gutter);align-items:start;text-align:left;
+}
+.cover .cover-inner::before,.cover .cover-inner::after{content:none;}
+
+/* ① 小标：accent 小字 + 前置短线（不做胶囊底色） */
+.cover .tagline{
+  grid-column:1 / span 7;grid-row:1;justify-self:start;
+  display:inline-block;font-size:11.5px;font-weight:400;letter-spacing:.22em;
+  color:var(--c-ink,var(--accent));background:none;padding:0;border-radius:0;
+  margin:0 0 22px;
+}
+.cover .tagline::before{
+  content:"";display:inline-block;width:22px;height:1px;background:currentColor;
+  vertical-align:.3em;margin-right:10px;opacity:.75;
+}
+
+/* ② 超大标题：直接落在纸上（四页统一 60–72px） */
+.cover h1{
+  grid-column:1 / span 8;grid-row:2;
+  position:relative;display:inline-block;justify-self:start;
+  font-family:var(--v2-serif);font-weight:700;
+  font-size:clamp(38px,5.2vw,72px);line-height:1.08;letter-spacing:-.02em;
+  margin:0 0 20px;
+}
+/* 剪报斜条：贴在标题左上角（原封口胶带的去处） */
+.cover h1::before{
+  content:"";position:absolute;left:-14px;top:-2px;width:58px;height:7px;z-index:3;
+  background:repeating-linear-gradient(90deg,
+    color-mix(in srgb,var(--c) 52%,transparent) 0 5px,transparent 5px 10px);
+  transform:rotate(-9deg);opacity:.62;
+}
+/* 归档章：**一枚**，落在标题右上角（两枚并排会像贴歪了） */
+.cover h1 .seals{
+  position:absolute;left:100%;top:0;margin-left:14px;
+  display:inline-flex;align-items:center;transform:rotate(-3deg);
+}
+.cover .seal-chip{
+  font-family:var(--v2-serif);font-size:10.5px;font-weight:700;letter-spacing:.1em;
+  line-height:1;color:var(--c-ink,var(--c));border:1px dashed var(--c);
+  background:color-mix(in srgb,var(--c) 8%,transparent);
+  padding:4px 7px;border-radius:2px;transform:none;white-space:nowrap;
+}
+.cover .seal-chip.r{transform:none;}
+
+/* ③ 副文 + 一句说明 */
+.cover .sub{
+  grid-column:1 / span 7;grid-row:3;margin:0;max-width:34em;
+  font-size:16.5px;line-height:1.9;color:var(--ink-2);
+}
+.cover .base-label{
+  grid-column:1 / span 7;grid-row:4;margin:14px 0 0;
+  font-size:12px;font-weight:400;letter-spacing:.16em;color:var(--ink-2);
+}
+
+/* ④ 本页档案：右栏元信息（无卡片，只用发丝线）—— 四页共用 */
+.pmeta{
+  border-top:1px solid var(--ink);padding-top:16px;
+}
+.cover .pmeta{grid-column:9 / span 4;grid-row:1 / span 4;}
+.pfile-h{
+  display:flex;align-items:center;gap:10px;
+  font-family:var(--v2-latin);font-size:11.5px;font-weight:700;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2);
+  margin-bottom:2px;
+}
+.pfile-h::after{content:"";flex:1;height:1px;background:var(--rule);}
+.pf-row{
+  display:flex;align-items:baseline;gap:12px;
+  padding:9px 0;border-bottom:1px solid var(--rule-soft);font-size:13px;
+}
+.pf-k{flex:0 0 44px;color:var(--ink-2);font-size:11.5px;letter-spacing:.1em;}
+.pf-v{flex:1 1 auto;font-weight:700;color:var(--ink);}
+
+/* ⑤ 通栏数据带：三组大号衬线数字（对齐首页的读数排版）—— 四页共用 */
+.pfigs{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  border-top:1px solid var(--ink);border-bottom:1px solid var(--rule);
+}
+.cover .pfigs{grid-column:1 / -1;grid-row:5;margin-top:36px;}
+.pfigs > div{padding:20px 22px 18px 0;}
+.pfigs > div + div{padding-left:26px;border-left:1px solid var(--rule);}
+.pfigs b{
+  display:block;font-family:var(--v2-latin);font-weight:400;
+  font-size:clamp(30px,3.4vw,42px);line-height:1;letter-spacing:-.01em;
+  color:var(--ink);font-variant-numeric:tabular-nums;
+}
+.pfigs span{display:block;margin-top:9px;font-size:11.5px;letter-spacing:.1em;color:var(--ink-2);}
+.pfigs em{display:block;margin-top:6px;font-style:normal;font-size:11px;color:var(--ink-2);opacity:.85;}
+/* 数据带下面的一条口径注（图表下方的 source note）：整句通栏，不塞进窄栏 */
+.pnote{
+  margin:16px 0 0;font-size:12px;line-height:1.85;color:var(--ink-2);
+  border-left:2px solid var(--rule);padding-left:12px;max-width:76em;
+}
+
+/* ⑥ CTA 与"验讫"圆章：一左一右，虚线相连 */
+.cover .cta{grid-column:1 / span 7;grid-row:6;margin-top:26px;text-align:left;align-self:center;}
+.cover .seam{
+  grid-column:8 / span 5;grid-row:6;position:relative;align-self:center;
+  max-width:none;margin:0;height:1px;
+}
+.cover .seam::before{content:"";position:absolute;left:0;right:0;top:0;border-top:1px dashed var(--rule);}
+.cover .seam .stamp{
+  position:absolute;right:0;top:-14px;width:28px;height:28px;border-radius:50%;
+  box-sizing:border-box;
+  border:1.5px solid var(--c);color:var(--c-ink,var(--c));
+  font-family:var(--v2-serif);font-weight:700;font-size:12px;line-height:1;
+  display:flex;align-items:center;justify-content:center;
+  background:color-mix(in srgb,var(--c) 9%,transparent);transform:rotate(-8deg);
+}
+
+/* ---------------- 章节序列：通栏墨线 + 左窄钉住 + 右宽内容 ---------------- */
+.sec{
+  display:grid;
+  grid-template-columns:minmax(0,4fr) minmax(0,8fr);
+  column-gap:calc(var(--gutter) * 2);
+  align-items:start;
+  padding:52px 0 64px;
+  border-top:1px solid var(--ink);          /* 通栏墨线：刊物翻页的节奏 */
+}
+/* 页眉标：编号 + 中文档案词 + 拉丁小标 + 尾随发丝线，压成一行
+   （原来是 01 与 BACKGROUND 分两行，读起来像两条断开的行头）
+   注意：harness 用的是 .shead，一起纳入。 */
+.sec > :is(.sec-head,.shead){
+  grid-column:1;grid-row:1;
+  position:sticky;top:78px;                 /* 钉住，右栏内容从旁边滚过 */
+  display:grid;grid-template-columns:auto minmax(0,1fr);
+  column-gap:10px;align-items:baseline;
+  text-align:left;margin-bottom:0;          /* 压掉子页原来的"标题/说明两列"覆盖 */
+  border-top:0;padding-top:0;
+}
+.sec > :is(.sec-head,.shead)::before{
+  content:counter(v2sec,decimal-leading-zero);
+  position:static;grid-column:1;grid-row:1;
+  font-family:var(--v2-latin);font-size:12.5px;letter-spacing:.08em;color:var(--ink-2);
+}
+.sec > :is(.sec-head,.shead)::after{content:none;}   /* 发丝线交给小标自己的 ::after */
+.sec :is(.sec-head,.shead) :is(.kcap,.eyebrow,.num){
+  grid-column:2;grid-row:1;display:flex;align-items:center;margin:0;
+}
+.sec :is(.sec-head,.shead) :is(.kcap,.eyebrow,.num)::after{
+  content:"";flex:1 1 auto;height:1px;background:var(--rule);margin-left:14px;
+}
+.sec > :is(.sec-head,.shead) h2{
+  grid-column:1 / -1;grid-row:2;margin-top:14px;
+  font-size:clamp(22px,2.4vw,30px);line-height:1.3;
+}
+.sec > :is(.sec-head,.shead) p{
+  grid-column:1 / -1;grid-row:3;margin:10px 0 0;max-width:24em;line-height:1.85;
+}
+.sec > *:not(.sec-head):not(.shead){grid-column:2;}   /* 其余内容全部落右栏 */
+/* 右栏是 grid item：`margin:0 auto` 会让它按 fit-content 收缩。
+   纯块级布局里 auto 外边距只是居中，在 grid 里却会**取消拉伸** ——
+   于是 `.evolve` 缩成 324px（进度条中列塌到 2px）、
+   `.orbit-wrap`（子元素全绝对定位）直接缩成 w=0 不可见。
+   右栏内容一律撑满，宽度交给元素自己的 max-width 兜。 */
+.sec > *:not(.sec-head):not(.shead){margin-left:0;margin-right:0;}
+/* grid item 默认 min-width:auto = 内容最小宽度：宽表 / 大图这种"最小宽度"很大的
+   内容会把整节（乃至整页）顶宽，600px 视口下实测 harness 被顶到 638、xiaoban 到 584。
+   一律放开，宽度交给内容自己的 max-width / overflow 兜。 */
+.sec > *{min-width:0;}
+/* 右栏首行与左栏 h2 对齐。
+   用 margin 而不是 padding：有些节的右栏容器本身就是带边框的卡片，
+   padding 只会把卡片里的内容顶下去，卡片本身不动。
+   数值来源：章节小标现在分两行（中文 13.5px + 拉丁 10.5px），行头到 h2 顶
+   实测 54px，而页面自身在右栏容器上带约 -20px 的负偏移 → 54 + 20 = 74。
+   小办 / harness 的行头高度不同，各自在自己的皮肤里覆盖（37 / 89）。 */
+.sec:has(> :is(.sec-head,.shead) :is(.kcap,.eyebrow,.num)) > :nth-child(2){margin-top:74px;}
+
+/* 章节小标：中文在上、拉丁小标在下（小字），发丝线仍跟中文那一行跑
+   原来「星图 · OVERVIEW ————」挤在一行，两个字号两套字母间距互相压；
+   拆成两行后中文是主角、英文是注脚。
+   用 grid 而不是 flex-direction:column —— 只有 grid 能把尾随发丝线
+   单独摆到「第 1 行 / 第 2 列」并撑满剩余栏宽（column 布局里它会掉到末行）。
+   只对带中文词的（:has(.arc)）生效，没有 arc 的小标维持原来的单行 flex。 */
+.sec :is(.sec-head,.shead) :is(.kcap,.eyebrow,.num):has(.arc){
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr);
+  grid-template-rows:auto auto;
+  column-gap:14px;row-gap:3px;align-items:start;
+}
+.sec :is(.sec-head,.shead) :is(.kcap,.eyebrow,.num):has(.arc) > .arc{
+  grid-column:1;grid-row:1;
+}
+.sec :is(.sec-head,.shead) :is(.kcap,.eyebrow,.num):has(.arc) > .en{
+  grid-column:1;grid-row:2;
+}
+.sec :is(.sec-head,.shead) :is(.kcap,.eyebrow,.num):has(.arc)::after{
+  grid-column:2;grid-row:1;align-self:center;flex:none;
+  width:auto;height:1px;background:var(--rule);margin-left:0;
+}
+/* 章节小标里的"档案词汇"：中文 serif + 墨色（原来中间的「·」不再需要，已分两行）
+   harness 用 .shead，一起纳入。 */
+.sec :is(.sec-head,.shead) .kcap .arc{
+  font-family:var(--v2-serif);font-weight:700;letter-spacing:.1em;
+  color:var(--ink);text-transform:none;font-size:13.5px;
+}
+.sec :is(.sec-head,.shead) .kcap .arc::after{content:none;}
+.sec :is(.sec-head,.shead) :is(.kcap,.eyebrow,.num) > .en{
+  font-family:var(--v2-latin);font-size:10.5px;letter-spacing:.19em;
+  color:var(--ink-2);text-transform:uppercase;line-height:1.2;
+}
+
+/* ---------------- 只有 .sec 的直接子行头才是"章节头" ----------------
+   嵌在内容容器里的 .sec-head（如小办"产品流程"那张流程图上方的小标题）
+   不是章节头：不该计数、不该加墨线，更不该被当成右栏内容挤走。
+   小办的 .sec 是 <section>，所以 `div > .sec-head` 只会命中被包起来的那些。 */
+div > :is(.sec-head,.shead){
+  counter-increment:none;position:static;padding-top:0;border-top:0;
+  display:block;text-align:left;
+}
+div > :is(.sec-head,.shead)::before,
+div > :is(.sec-head,.shead)::after,
+div > :is(.sec-head,.shead) :is(.kcap,.eyebrow,.num)::after{content:none;display:none;}
+div > :is(.sec-head,.shead) h2{margin-top:0;}
+
+/* ---------------- 首屏里的 .sec-head / .shead 不是章节头 ----------------
+:is(.hero,.kv,.cover) :is(.sec-head,.shead){
+  counter-increment:none;position:static;padding-top:0;border-top:0;margin-bottom:0;
+  display:block;text-align:left;
+}
+:is(.hero,.kv,.cover) :is(.sec-head,.shead)::before,
+:is(.hero,.kv,.cover) :is(.sec-head,.shead)::after,
+:is(.hero,.kv,.cover) :is(.sec-head,.shead) :is(.kcap,.eyebrow,.num)::after{
+  content:none;display:none;
+}
+:is(.hero,.kv,.cover) :is(.sec-head,.shead) h2{
+  margin-top:0;font-size:inherit;
+}
+
+/* 两栏内部原来"1fr 1.3fr"这类窄三列，在 8 栏宽里重新分配 */
+.sec .vgrid{grid-template-columns:repeat(3,minmax(0,1fr));}
+/* 六步闭环：在 8 栏宽里保持一行，虚线轨道与点亮进度都保留 */
+.sec .flow-steps{flex-wrap:nowrap;gap:6px;}
+.sec .step{min-width:0;flex:1 1 0;}
+.sec .step .num{width:42px;height:42px;font-size:15px;}
+.sec .step .t{font-size:13px;}
+.sec .step .d{font-size:11.5px;}
+.sec .flow-steps .rail{top:21px;left:4%;right:4%;}
+.sec .flow-steps .prog{top:21px;left:4%;}
+.sec .flow-steps.lit .prog{width:92%;}
+
+/* ---------------- 版权页（与首页同一套） ---------------- */
+.copy{border-top:1px solid var(--ink);margin-top:16px;padding-top:16px;}
+
+/* ---------------- 通栏节：宽表 / 大截图这类"整幅内容" ----------------
+   「左窄右宽」只适合"行头 + 自适应的单列内容"。
+   700px 宽的表、1600px 宽的截图硬塞进 ≈600px 的右栏只能横滚，
+   这种节改成通栏：行头在上，内容占满 12 栏。
+   （由生成脚本按 `:has(table)` / `:has(.shot-wide)` 加 class） */
+.sec-full{grid-template-columns:minmax(0,1fr);row-gap:8px;padding:52px 0;}
+.sec-full > :is(.sec-head,.shead),
+.sec-full > *:not(.sec-head):not(.shead){grid-column:1;grid-row:auto;padding-top:0;}
+.sec-full:has(> :is(.sec-head,.shead) :is(.kcap,.eyebrow,.num)) > :nth-child(2){margin-top:0;}
+.sec-full > :is(.sec-head,.shead){position:static;margin-bottom:30px;}
+.sec-full > :is(.sec-head,.shead) h2{font-size:clamp(24px,2.6vw,34px);}
+.sec-full > :is(.sec-head,.shead) p{max-width:56em;}
+
+/* ---------------- 章节两栏 → 单列 ---------------- */
+@media (max-width:1040px){
+  .sec{grid-template-columns:minmax(0,1fr);row-gap:8px;padding:52px 0;}
+  .sec > :is(.sec-head,.shead),.sec > *:not(.sec-head):not(.shead){grid-column:1;grid-row:auto;padding-top:0;}
+  .sec:has(> :is(.sec-head,.shead) :is(.kcap,.eyebrow,.num)) > :nth-child(2){margin-top:0;}   /* 压掉桌面端的对齐偏移 */
+  .sec > :is(.sec-head,.shead){position:static;margin-bottom:26px;}
+}
+/* ---------------- 封面比章节更耐窄 ----------------
+   768–1040 仍然保留 12 栏（左标题 / 右档案 / 通栏数据带）。
+   如果跟着章节一起在 1040 就堆成一列，中等窗口下首屏会变成
+   「标签→标题→副文→说明→档案→数字→分割线→按钮」8 个元素竖排 —— 那又回到产品页了。 */
+@media (max-width:820px){
+  .cover .cover-inner{grid-template-columns:1fr;row-gap:0;}
+  .cover .tagline,.cover h1,.cover .sub,.cover .base-label,
+  .cover .pmeta,.cover .pfigs,.cover .cta,.cover .seam,
+  .hero > .pmeta,.hero > .pnote,.kv-inner > .pmeta{grid-column:1;grid-row:auto;}
+  .cover h1{font-size:clamp(34px,8vw,52px);}
+  .cover h1 .seals{position:static;left:auto;top:auto;margin-left:12px;display:inline-flex;vertical-align:.32em;transform:none;}
+  .cover .pmeta{margin-top:32px;}
+  .cover .pfigs{margin-top:30px;}
+  .cover .seam{margin-top:28px;}
+}
+@media (max-width:640px){
+  .masthead{font-size:10.5px;gap:10px;padding-top:18px;}
+  /* 数据带在窄屏拆成三行 */
+  .pfigs{grid-template-columns:1fr;}
+  .pfigs > div{padding:16px 0 14px;}
+  .pfigs > div + div{padding-left:0;border-left:0;border-top:1px solid var(--rule-soft);}
+  .cover h1{font-size:34px;}
+  .cover h1::before{left:-8px;top:-10px;width:46px;height:8px;}
+  .cover h1 .seals{margin-left:10px;}
+  .cover .seal-chip{font-size:9.5px;padding:2px 5px;}
+  .cover .tagline{font-size:10.5px;letter-spacing:.18em;}
+  .cover .pmeta{margin-top:28px;}
+  .cover .pfigs{margin-top:26px;}
+  .cover .pfigs > div{padding:15px 12px 13px 0;}
+  .cover .pfigs > div + div{padding-left:14px;}
+  .cover .pfigs b{font-size:26px;}
+  .cover .pfigs span{font-size:10.5px;letter-spacing:.06em;}
+  /* 窄屏退回 2 列并关掉横向轨道，避免轨道穿过换行后的第二排 */
+  .sec .flow-steps{flex-wrap:wrap;gap:14px;}
+  .sec .flow-steps .rail,.sec .flow-steps .prog{display:none;}
+  .sec .step{flex:1 1 45%;}
+}
+
+/* ---------------- 极窄屏（≤520）：报头压缩 ----------------
+   报头是「Portfolio —— 专题 01 · 经历翻译官 —— Han Jiaxue」三段文字 + 两条发丝线，
+   三段加间距的最小宽度约 444px，再叠加页面左右内边距（各 24px）就压到 492px。
+   在 430 / 390 这类手机上于是整页横向滚动、右侧拉丁名被切掉。
+   窄屏只留中段专题号，两端与两条线一并收起。 */
+@media (max-width:520px){
+  .masthead{gap:0;padding-top:16px;}
+  .masthead .r{display:none;}
+  .masthead > span:first-child,.masthead > span:last-child{display:none;}
+}
