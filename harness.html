@@ -364,59 +364,6 @@
     .hero{padding:52px 0 30px;}
   }
 </style>
-<style>
-/* ==== harness 皮肤：冷灰定位保留，纸底挪到中性暖白 ==== */
-:root{
-  --bg:#F4F2EE; --card:#FCFBF8; --card-soft:#F0EEE9;
-  --text:#292C31; --text-2:#5E666F; --text-3:#8A9199;
-  --divider:rgba(41,44,49,.16); --divider-soft:rgba(41,44,49,.08);
-  --c-hs:#5B6570; --c-hs-strong:#39424C; --c-hs-soft:rgba(91,101,112,.10);
-  --c:#5B6570; --c-ink:#39424C; --on-c:#FFFFFF;
-}
-body.dark{
-  --bg:#1E1C1A; --card:#262420; --card-soft:#2C2A25;
-  --text:#F2ECE2; --text-2:#B2A89C; --text-3:#8C8377;
-  --divider:rgba(242,236,226,.18); --divider-soft:rgba(242,236,226,.09);
-  --c-hs:#9CA6B2; --c-hs-strong:#CBD3DB; --c-hs-soft:rgba(156,166,178,.14);
-  --c:#9CA6B2; --c-ink:#CBD3DB; --on-c:#1E1C1A;
-  --c-gap:#E0956F; --c-gap-soft:rgba(224,149,111,.14);
-  --c-fix:#8FBF9C; --c-fix-soft:rgba(143,191,156,.14);
-}
-
-/* ---- v3 封面：左标题 / 右本页档案 / 通栏数据带 ---- */
-.hero{padding:22px 0 54px;max-width:none;display:grid;
-  grid-template-columns:repeat(12,minmax(0,1fr));
-  column-gap:var(--gutter);align-items:start;}
-.hero .eyebrow{grid-column:1 / span 7;grid-row:1;justify-self:start;
-  margin:0 0 22px;background:none;padding:0;border-radius:0;letter-spacing:.22em;
-  font-size:11.5px;font-weight:400;color:var(--c-ink);}
-.hero .eyebrow::before{content:"";display:inline-block;width:22px;height:1px;
-  background:currentColor;vertical-align:.3em;margin-right:10px;opacity:.75;}
-.hero h1{grid-column:1 / span 8;grid-row:2;font-family:var(--v2-serif);font-weight:700;
-  font-size:clamp(38px,5.2vw,72px);line-height:1.06;letter-spacing:-.02em;margin:0 0 22px;}
-.hero h1 em{color:var(--c-hs);}
-.hero .sub{grid-column:1 / span 7;grid-row:3;margin:0;max-width:34em;
-  font-size:16.5px;line-height:1.9;color:var(--ink-2);}
-.hero .sign{grid-column:1 / span 7;grid-row:4;margin-top:22px;}
-.hero .anchors{grid-column:1 / -1;grid-row:5;margin-top:30px;padding-top:16px;
-  border-top:1px solid var(--rule);gap:22px;}
-.hero .anchors a{border:0;padding:0;border-bottom:1px solid transparent;}
-.hero .pmeta{grid-column:9 / span 4;grid-row:1 / span 4;}
-.hero .pfigs{grid-column:1 / -1;grid-row:6;margin-top:32px;}
-/* harness 的行头自带一份上边距（.slede 容器），实测下来维持原来的 37px 偏差最小
-   （4 个节恰好对齐、3 个节偏 +82，与改造前一致）。同样要 !important。 */
-.sec:has(> :is(.sec-head,.shead) :is(.kcap,.eyebrow,.num)) > :nth-child(2){margin-top:37px!important;}
-/* 小屏：首屏退回单列 */
-@media (max-width:1040px){
-  .hero{grid-template-columns:1fr;}
-  .hero .eyebrow,.hero h1,.hero .sub,.hero .sign,.hero .anchors,
-  .hero .pmeta,.hero .pfigs{grid-column:1;grid-row:auto;}
-  .hero .pmeta{margin-top:32px;}
-  .hero .pfigs{margin-top:30px;}
-}
-</style>
-<link rel="stylesheet" href="v2/subpage-v2.css">
-<link rel="stylesheet" href="v2/layout-detail.css">
 </head>
 <body>
   <a class="skip-link" href="#main-content">跳到主内容</a>
@@ -434,12 +381,6 @@ body.dark{
 
   <div class="wrap" id="main-content" tabindex="-1">
 
-    <div class="masthead">
-      <span>Portfolio</span><span class="r"></span>
-      <b>方法层 · Harness</b>
-      <span class="r"></span><span>Han Jiaxue</span>
-    </div>
-
     <!-- Hero -->
     <section class="hero" id="top">
       <span class="eyebrow">ENGINEERING METHOD</span>
@@ -455,23 +396,12 @@ body.dark{
         <a href="#principles">判断准则</a>
         <a href="#honest">诚实边界</a>
       </div>
-        <div class="pmeta">
-          <div class="pfile-h">本页档案</div>
-          <div class="pf-row"><span class="pf-k">范围</span><span class="pf-v">三款 AI 产品</span></div>
-          <div class="pf-row"><span class="pf-k">材料</span><span class="pf-v">评测集 · trace · 回写表</span></div>
-          <div class="pf-row"><span class="pf-k">口径</span><span class="pf-v">离散量给强结论</span></div>
-        </div>
-        <div class="pfigs">
-          <div><b>8</b><span>层工程框架</span></div>
-          <div><b>R1–R36</b><span>评测回写轮次</span></div>
-          <div><b>D1–D6</b><span>生产缺陷（已全部修复复测）</span></div>
-        </div>
     </section>
 
     <!-- ===== 0. 当前进度 ===== -->
     <section class="sec" id="progress">
       <div class="shead">
-        <div class="kcap"><span class="arc">进度</span><span class="en">Status</span></div>
+        <div class="kcap">00 / Status</div>
         <h2>先说清楚现在走到哪一步</h2>
       </div>
       <p class="slede">下面的八层图是完整的样子，不是三款产品现在的样子。哪一层已经落地、哪一层还在做、哪一层只是写在纸上的方向，逐条摊开在下面——没做完的部分比做完的部分更值得看。</p>
@@ -492,9 +422,9 @@ body.dark{
     </section>
 
     <!-- ===== 1. 定义 ===== -->
-    <section class="sec sec-full" id="frame">
+    <section class="sec" id="frame">
       <div class="shead">
-        <div class="kcap"><span class="arc">定义</span><span class="en">Definition</span></div>
+        <div class="kcap">01 / Definition</div>
         <h2>先把这一层叫什么说清楚</h2>
       </div>
       <p class="slede">2026 年 2 月 Mitchell Hashimoto 提出 Harness Engineering，LangChain 给了一个最简的拆法。它不是新框架，也不是模型微调——它是模型权重之外、决定系统能不能稳定交付的全部工程层。</p>
@@ -530,9 +460,9 @@ body.dark{
     </section>
 
     <!-- ===== 2. 现状体检 ===== -->
-    <section class="sec sec-full" id="coverage">
+    <section class="sec" id="coverage">
       <div class="shead">
-        <div class="kcap"><span class="arc">体检</span><span class="en">Coverage</span></div>
+        <div class="kcap">02 / Coverage</div>
         <h2>八层覆盖：三个项目各走到哪</h2>
       </div>
       <p class="slede">三个项目都已经握着不同的工程原料，所以这一层不是从零搭，是从既有的东西里长出来的。下表基于对本地代码的实读，逐格判定。</p>
@@ -607,7 +537,7 @@ body.dark{
     <!-- ===== 3. 断点 ===== -->
     <section class="sec" id="gaps">
       <div class="shead">
-        <div class="kcap"><span class="arc">断点</span><span class="en">Breakpoints</span></div>
+        <div class="kcap">03 / Breakpoints</div>
         <h2>三个项目，断在闭环的不同位置</h2>
       </div>
       <p class="slede">真正的缺口不是「没有 harness」，而是闭环断在不同环节。所以推进顺序不是按项目平均用力，是按断点从最薄处补。</p>
@@ -638,9 +568,9 @@ body.dark{
     </section>
 
     <!-- ===== 4. 已落地实证 ===== -->
-    <section class="sec sec-full" id="evidence">
+    <section class="sec" id="evidence">
       <div class="shead">
-        <div class="kcap"><span class="arc">实证</span><span class="en">Evidence</span></div>
+        <div class="kcap">04 / Evidence</div>
         <h2>已落地的那一部分：小办评测台</h2>
       </div>
       <p class="slede">这是三个项目里唯一成型的 harness 组件，也是后续两个项目的参照样板。它的价值不在「跑出了一个分数」，而在下面这张表——它证明了<b>旧口径的分数是假的</b>。</p>
@@ -714,7 +644,7 @@ body.dark{
     <!-- ===== 5. 准则 ===== -->
     <section class="sec" id="principles">
       <div class="shead">
-        <div class="kcap"><span class="arc">准则</span><span class="en">Principles</span></div>
+        <div class="kcap">05 / Principles</div>
         <h2>做多少就够了：四条判断准则</h2>
       </div>
       <p class="slede">这一层不是越多越好。每一层都要跟着业务改，三个项目各搞一套等于同时维护三个小框架。所以先定边界，再动手。</p>
@@ -757,7 +687,7 @@ body.dark{
     <!-- ===== 6. 诚实边界 ===== -->
     <section class="sec" id="honest">
       <div class="shead">
-        <div class="kcap"><span class="arc">边界</span><span class="en">Boundaries</span></div>
+        <div class="kcap">06 / Boundaries</div>
         <h2>哪些不该套这一层，以及它现在还不能证明什么</h2>
       </div>
       <p class="slede">引入之前先划边界，是为了防止后面越做越重。判断准则只有一个问题：这个环节错一次的代价，是否大于维护它的成本。</p>
@@ -824,7 +754,7 @@ body.dark{
 
   <footer class="foot">
     <div class="wrap">
-      <p>韩佳雪 ｜ 独立主导 ｜ <a href="portfolio.html">返回作品集首页</a> ｜ 手机 15693149386 ｜ 邮箱 3415703993@qq.com</p>
+      <p>韩佳雪 ｜ 独立主导 ｜ <a href="portfolio.html">返回作品集首页</a> ｜ 手机 19079613095 ｜ 邮箱 3415703993@qq.com</p>
       <p style="margin-top:6px;font-size:12.4px;color:var(--text-3);">本页所有现状判断与实测数据均来自本地代码实读与评测产物，未经运行时实测的部分已明确标注。</p>
     </div>
   </footer>
