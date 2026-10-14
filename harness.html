@@ -364,6 +364,23 @@
     .hero{padding:52px 0 30px;}
   }
 </style>
+<style>
+/* ==== harness 皮肤（v2 骨架之上）==== */
+:root{
+  --bg:#F4F2EE; --card:#FCFBF8; --card-soft:#F0EEE9;
+  --text:#292C31; --text-2:#5E666F; --text-3:#8A9199;
+  --divider:#E4E0D9; --divider-soft:#EDEAE4;
+}
+body.dark{
+  --bg:#1E1C1A; --card:#262420; --card-soft:#2C2A25;
+  --text:#F2ECE2; --text-2:#B2A89C; --text-3:#8C8377;
+  --divider:rgba(242,236,226,.18); --divider-soft:rgba(242,236,226,.09);
+  --c-hs:#9CA6B2; --c-hs-strong:#CBD3DB; --c-hs-soft:rgba(156,166,178,.14);
+  --c-gap:#E0956F; --c-gap-soft:rgba(224,149,111,.14);
+  --c-fix:#8FBF9C; --c-fix-soft:rgba(143,191,156,.14);
+}
+</style>
+<link rel="stylesheet" href="v2/subpage-v2.css">
 </head>
 <body>
   <a class="skip-link" href="#main-content">跳到主内容</a>
@@ -401,7 +418,7 @@
     <!-- ===== 0. 当前进度 ===== -->
     <section class="sec" id="progress">
       <div class="shead">
-        <div class="kcap">00 / Status</div>
+        <div class="kcap">Status</div>
         <h2>先说清楚现在走到哪一步</h2>
       </div>
       <p class="slede">下面的八层图是完整的样子，不是三款产品现在的样子。哪一层已经落地、哪一层还在做、哪一层只是写在纸上的方向，逐条摊开在下面——没做完的部分比做完的部分更值得看。</p>
@@ -424,7 +441,7 @@
     <!-- ===== 1. 定义 ===== -->
     <section class="sec" id="frame">
       <div class="shead">
-        <div class="kcap">01 / Definition</div>
+        <div class="kcap">Definition</div>
         <h2>先把这一层叫什么说清楚</h2>
       </div>
       <p class="slede">2026 年 2 月 Mitchell Hashimoto 提出 Harness Engineering，LangChain 给了一个最简的拆法。它不是新框架，也不是模型微调——它是模型权重之外、决定系统能不能稳定交付的全部工程层。</p>
@@ -462,7 +479,7 @@
     <!-- ===== 2. 现状体检 ===== -->
     <section class="sec" id="coverage">
       <div class="shead">
-        <div class="kcap">02 / Coverage</div>
+        <div class="kcap">Coverage</div>
         <h2>八层覆盖：三个项目各走到哪</h2>
       </div>
       <p class="slede">三个项目都已经握着不同的工程原料，所以这一层不是从零搭，是从既有的东西里长出来的。下表基于对本地代码的实读，逐格判定。</p>
@@ -537,7 +554,7 @@
     <!-- ===== 3. 断点 ===== -->
     <section class="sec" id="gaps">
       <div class="shead">
-        <div class="kcap">03 / Breakpoints</div>
+        <div class="kcap">Breakpoints</div>
         <h2>三个项目，断在闭环的不同位置</h2>
       </div>
       <p class="slede">真正的缺口不是「没有 harness」，而是闭环断在不同环节。所以推进顺序不是按项目平均用力，是按断点从最薄处补。</p>
@@ -570,7 +587,7 @@
     <!-- ===== 4. 已落地实证 ===== -->
     <section class="sec" id="evidence">
       <div class="shead">
-        <div class="kcap">04 / Evidence</div>
+        <div class="kcap">Evidence</div>
         <h2>已落地的那一部分：小办评测台</h2>
       </div>
       <p class="slede">这是三个项目里唯一成型的 harness 组件，也是后续两个项目的参照样板。它的价值不在「跑出了一个分数」，而在下面这张表——它证明了<b>旧口径的分数是假的</b>。</p>
@@ -644,7 +661,7 @@
     <!-- ===== 5. 准则 ===== -->
     <section class="sec" id="principles">
       <div class="shead">
-        <div class="kcap">05 / Principles</div>
+        <div class="kcap">Principles</div>
         <h2>做多少就够了：四条判断准则</h2>
       </div>
       <p class="slede">这一层不是越多越好。每一层都要跟着业务改，三个项目各搞一套等于同时维护三个小框架。所以先定边界，再动手。</p>
@@ -687,7 +704,7 @@
     <!-- ===== 6. 诚实边界 ===== -->
     <section class="sec" id="honest">
       <div class="shead">
-        <div class="kcap">06 / Boundaries</div>
+        <div class="kcap">Boundaries</div>
         <h2>哪些不该套这一层，以及它现在还不能证明什么</h2>
       </div>
       <p class="slede">引入之前先划边界，是为了防止后面越做越重。判断准则只有一个问题：这个环节错一次的代价，是否大于维护它的成本。</p>
