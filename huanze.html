@@ -695,9 +695,20 @@ body::after{display:none!important;}
   .sec .orbit-wrap .planet{width:74px;height:74px;}
   .sec .orbit-wrap .planet .pn{font-size:11px;}
   .sec .orbit-wrap .planet .ps{font-size:8.5px;}
-  .sec .ov,.sec .ass{grid-template-columns:repeat(4,1fr);}
-  .sec .fgrid{grid-template-columns:1.26fr 1fr 1.1fr;}
-  .sec .data{grid-template-columns:1fr 1.34fr 1fr;}
+  .sec .ov,.sec .ass{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .sec .fgrid{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .sec .data{grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+/* 极窄屏：内层网格再降列，避免卡片被压成竖条（缓择专属，不污染小办 .ass） */
+@media (max-width:640px){
+  .sec .ov{grid-template-columns:1fr 1fr;}
+  .sec .ass{grid-template-columns:1fr 1fr;}
+  .sec .fgrid{grid-template-columns:1fr;}
+  .sec .data{grid-template-columns:1fr;}
+}
+@media (max-width:480px){
+  .sec .ov{grid-template-columns:1fr;}
+  .sec .ass{grid-template-columns:1fr;}
 }
 </style>
 <link rel="stylesheet" href="v2/subpage-v2.css">

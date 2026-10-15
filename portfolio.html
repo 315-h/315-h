@@ -593,6 +593,22 @@ body.dark .dock{background:var(--paper-2);box-shadow:0 30px 70px -30px rgba(0,0,
   .chap{font-size:52px;}
   .pcard > .chap{font-size:52px;top:12px;right:16px;}
 }
+  /* ================= 移动端触控可用性层（≤640） =================
+     只调整可点元素命中尺寸 + 消除轨道溢出；不改配色/字号层级/栅格。 */
+  @media (max-width:640px){
+    /* band 跑马灯轨道不参与页面横向滚动计算（消除 54px 隐形溢出） */
+    .band{overflow:hidden;}
+    body{overflow-x:clip;}
+    /* 首屏两个 CTA */
+    .cta .btn{min-height:48px;display:inline-flex;align-items:center;justify-content:center;}
+    /* 卡片「查看详情 →」等 */
+    a.go{min-height:44px;display:inline-flex;align-items:center;}
+    .strip-go{min-height:44px;display:inline-flex;align-items:center;}
+    /* 页脚联系方式 / 资源链接 */
+    .foot .col a{min-height:44px;display:flex;align-items:center;padding:0;}
+    /* 主题切换按钮 */
+    .theme-btn{width:44px;height:44px;}
+  }
 </style>
 </head>
 <body>

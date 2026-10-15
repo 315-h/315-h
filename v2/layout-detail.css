@@ -346,3 +346,52 @@ div > :is(.sec-head,.shead) h2{margin-top:0;}
   .masthead .r{display:none;}
   .masthead > span:first-child,.masthead > span:last-child{display:none;}
 }
+/* ================= 移动端触控可用性层（≤640） =================
+   只调整「可点元素的命中尺寸」与宽表可读性；不改配色、字号层级、栅格结构。
+   依据：Apple HIG 44×44pt／Material 48×48dp。
+   背景：手机端实测发现资产卡「预览 →」被左侧版本号挤压到 12px 宽并换行、
+        返回链接 24px 高、底部联系方式 34px 高，均低于最小触控目标。 */
+@media (max-width:640px){
+  /* —— 资产卡底部行：允许换行，「预览 →」不被压扁 —— */
+  .afile .meta .ft{flex-wrap:wrap;gap:6px 12px;}
+  .afile .meta .ft a{flex:0 0 auto;white-space:nowrap;
+    display:inline-flex;align-items:center;min-height:44px;padding:0 2px;}
+  /* —— 顶部「← 返回作品集」 —— */
+  a.backlink{display:inline-flex;align-items:center;min-height:44px;}
+  a.backlink:last-of-type{min-height:40px;}
+  /* —— 锚点目录条目 —— */
+  .dl-item{display:flex;align-items:center;min-height:44px;}
+  /* —— 宽表格：可横向滑动 + 触控惯性 + 顶部提示条 —— */
+  .tbl-wrap,[style*="overflow-x:auto"]{-webkit-overflow-scrolling:touch;}
+  .tbl-wrap::before{content:"← 左右滑动查看完整表格 →";
+    position:sticky;left:0;display:block;width:100%;box-sizing:border-box;
+    padding:8px 12px 3px;font-size:10.5px;letter-spacing:.08em;
+    color:var(--text-3,#8A8175);background:var(--card,#fff);}
+  /* —— 首屏锚点胶囊（harness） —— */
+  .anchors a{display:inline-flex;align-items:center;min-height:40px;}
+  /* —— 正文里的跨页链接 / 页脚联系方式：用伪元素扩热区，视觉零变化 —— */
+  a[href$="harness.html"],
+  .hxnote a,
+  .contact-line a,
+  .foot p a,
+  .foot .copy a{position:relative;}
+  a[href$="harness.html"]::after,
+  .contact-line a::after,
+  .foot p a::after,
+  .foot .copy a::after{content:"";position:absolute;inset:-11px -8px;}
+  /* —— 主题切换按钮：全站统一提到 44×44 —— */
+  .theme-btn{width:44px;height:44px;}
+  /* —— 小办：引擎切换 / 问题预设 / 对话输入 —— */
+  .engine-btn{min-height:44px;display:inline-flex;align-items:center;}
+  .demo-chips .chip{min-height:44px;display:inline-flex;align-items:center;}
+  .chat-input input,.chat-input button{min-height:44px;}
+  /* —— 资产卡「预览 →」补足宽度 —— */
+  .afile .meta .ft a{padding:0 6px;}
+}
+/* ---------------- 窄屏（≤860）：jingli 多列网格单列 ----------------
+   本文件第 267 行 `.sec .vgrid{repeat(3)}` 是「后加载的皮肤块」，与 jingli 内联
+   ≤860 的单列回退同特异性（0,2,0）、但本文件更靠后 → 盖掉了回退，390px 下仍排
+   3 列、文字被压成竖条。这里用同特异性、更靠后的规则把单列补回来（仅 jingli 用到）。 */
+@media (max-width:860px){
+  .vgrid,.sgrid,.res,.sec .vgrid,.sec .sgrid,.sec .res{grid-template-columns:1fr;}
+}
