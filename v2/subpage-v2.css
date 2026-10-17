@@ -397,3 +397,15 @@ body.dark .dock{background:var(--paper-2);box-shadow:0 30px 70px -30px rgba(0,0,
   .dock .dl-item{grid-template-columns:30px 1fr;}
   .dock .dl-item.isrec{grid-template-columns:30px 1fr 12px;}
 }
+
+/* ---------------- 刘海/挖孔屏顶部安全区（配合 viewport-fit=cover）----------------
+   六页的 <meta viewport> 已加 viewport-fit=cover，页面才会铺到状态栏下面。
+   代价是 sticky 顶栏的 top:0 会滑进状态栏；这里把顶栏内边距按安全区抬高。
+   普通机型 env() 为 0，视觉零变化。 */
+@supports (padding:max(0px)){
+  .topbar .row{
+    padding-top:max(13px,env(safe-area-inset-top,0px));
+    padding-left:max(var(--gutter,24px),env(safe-area-inset-left,0px));
+    padding-right:max(var(--gutter,24px),env(safe-area-inset-right,0px));
+  }
+}
