@@ -1263,6 +1263,10 @@ body::after{display:none!important;}
       try{ localStorage.setItem('hx-dock',c?'collapsed':'expanded'); }catch(e){}
     }
     if(collapse) collapse.addEventListener('click',function(){
+      /* 手机端（≤767）抽屉态：收缩＝关闭抽屉。
+         折叠类在手机端没有对应形态，且 .dock.open 的宽度规则会压过
+         .dock.collapsed，只加 collapsed 会「点了没反应」。 */
+      if(window.matchMedia('(max-width:767px)').matches){ setOpen(false); return; }
       setCollapsed(!dock.classList.contains('collapsed'));
     });
     /* 收起态图标：点任意一个即展开 */

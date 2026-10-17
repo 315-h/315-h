@@ -539,18 +539,55 @@ body.dark .dock{background:var(--paper-2);box-shadow:0 30px 70px -30px rgba(0,0,
 /* 手机比例：不再占右侧竖条，收成「角落里一个图标」，点开才铺成面板。
    同时取消右侧预留 —— 内容恢复满宽，图标只压住右下角一小块。 */
 @media (max-width:767px){
-  body{--dock-w:46px;--dock-reserve:0px;padding-right:0;}
+  body{--dock-w:44px;--dock-reserve:0px;padding-right:0;}
   .topbar{margin-right:0;}
   .topbar .row{padding-right:var(--gutter);}
-  .dock{right:12px;top:auto;bottom:calc(18px + env(safe-area-inset-bottom,0px));
-    transform:none;max-height:min(78vh,680px);}
+  /* 手机端胶囊：与四个详情页同一套视觉（首页不加载 v2/subpage-v2.css，
+     必须内联一份）。44×44 纸底 + 发丝线 + 12 圆角 + 弱投影；
+     .dock.collapsed 的 --dock-w:58px 会盖掉 body 的 44，故显式写死宽度。 */
+  .dock,.dock.collapsed{
+    width:44px;max-width:44px;
+    right:14px;left:auto;top:auto;
+    bottom:calc(18px + env(safe-area-inset-bottom,0px));
+    transform:none;max-height:min(78vh,680px);overflow:visible;
+    background:var(--paper);
+    border:1px solid color-mix(in srgb,var(--ink) 16%,transparent);
+    border-radius:12px;
+    box-shadow:0 1px 2px rgba(36,31,28,.06), 0 6px 18px -8px rgba(36,31,28,.28);
+  }
+  body.dark .dock,body.dark .dock.collapsed{
+    background:var(--paper-2);
+    border-color:color-mix(in srgb,var(--paper) 22%,transparent);
+    box-shadow:0 1px 2px rgba(0,0,0,.4), 0 6px 18px -8px rgba(0,0,0,.6);
+  }
   /* 收起态：只剩「资料」一个图标（人像入口与回到顶部移到面板内） */
   .dock .dock-hd{display:none;}
-  .dock .dock-rail{gap:0;padding:0;}
+  /* rail 精确填满 44px 内框（扣掉 1px 边框 = 42px），图标不再偏左 */
+  .dock .dock-rail{display:flex;gap:0;padding:0;width:42px;height:42px;
+    align-items:center;justify-content:center;}
   .dock .dock-rail .rail-btn:nth-child(1){display:none;}
   .dock .dock-rail #dockTopRail{display:none;}
-  .dock .dock-rail .rail-btn{width:44px;height:44px;border:0;border-radius:3px;}
-  /* 展开态：恢复正常面板头 */
+  .dock .dock-rail .rail-btn{width:42px;height:42px;border:0;background:none;
+    border-radius:11px;padding:0;color:var(--ink-2);
+    display:flex;align-items:center;justify-content:center;}
+  .dock .dock-rail .rail-btn svg{width:18px;height:18px;stroke-width:1.35;transform:translateY(2px);}
+  .dock .dock-rail .rail-btn:hover,.dock .dock-rail .rail-btn:active{
+    background:var(--accent-soft);color:var(--accent);}
+  /* 徽标：15px 圆点钉在右上角内圈 + 纸色外环，避免变成横条或压住描边 */
+  .dock .rail-btn .rail-badge{
+    position:absolute;top:2px;right:2px;left:auto;bottom:auto;
+    min-width:15px;height:15px;padding:0 3.5px;
+    display:inline-flex;align-items:center;justify-content:center;
+    font-size:9px;line-height:1;box-sizing:border-box;font-weight:700;
+    border-radius:999px;box-shadow:0 0 0 2px var(--paper);
+  }
+  body.dark .dock .rail-btn .rail-badge{box-shadow:0 0 0 2px var(--paper-2);}
+  /* 展开态：左右双向 14 内缩（不用 100vw——遇滚动条会算宽出屏） */
+  .dock.open{
+    width:auto;max-width:none;left:14px;right:14px;
+    border-radius:var(--f2-radius);
+    box-shadow:0 18px 50px -24px rgba(36,31,28,.5);
+  }
   .dock.open .dock-hd{display:flex;}
   .dock.open .dock-rail{display:none;}
   .dock.open .dock-inner{display:block;}
