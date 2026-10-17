@@ -944,7 +944,12 @@ body.dark{
     });
     /* 收起态图标：点任意一个即展开 */
     if(rail) Array.prototype.forEach.call(rail.querySelectorAll('[data-expand]'),function(b){
-      b.addEventListener('click',function(){ setCollapsed(false); });
+      /* 手机端（≤767）胶囊即入口：走抽屉展开（.open），不走折叠类
+         —— 折叠类在手机端没有对应形态，点了会毫无反应。宽屏逻辑不变。 */
+      b.addEventListener('click',function(){
+        if(window.matchMedia('(max-width:767px)').matches) setOpen(true);
+        else setCollapsed(false);
+      });
     });
     var saved=null; try{ saved=localStorage.getItem('hx-dock'); }catch(e){}
     if(saved==='collapsed'&&!isNarrow()) setCollapsed(true); else syncBtn();
@@ -964,7 +969,8 @@ body.dark{
     });
     /* 窄屏下点资料后收起抽屉，避免跳转后浮层仍盖住页面 */
     dock.addEventListener('click',function(e){
-      if(isNarrow()&&e.target.closest('a')) setOpen(false);
+      /* 点资料项或「回到顶部」后收起抽屉（手机端按钮不是 <a>，需一并判断） */
+      if(isNarrow()&&(e.target.closest('a')||e.target.closest('.dock-top'))) setOpen(false);
     });
     /* 视口变宽时抽屉态复位，交回常显模式 */
     window.addEventListener('resize',function(){ if(!isNarrow()) setOpen(false); });

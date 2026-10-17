@@ -307,6 +307,90 @@ body.dark .dock{background:var(--paper-2);box-shadow:0 30px 70px -30px rgba(0,0,
   .dock.open .dock-inner{display:block;}
   .dock.open .dock-foot{display:flex;}
 }
+/* ---------------- 详情页手机端兜底（≤767）----------------
+   背景：harness/jingli/huanze/xiaoban 四页沿用旧内联 dock，基态 display:none，
+   且内联缺 ≤767 断点，只有 ≤1279 的「抽屉态」规则；手机端折叠胶囊实际是
+   visibility:hidden 不可见，用户看到的只有一个隐形热区（46×46 位于右下角）。
+   本文件在四页里都晚于内联 <style> 加载，故同特异性即可覆盖。
+
+   视觉口径（对齐编辑刊物风）：直角 → 发丝线描边 → 纸底 → 弱投影。
+   旧内联的 1px 实线 --d-divider 在 44px 小方块上过重，改成半透明发丝线 +
+   纸张色底 + 一层极浅投影，做成「贴纸浮在纸上」而不是「一个框」。
+   
+   几何：外框 44×44（HIG 最小触控），内圆角 12，图标 18px 居中。 */
+@media (max-width:767px){
+  .dock{
+    display:flex;
+    right:14px;left:auto;top:auto;
+    bottom:calc(18px + env(safe-area-inset-bottom,0px));
+    transform:none;
+    width:44px !important;max-width:44px;
+    max-height:min(78vh,680px);
+    opacity:1;visibility:visible;
+    overflow:visible;
+    /* 覆盖内联的实线边框与磨砂底：发丝线 + 不透明纸底（全站零磨砂） */
+    background:var(--paper) !important;
+    -webkit-backdrop-filter:none !important;
+    backdrop-filter:none !important;
+    border:1px solid color-mix(in srgb,var(--ink) 16%,transparent) !important;
+    border-radius:12px !important;
+    box-shadow:0 1px 2px rgba(36,31,28,.06), 0 6px 18px -8px rgba(36,31,28,.28) !important;
+    transition:transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease),
+               background var(--dur-slow) ease, border-color var(--dur-slow) ease;
+  }
+  .dock:active{transform:scale(.94);}
+  body.dark .dock{
+    background:var(--paper-2) !important;
+    border-color:color-mix(in srgb,var(--paper) 22%,transparent) !important;
+    box-shadow:0 1px 2px rgba(0,0,0,.4), 0 6px 18px -8px rgba(0,0,0,.6) !important;
+  }
+  .dock .dock-hd{display:none;}
+  /* rail 精确填满 44px 内框（扣掉 1px 边框 = 42px），不留偏移 */
+  .dock .dock-rail{display:flex;gap:0;padding:0;width:42px;height:42px;align-items:center;justify-content:center;}
+  .dock .dock-rail .rail-btn{
+    width:42px;height:42px;border:0;background:none;border-radius:11px;
+    color:var(--ink-2);padding:0;
+    display:flex;align-items:center;justify-content:center;
+  }
+  /* 文件夹图标视觉重心略偏上，下移 2px 与右上 badge 形成对角平衡 */
+  .dock .dock-rail .rail-btn svg{width:18px;height:18px;stroke-width:1.35;transform:translateY(2px);}
+  .dock .dock-rail .rail-btn:hover,
+  .dock .dock-rail .rail-btn:active{background:var(--accent-soft);color:var(--accent);}
+  /* 手机端只保留「资料下载」这一个入口（首个头像按钮与回到顶部不占位） */
+  .dock .dock-rail .rail-btn:nth-child(1),
+  .dock .dock-rail #dockTopRail{display:none;}
+  /* badge：15px 圆点，钉在 42px 按钮的右上角内圈。
+     用 right/top（不用 left，否则两端撑开会拉成横条），
+     纸色外圈把 badge 与 1px 边框线隔开。 */
+  .dock .rail-btn .rail-badge{
+    position:absolute;
+    top:2px;right:2px;left:auto;bottom:auto;
+    min-width:15px;height:15px;padding:0 3.5px;
+    display:inline-flex;align-items:center;justify-content:center;
+    font-size:9px;line-height:1;box-sizing:border-box;font-weight:700;
+    border-radius:999px;
+    box-shadow:0 0 0 2px var(--paper);
+  }
+  body.dark .dock .rail-btn .rail-badge{box-shadow:0 0 0 2px var(--paper-2);}
+  /* 展开态：恢复为常规抽屉宽度，边框/圆角/阴影回落到站点常规。
+     坑：不能用 100vw 定宽 —— 页面有竖向滚动条时 innerWidth(390) ≠
+     clientWidth(375)，而 right 参照的是后者；width 取 min(368, 100vw-24) 会
+     算成 366，右边只留 14 → 左边被挤到 -5，面板整体左移出屏、看着像没展开。
+     解法：左右同时给 14 的内缩（left/right 双向钳位，不依赖 vw），宽度交给
+     布局自动算；max-height 用 78vh 配合 bottom 锚定，避免顶出视口。 */
+  .dock.open{
+    left:14px;right:14px;
+    width:auto !important;max-width:none;
+    max-height:calc(100vh - 72px);
+    border-radius:var(--f2-radius) !important;
+    box-shadow:0 18px 50px -24px rgba(36,31,28,.5) !important;
+  }
+  body.dark .dock.open{box-shadow:0 18px 50px -24px rgba(0,0,0,.75) !important;}
+  .dock.open .dock-hd{display:flex;}
+  .dock.open .dock-rail{display:none;}
+  .dock.open .dock-inner,.dock.open .dock-foot{display:flex;}
+}
+
 /* 侧栏变窄时省掉体积列，把宽度让给文件名 */
 @media (min-width:768px) and (max-width:1199px){
   .dock .fs{display:none;}
