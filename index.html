@@ -539,9 +539,13 @@ body.dark .dock{background:var(--paper-2);box-shadow:0 30px 70px -30px rgba(0,0,
 /* 手机比例：不再占右侧竖条，收成「角落里一个图标」，点开才铺成面板。
    同时取消右侧预留 —— 内容恢复满宽，图标只压住右下角一小块。 */
 @media (max-width:767px){
-  body{--dock-w:44px;--dock-reserve:0px;padding-right:0;}
+  body{--dock-w:44px;--dock-reserve:0px;padding-right:0;--f2-radius:3px;}
   .topbar{margin-right:0;}
   .topbar .row{padding-right:var(--gutter);}
+  /* 修「胶囊在屏外」根因：.hero::before 柔光 inset:-40px -80px 向右溢出 80px，
+     把布局视口从 375 撑到 429 → fixed 的 right:14px 从 429 起算而整体出屏。
+     裁掉横向溢出（纵向保留，不影响 h1 入场动画），视口回到 375 后胶囊即归位。 */
+  .hero{overflow-x:clip;}
   /* 手机端胶囊：与四个详情页同一套视觉（首页不加载 v2/subpage-v2.css，
      必须内联一份）。44×44 纸底 + 发丝线 + 12 圆角 + 弱投影；
      .dock.collapsed 的 --dock-w:58px 会盖掉 body 的 44，故显式写死宽度。 */
