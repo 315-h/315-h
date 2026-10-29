@@ -32,10 +32,12 @@
   --c1:#C2704F;  /* 经历翻译官 */
   --c2:#D97A55;  /* 缓择星球 */
   --c3:#2A4A8F;  /* 小办 */
+  --c4:#B24428;  /* 美识集（沿用品牌陶土红） */
   /* 项目文字色：浅色下加深到 ≥4.5:1（实测 6.18 / 5.07 on 卡片底） */
   --c1-ink:#9C3F26;
   --c2-ink:#A5522E;
   --c3-ink:#2A4A8F;
+  --c4-ink:#8C3319;
 
   --serif:'Noto Serif SC','Songti SC','STZhongsong',Georgia,serif;
   --latin:'Instrument Serif',Georgia,'Times New Roman',serif;
@@ -58,8 +60,8 @@ body.dark{
   --accent-soft:rgba(226,154,115,.12);
   --on-accent:#211C18;
   --shadow-card:0 1px 2px rgba(0,0,0,.4), 0 22px 50px -24px rgba(0,0,0,.75);
-  --c1:#F0A184; --c2:#EE9B77; --c3:#9DBAF5;
-  --c1-ink:#F0A184; --c2-ink:#EE9B77; --c3-ink:#9DBAF5;  /* 深色下品牌色本身即达标 */
+  --c1:#F0A184; --c2:#EE9B77; --c3:#9DBAF5; --c4:#E89B7E;
+  --c1-ink:#F0A184; --c2-ink:#EE9B77; --c3-ink:#9DBAF5;  /* 深色下品牌色本身即达标 */ --c4-ink:#E89B7E;
 }
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -223,6 +225,21 @@ body.dark .pcard{background:var(--paper-2);}
   display:grid;grid-template-columns:1.02fr .98fr;gap:38px;align-items:start;}
 .pcard.c3 > .c3-l{grid-column:1;grid-row:1;}
 .pcard.c3 > .c3-r{grid-column:2;grid-row:1;}
+.pcard.c4{grid-column:span 12;--pc:var(--c4);--pc-ink:var(--c4-ink);
+  display:grid;grid-template-columns:1.02fr .98fr;gap:38px;align-items:start;}
+.pcard.c4 > .c4-l{grid-column:1;grid-row:1;}
+.pcard.c4 > .c4-r{grid-column:2;grid-row:1;}
+.course-links{display:flex;flex-direction:column;gap:14px;}
+.course-link{display:flex;align-items:flex-start;gap:14px;border:1px solid var(--rule);
+  border-radius:3px;padding:16px 18px;text-decoration:none;color:inherit;
+  transition:border-color var(--dur) var(--ease),transform var(--dur) var(--ease);}
+.course-link:hover{border-color:color-mix(in srgb,var(--c4) 44%,transparent);transform:translateY(-2px);}
+.cl-mark{flex:0 0 auto;width:36px;height:36px;display:grid;place-items:center;border-radius:3px 8px 3px 3px;
+  background:var(--c4-ink);color:var(--on-accent);font-family:var(--serif);font-size:15px;font-weight:700;}
+.cl-body{display:flex;flex-direction:column;gap:3px;flex:1;}
+.cl-body strong{font-family:var(--serif);font-size:16px;}
+.cl-body span{font-size:12.5px;color:var(--ink-2);line-height:1.7;}
+.course-link .arr{color:var(--c4-ink);margin-top:2px;}
 .pcard:hover{transform:translateY(-4px);border-color:color-mix(in srgb,var(--pc) 44%,transparent);}
 .pcard > *{position:relative;z-index:1;}
 /* 大号章节数字：刊物的页码感（放在 .pcard > * 之后，确保绝对定位生效） */
@@ -629,10 +646,13 @@ body.dark .dock{background:var(--paper-2);box-shadow:0 30px 70px -30px rgba(0,0,
   .sec-head{position:static;}   /* 小屏不做钉住，否则章节头会占满一屏 */
   .sec-head .kcap{grid-column:span 12;} .sec-head h2{grid-column:span 12;}
   .sec-head p{grid-column:span 12;margin-top:10px;}
-  .pcard.c1,.pcard.c2,.pcard.c3{grid-column:1/-1;}
+.pcard.c1,.pcard.c2,.pcard.c3,.pcard.c4{grid-column:1/-1;}
   .pcard.c3{grid-template-columns:1fr;}
+.pcard.c4{grid-template-columns:1fr;}
   .pcard.c3 > .c3-l,.pcard.c3 > .c3-r{grid-column:1;grid-row:auto;}
+.pcard.c4 > .c4-l,.pcard.c4 > .c4-r{grid-column:1;grid-row:auto;}
   .pcard.c3 > .c3-r{margin-top:22px;}
+.pcard.c4 > .c4-r{margin-top:22px;}
   .strip .kcap,.strip h2,.strip .body{grid-column:1/-1;}
   .strip h2{margin:8px 0;} .strip .body{margin-top:8px;}
   .bs-l,.bs-r{grid-column:1/-1;}
@@ -745,6 +765,7 @@ body.dark .dock{background:var(--paper-2);box-shadow:0 30px 70px -30px rgba(0,0,
       <p>从人文求职到治愈决策，再到商务效率。每一款都在补一块不同的能力短板。</p>
     </div>
     <p class="intent rv">这三款不是随便选的：<b>经历翻译官</b>练 C 端高敏感场景的信任设计，<b>缓择星球</b>练多 Agent 的产品编排，<b>小办</b>练 B 端概率性系统的质量与成本。我在有意识地补不同的能力短板。</p>
+    <p class="intent rv">此外，<b>美识集</b>是独立完成的教育内容产品：三门在线课加互动工具，用来补课程体系设计与知识梳理这一类能力。</p>
 
     <div class="cards">
 
@@ -823,6 +844,46 @@ body.dark .dock{background:var(--paper-2);box-shadow:0 30px 70px -30px rgba(0,0,
           </div>
         </div>
       </article>
+      <article class="pcard c4 rv" id="p4">
+        <span class="chap" aria-hidden="true">04</span>
+        <div class="c4-l">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V2H6.5A2.5 2.5 0 0 0 4 4.5z"/>
+            <path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/>
+          </svg>
+          <h3>美识集 <span class="role">传统美学课程产品</span></h3>
+          <p class="ploc">把传统美学做成能学、能动手的在线课程体系</p>
+          <div class="kpis">课程体系设计<span class="kd"></span>三门在线课<span class="kd"></span>互动工具</div>
+          <div class="stats" style="margin-top:18px">
+            <div class="stat"><b>13</b><span>通识课（10 基础 + 3 进阶）</span></div>
+            <div class="stat"><b>10</b><span>小小美育课</span></div>
+            <div class="stat"><b>2</b><span>配色 / 纹样工具</span></div>
+          </div>
+          <p class="pnote">口径：课时数以课程页面实际目录为准；本作为课程内容产品，非商业化上线 SaaS。</p>
+          <p class="desc">从色彩、纹样、器物、园林到 AI 创作方法，分层设计成人通识、AI 创作者与儿童三条学习路径，资料结构化归档，配套互动工具与结业证书闭环。</p>
+          <span class="tag">教育内容产品 · 知识体系搭建</span>
+          <div class="pmeta">独立主导 · 2025 – 2026</div>
+        </div>
+        <div class="c4-r">
+          <div class="course-links">
+            <a class="course-link" href="https://315-h.github.io/meishiji-courses/traditional-aesthetics/" target="_blank" rel="noopener">
+              <span class="cl-mark">通</span>
+              <span class="cl-body"><strong>传统美学通识课</strong><span>十三堂大众通识美育课 · 色彩 / 纹样 / 建筑 / 器物 / 服饰 / 园林</span></span>
+              <span class="arr">↗</span>
+            </a>
+            <a class="course-link" href="https://315-h.github.io/meishiji-courses/ai-aesthetics/" target="_blank" rel="noopener">
+              <span class="cl-mark">AI</span>
+              <span class="cl-body"><strong>AI 创作活用课</strong><span>配色生成、纹样拆解、风格对比，把审美变成可用提示词</span></span>
+              <span class="arr">↗</span>
+            </a>
+            <a class="course-link" href="https://315-h.github.io/meishiji-courses/kids-aesthetics/" target="_blank" rel="noopener">
+              <span class="cl-mark">童</span>
+              <span class="cl-body"><strong>小小美育课</strong><span>十节给小朋友和初学者听的课 · 三知识点 + 动手互动 + 口诀</span></span>
+              <span class="arr">↗</span>
+            </a>
+          </div>
+        </div>
+      </article>
 
     </div>
   </section>
@@ -853,6 +914,7 @@ body.dark .dock{background:var(--paper-2);box-shadow:0 30px 70px -30px rgba(0,0,
         <p>三款产品都不止于「能跑通」：评测集、兜底机制、错误恢复，缺哪一环都摊开标在明处。小办已经走到「评测结果回写成约束」这一步。</p>
         <div class="strip-kw"><span>分层评测</span><span>约束兜底</span><span>错误归因</span></div>
         <a class="strip-go" href="harness.html">查看工程方法 <span class="arr">→</span></a>
+      <a href="https://315-h.github.io/meishiji-courses/traditional-aesthetics/" target="_blank" rel="noopener">美识集课程站</a>
       </div>
     </div>
 
